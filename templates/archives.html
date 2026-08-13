@@ -1,0 +1,202 @@
+<!doctype html>
+<html
+  lang="zh-CN"
+  xmlns:th="http://www.thymeleaf.org"
+  th:attr="data-color-scheme=${theme.config.appearance.color_scheme ?: 'auto'}"
+  th:class="|color-scheme-${theme.config.appearance.color_scheme ?: 'auto'}|"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f8f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#101714" media="(prefers-color-scheme: dark)" />
+    
+    <title th:text="|全部文章 - ${site.title}|">全部文章</title>
+  
+    <script>
+      (() => {
+        try {
+          const savedScheme = localStorage.getItem("rackora-color-scheme");
+          if (savedScheme === "light" || savedScheme === "dark") {
+            document.documentElement.dataset.colorScheme = savedScheme;
+            document.documentElement.classList.remove(
+              "color-scheme-auto",
+              "color-scheme-light",
+              "color-scheme-dark",
+            );
+            document.documentElement.classList.add(`color-scheme-${savedScheme}`);
+          }
+        } catch (_) {
+          // Storage can be unavailable in privacy modes; the server setting remains authoritative.
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/themes/theme-rackora/assets/main-COsQWlB8.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/theme-rackora/assets/main-DxT_5I03.css">
+  </head>
+  <body th:style="|--rack-accent: ${theme.config.appearance.accent_color ?: '#08775b'}|">
+    <a class="skip-link" href="#main-content">跳到正文</a>
+
+    <header class="site-header site-header--compact">
+      <div class="shell header-inner">
+        <a class="brand" th:href="@{/}" aria-label="返回首页">
+          <img
+            class="brand-mark"
+            width="34"
+            height="34"
+            th:src="${#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo}"
+            th:alt="${site.title}"
+          />
+          <span class="brand-copy">
+            <strong th:text="${site.title}">Rackora</strong>
+            <small
+              th:if="${not #strings.isEmpty(site.subtitle)}"
+              th:text="${site.subtitle}"
+            ></small>
+          </span>
+        </a>
+
+        <button
+          class="icon-button nav-toggle"
+          type="button"
+          aria-label="打开导航"
+          aria-controls="primary-nav"
+          aria-expanded="false"
+          data-nav-toggle
+        >
+          <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+
+        <nav
+          id="primary-nav"
+          class="site-nav"
+          aria-label="主导航"
+          th:with="menu = ${menuFinder.getPrimary()}"
+          data-site-nav
+        >
+          <ul th:if="${menu != null and not #lists.isEmpty(menu.menuItems)}">
+            <li th:each="item : ${menu.menuItems}">
+              <a
+                th:href="@{${item.status.href}}"
+                th:text="${item.status.displayName}"
+                th:target="${item.spec.target?.value}"
+              ></a>
+            </li>
+          </ul>
+          <ul class="fallback-nav" th:if="${menu == null or #lists.isEmpty(menu.menuItems)}">
+            <li><a th:href="@{/}">首页</a></li>
+            <li><a th:href="@{${site.routes.archivesUri}}">归档</a></li>
+            <li><a th:href="@{${site.routes.categoriesUri}}">栏目</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <button
+            class="icon-button"
+            type="button"
+            title="搜索"
+            aria-label="搜索"
+            th:if="${pluginFinder.available('PluginSearchWidget')}"
+            onclick="SearchWidget.open()"
+          >
+            <i data-lucide="search" aria-hidden="true"></i>
+          </button>
+          <button
+            class="icon-button"
+            type="button"
+            title="切换配色"
+            aria-label="切换配色"
+            data-theme-toggle
+          >
+            <i data-lucide="moon" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="site-main">
+      <div class="shell">
+        
+  
+
+  <header class="archive-heading">
+    <h1>全部文章</h1>
+    <p th:text="|共 ${archives.total} 篇公开内容，按发布时间整理。|">按发布时间整理。</p>
+  </header>
+
+  <div class="timeline" th:if="${not #lists.isEmpty(archives.items)}">
+    <section class="timeline-year" th:each="archive : ${archives.items}">
+      <h2 th:text="${archive.year}">2026</h2>
+      <div class="timeline-month" th:each="month : ${archive.months}">
+        <h3 th:text="|${month.month} 月|">1 月</h3>
+        <ol>
+          <li th:each="post : ${month.posts}">
+            <time
+              th:datetime="${post.spec.publishTime}"
+              th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"
+            ></time>
+            <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
+          </li>
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <div class="empty-state" th:if="${#lists.isEmpty(archives.items)}">
+    <h2>归档还是空的</h2>
+    <p>公开文章发布后会按年份和月份显示。</p>
+  </div>
+
+  <nav
+    class="pagination"
+    aria-label="归档分页"
+    th:if="${archives.hasPrevious() || archives.hasNext()}"
+  >
+    <a class="pagination__link" th:if="${archives.hasPrevious()}" th:href="@{${archives.prevUrl}}">
+      <i data-lucide="arrow-left" aria-hidden="true"></i><span>上一页</span>
+    </a>
+    <span class="pagination__status" th:text="|${archives.page} / ${archives.totalPages}|"
+      >1 / 1</span
+    >
+    <a class="pagination__link" th:if="${archives.hasNext()}" th:href="@{${archives.nextUrl}}">
+      <span>下一页</span><i data-lucide="arrow-right" aria-hidden="true"></i>
+    </a>
+  </nav>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <div>
+          <strong th:text="${site.title}">Rackora</strong>
+          <p th:text="${site.subtitle ?: '独立测试、透明披露、持续更新。'}"></p>
+        </div>
+        <nav aria-label="页脚导航">
+          <a th:href="@{${site.routes.archivesUri}}">归档</a>
+          <a th:href="@{${site.routes.categoriesUri}}">栏目</a>
+          <a th:href="@{${site.routes.tagsUri}}">标签</a>
+        </nav>
+        <small>
+          <span>Powered by Halo</span>
+          <span aria-hidden="true"> · </span>
+          <a href="https://github.com/everett7623/halo-theme-rackora" rel="noopener" target="_blank"
+            >Rackora</a
+          >
+        </small>
+      </div>
+      <halo:footer />
+    </footer>
+
+    <button
+      class="back-to-top"
+      type="button"
+      title="返回顶部"
+      aria-label="返回顶部"
+      data-back-to-top
+    >
+      <i data-lucide="chevron-up" aria-hidden="true"></i>
+    </button>
+  </body>
+</html>
+

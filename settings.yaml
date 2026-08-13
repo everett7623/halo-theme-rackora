@@ -1,0 +1,94 @@
+apiVersion: v1alpha1
+kind: Setting
+metadata:
+  name: theme-rackora-setting
+spec:
+  forms:
+    - group: basic
+      label: 资料
+      formSchema:
+        - $formkit: array
+          name: socials
+          label: 社交账号
+          help: 显示在首页资料卡中，可拖动调整顺序，最多 6 个。
+          value: []
+          max: 6
+          addLabel: 添加账号
+          emptyText: 暂未添加社交账号
+          itemLabels:
+            - type: text
+              label: $value.name
+          children:
+            - $formkit: select
+              name: icon
+              label: 图标
+              value: globe
+              options:
+                - label: GitHub
+                  value: github
+                - label: X / Twitter
+                  value: twitter
+                - label: Telegram
+                  value: send
+                - label: 邮箱
+                  value: mail
+                - label: RSS
+                  value: rss
+                - label: 网站
+                  value: globe
+            - $formkit: text
+              name: name
+              label: 名称
+              value: ""
+              validation: required
+            - $formkit: text
+              name: url
+              label: 地址
+              help: "填写完整的 https://、mailto: 或其他有效链接。"
+              value: ""
+              validation: required
+    - group: appearance
+      label: 外观
+      formSchema:
+        - $formkit: radio
+          name: color_scheme
+          label: 默认配色
+          value: auto
+          options:
+            - label: 跟随系统
+              value: auto
+            - label: 浅色
+              value: light
+            - label: 深色
+              value: dark
+        - $formkit: color
+          name: accent_color
+          label: 强调色
+          value: "#08775b"
+        - $formkit: attachment
+          name: banner_image
+          label: 首页横幅（可选）
+          help: 留空即为极简无图首页；建议使用 1600×480 或更宽的图片。
+          value: ""
+    - group: content
+      label: 内容
+      formSchema:
+        - $formkit: select
+          name: image_mode
+          label: 文章封面
+          help: 默认为无图模式；文章封面仍可供 Halo 生成分享卡片。
+          value: none
+          options:
+            - label: 不显示
+              value: none
+            - label: 仅文章列表
+              value: list
+            - label: 仅正文页
+              value: article
+            - label: 列表与正文
+              value: all
+        - $formkit: switch
+          name: show_home_sidebar
+          label: 首页资料侧栏
+          help: 展示站点简介、社交账号、内容数量和栏目索引。
+          value: true

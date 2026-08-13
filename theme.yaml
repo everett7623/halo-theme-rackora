@@ -1,0 +1,21 @@
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  name: theme-rackora
+spec:
+  displayName: Rackora
+  author:
+    name: everettlabs
+    website: https://github.com/everett7623
+  description: A minimal, content-first Halo theme for VPS reviews, deals, comparisons, and technical guides.
+  logo: https://raw.githubusercontent.com/everett7623/halo-theme-rackora/main/public/images/rackora-mark.svg
+  homepage: https://github.com/everett7623/halo-theme-rackora#readme
+  repo: https://github.com/everett7623/halo-theme-rackora
+  issues: https://github.com/everett7623/halo-theme-rackora/issues
+  settingName: "theme-rackora-setting"
+  configMapName: "theme-rackora-configMap"
+  version: 0.1.0
+  requires: ">=2.20.0"
+  license:
+    - name: "GPL-3.0"
+      url: "https://github.com/everett7623/halo-theme-rackora/blob/main/LICENSE"

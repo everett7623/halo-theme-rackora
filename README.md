@@ -1,0 +1,104 @@
+# Rackora
+
+Rackora 是面向 VPS 优惠、机房测评、横向对比和技术教程的独立 Halo 2.x 主题。主题以
+1vps.top 的现有栏目与长中文内容为基础，以 Fuwari 的双栏信息组织为主，结合 AstroPaper、
+PaperMod 和纯文本博客常见的低图片文章流、明暗模式和响应式体验。主题包含原 Joe3 SEO
+补丁中的唯一 H1 与栏目简介修复，但索引策略服从最新内容治理契约。
+
+## 设计原则
+
+- 保留 1vps.top 的栏目导航、文章流、阅读数据和中文长标题承载能力。
+- 借鉴 [Fuwari](https://github.com/saicaca/fuwari) 的信息层级，不依赖 Astro、Svelte、
+  Tailwind 或 Pagefind 运行时。
+- 默认不显示横幅、列表封面和正文封面；图片可继续用于分享或由站点主动开启。
+- 首页标签云不枚举全部标签，避免放大站点当前的标签结构债务。
+- 文章列表采用分隔线而非卡片墙，使用安静的技术出版风；VPS 配置表、代码、目录和核验
+  信息优先。
+- SEO 元数据由 Halo 注入，主题不重复输出 canonical、description、Open Graph 或
+  Twitter Card。
+- 栏目是一级内容类型导航，标签只做受控的二级筛选；主题不根据标签猜测 Pillar。
+- 合并、`noindex`、canonical 和重定向由内容治理决定，不由页面模板硬编码。
+
+Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码，仅将布局与交互模式
+重新实现为 Halo Thymeleaf 模板。
+
+## 功能
+
+- 首页可选横幅、带可排序社交链接的站点资料侧栏、栏目索引和低图片文章流。
+- 首页、文章、独立页、归档、标签、栏目、作者和 404 共 10 个 Halo 路由模板。
+- 响应式导航、明暗模式、返回顶部和减少动态效果适配。
+- 文章署名、阅读进度、预计阅读时间、自动目录、标题锚点和相邻文章导航。
+- Highlight.js 按需语言包、代码复制、横向表格容器和 VPS 产品表识别。
+- 评论插件、搜索组件和 Halo 页脚扩展点。
+- 栏目页唯一 H1，并复用 Halo 栏目 description。
+- Affiliate 披露样式和已有 `rel="sponsored"` 链接标记，不自动误判普通资料外链。
+- 浅色、深色、打印和移动端样式。
+
+## 兼容性
+
+- Halo `>= 2.20.0`
+- Node.js 24
+- pnpm 10.33.0
+
+## 安装
+
+1. 从 Release 下载主题 ZIP，或在仓库根目录执行 `pnpm install && pnpm build`。
+2. 在 Halo Console 的主题管理中上传生成的 ZIP 并安装。
+3. 启用前检查站点菜单、Logo、标题、副标题、栏目 description 和搜索/评论插件。
+4. 启用后分别验证首页、文章、独立页、归档、栏目、标签、作者和 404 页面。
+
+主题目录名和 `theme.yaml` 的 `metadata.name` 必须保持为 `theme-rackora`。
+
+## 主题设置
+
+主题后台仅保留 3 组、6 项设置：
+
+| 分组 | 设置                           |
+| ---- | ------------------------------ |
+| 资料 | 社交账号                       |
+| 外观 | 默认配色、强调色、可选首页横幅 |
+| 内容 | 文章封面模式、首页资料侧栏     |
+
+首页横幅留空、文章封面选择“不显示”即为默认少图方案。目录、阅读时间、代码复制和
+Sponsored 链接标识按内容自动启用，不再占用后台开关。站点标题、Logo、副标题及文章摘要
+直接复用 Halo 系统资料，避免主题设置产生两套互相冲突的数据。
+
+## 开发
+
+```powershell
+pnpm install
+pnpm build-only
+pnpm test
+pnpm test:budget
+pnpm preview
+```
+
+- `src/`：主题源码，包含页面、局部模板、CSS 和 TypeScript。
+- `public/`：不经构建处理的静态资源。
+- `templates/`：Vite 构建输出，Halo 实际读取的模板目录。
+- `scripts/validate-theme.mjs`：路由、H1、内容契约、配置和扩展点静态检查。
+- `scripts/check-performance-budget.mjs`：构建后 CSS/JS gzip 预算检查。
+- `scripts/create-preview.mjs`：生成不进入主题包的本地视觉夹具，不替代 Halo 运行时测试。
+
+`pnpm dev` 持续构建 `templates/`。开发 Halo 实例建议设置
+`SPRING_THYMELEAF_CACHE=false`。
+
+## SEO 边界
+
+主题已覆盖 Joe3 `1.5.1-seo.3` 补丁中的唯一 H1 和栏目简介，并在正文中输出作者、摘要、
+发布时间、更新时间与面包屑。Joe3 中按模板统一输出的标签
+`noindex,follow` 已根据最新 Rackora 内容契约移除；索引、合并、canonical 和重定向必须由
+逐项内容治理结果决定。下列工作不属于主题单独可完成的范围：
+
+- 从 Halo sitemap 移除低价值标签 URL。
+- 为保留标签和栏目撰写独立简介、精选内容与真实 meta description。
+- 修复反向代理或 Halo 路由层的 HEAD 404。
+- 在线验证 Article/BlogPosting、Breadcrumb、canonical 和 Rich Results。
+- 迁移、合并或删除历史标签引用。
+- 在 P2-03 完成前渲染或推断 Pillar / Cluster 新字段。
+
+部署前后的操作门禁和站点任务仍以 `D:\EvenFrank\Workspace\Halo\1vps.top\plan` 为准。
+
+## 许可证
+
+[GPL-3.0](LICENSE)

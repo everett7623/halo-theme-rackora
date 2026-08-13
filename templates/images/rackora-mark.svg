@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Rackora</title>
+  <rect width="64" height="64" rx="12" fill="#13211c"/>
+  <rect x="14" y="14" width="36" height="10" rx="3" fill="#f4f7f5"/>
+  <rect x="14" y="27" width="36" height="10" rx="3" fill="#f4f7f5"/>
+  <rect x="14" y="40" width="36" height="10" rx="3" fill="#f4f7f5"/>
+  <circle cx="43" cy="19" r="2" fill="#28c18b"/>
+  <circle cx="43" cy="32" r="2" fill="#28c18b"/>
+  <circle cx="43" cy="45" r="2" fill="#e9695f"/>
+</svg>
