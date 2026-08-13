@@ -29,6 +29,26 @@ const staticFiles = [
     target: "templates/assets/images/rackora-mark.svg",
   },
 ];
+const textExtensions = new Set([
+  ".css",
+  ".html",
+  ".js",
+  ".json",
+  ".md",
+  ".svg",
+  ".txt",
+  ".yaml",
+  ".yml",
+]);
+
+async function readReleaseFile(relativePath) {
+  const contents = await readFile(path.join(root, relativePath));
+  const extension = path.extname(relativePath).toLowerCase();
+  const isText = textExtensions.has(extension) || path.basename(relativePath) === "LICENSE";
+  return isText
+    ? Buffer.from(contents.toString("utf8").replaceAll("\r\n", "\n"), "utf8")
+    : contents;
+}
 
 for (const relativePath of requiredFiles) {
   const info = await stat(path.join(root, relativePath));
@@ -55,7 +75,7 @@ const completed = new Promise((resolve, reject) => {
 
 archive.pipe(output);
 for (const relativePath of requiredFiles) {
-  archive.append(await readFile(path.join(root, relativePath)), {
+  archive.append(await readReleaseFile(relativePath), {
     date: releaseTimestamp,
     mode: 0o644,
     name: relativePath,
@@ -72,7 +92,7 @@ const templateFiles = templateEntries
   )
   .sort();
 for (const relativePath of templateFiles) {
-  archive.append(await readFile(path.join(root, relativePath)), {
+  archive.append(await readReleaseFile(relativePath), {
     date: releaseTimestamp,
     mode: 0o644,
     name: relativePath,
