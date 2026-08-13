@@ -1,6 +1,6 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${tag.spec.displayName} - ${site.title}|">标签</title>
+    <title th:text="|${tag.spec.displayName} - ${site.title}|">Tag</title>
     <meta
       name="robots"
       content="noindex,follow"
@@ -9,16 +9,16 @@
   </template>
 
   <header class="archive-heading">
-    <h1 th:text="|#${tag.spec.displayName}|">#标签</h1>
+    <h1 th:text="${tag.spec.displayName}">Tag</h1>
     <p
       th:if="${not #strings.isEmpty(#annotations.get(tag, 'rackora_description'))}"
       th:text="${#annotations.get(tag, 'rackora_description')}"
     ></p>
     <p
       th:if="${#strings.isEmpty(#annotations.get(tag, 'rackora_description'))}"
-      th:text="|${posts.total} 篇相关内容|"
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? posts.total + ' 篇相关内容' : posts.total + ' related posts'}"
     >
-      相关内容
+      Related posts
     </p>
   </header>
 
@@ -26,8 +26,16 @@
     <include src="post-card.html"></include>
   </ul>
   <div class="empty-state" th:if="${#lists.isEmpty(posts.items)}">
-    <h2>这个标签暂时没有文章</h2>
-    <p>标签调整后，这里可能暂时为空。</p>
+    <h2
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '这个标签暂时没有文章' : 'No posts under this tag'}"
+    >
+      No posts under this tag
+    </h2>
+    <p
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '标签调整后，这里可能暂时为空。' : 'This tag may be empty while content is being reorganized.'}"
+    >
+      This tag may be empty while content is being reorganized.
+    </p>
   </div>
   <include src="pagination.html"></include>
 </include>

@@ -7,6 +7,16 @@ spec:
     - group: basic
       label: 资料
       formSchema:
+        - $formkit: select
+          name: ui_language
+          label: 主题界面语言
+          help: 只切换主题自带文案；文章、菜单和站点资料保持原内容。
+          value: en
+          options:
+            - label: English
+              value: en
+            - label: 简体中文
+              value: zh-CN
         - $formkit: array
           name: socials
           label: 社交账号
@@ -51,7 +61,7 @@ spec:
           name: site_language
           label: 网站语言
           help: 用于 HTML lang 与结构化数据，例如 zh-CN、en-US。
-          value: zh-CN
+          value: en-US
           validation: required
         - $formkit: text
           name: site_region
@@ -129,6 +139,18 @@ spec:
           help: 展示站点简介、社交账号、内容数量和栏目索引。
           value: true
         - $formkit: switch
+          name: show_home_tags
+          label: 首页显示高频标签
+          help: 在首页侧栏按文章数展示常用标签；完整标签仍在标签汇总页显示。
+          value: true
+        - $formkit: number
+          name: home_tag_count
+          label: 首页标签数量
+          value: 10
+          min: 6
+          max: 16
+          step: 1
+        - $formkit: switch
           name: show_post_sidebar
           label: 正文侧栏
           help: 展示目录与正文辅助信息；移动端自动隐藏。
@@ -153,6 +175,21 @@ spec:
           min: 1
           max: 5
           step: 1
+        - $formkit: switch
+          name: show_post_license
+          label: 正文底部显示作者声明
+          help: 展示文章标题、原文地址、作者、发布日期和许可方式。
+          value: true
+        - $formkit: text
+          name: license_name
+          label: 内容许可名称
+          help: 例如 All rights reserved 或 CC BY-NC-SA 4.0。
+          value: All rights reserved
+        - $formkit: url
+          name: license_url
+          label: 内容许可地址
+          help: 可选；使用 Creative Commons 等公开许可时填写对应说明地址。
+          value: ""
     - group: seo
       label: SEO
       formSchema:
@@ -249,7 +286,7 @@ spec:
           label: 推广披露文案
           help: 仅在实际显示主题广告时出现，保持简短、真实。
           rows: 2
-          value: 本站可能通过推广链接获得佣金，不影响内容判断与用户价格。
+          value: ""
         - $formkit: array
           name: ads
           label: 广告位

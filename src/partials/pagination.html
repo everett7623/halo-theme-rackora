@@ -1,11 +1,17 @@
-<nav class="pagination" aria-label="分页" th:if="${posts.hasPrevious() || posts.hasNext()}">
+<nav
+  class="pagination"
+  th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分页' : 'Pagination'}"
+  th:if="${posts.hasPrevious() || posts.hasNext()}"
+>
   <a class="pagination__link" th:if="${posts.hasPrevious()}" th:href="@{${posts.prevUrl}}">
     <i data-lucide="arrow-left" aria-hidden="true"></i>
-    <span>上一页</span>
+    <span th:text="${theme.config.basic.ui_language == 'zh-CN' ? '上一页' : 'Previous'}"
+      >Previous</span
+    >
   </a>
   <span class="pagination__status" th:text="|${posts.page} / ${posts.totalPages}|">1 / 1</span>
   <a class="pagination__link" th:if="${posts.hasNext()}" th:href="@{${posts.nextUrl}}">
-    <span>下一页</span>
+    <span th:text="${theme.config.basic.ui_language == 'zh-CN' ? '下一页' : 'Next'}">Next</span>
     <i data-lucide="arrow-right" aria-hidden="true"></i>
   </a>
 </nav>

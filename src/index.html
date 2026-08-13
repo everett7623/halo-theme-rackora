@@ -8,7 +8,7 @@
         "name": /*[[${site.title}]]*/ "站点标题",
         "url": /*[[${site.url}]]*/ "https://example.com/",
         "description": /*[[${site.seo.description}]]*/ "",
-        "inLanguage": /*[[${theme.config.basic.site_language ?: 'zh-CN'}]]*/ "zh-CN",
+        "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
         "publisher": {
           "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization"
         }
@@ -31,7 +31,7 @@
   <figure class="home-banner" th:if="${not #strings.isEmpty(theme.config.appearance.banner_image)}">
     <img
       th:src="${theme.config.appearance.banner_image}"
-      th:alt="|${site.title} 横幅|"
+      th:alt="|${site.title} banner|"
       width="1600"
       height="480"
       decoding="async"
@@ -47,8 +47,14 @@
       <h1 id="home-title" th:text="${site.title}">站点标题</h1>
       <p th:if="${not #strings.isEmpty(site.subtitle)}" th:text="${site.subtitle}"></p>
       <div class="home-heading__meta">
-        <span th:text="|${posts.total} 篇内容|">0 篇内容</span>
-        <span>价格与库存按核验时间为准</span>
+        <span
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? posts.total + ' 篇内容' : posts.total + ' posts'}"
+          >0 posts</span
+        >
+        <span
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '独立出版，清晰表达' : 'Independent publishing, clearly presented'}"
+          >Independent publishing, clearly presented</span
+        >
       </div>
     </section>
 
@@ -56,16 +62,34 @@
       <include src="ad-slot.html" position="home_top"></include>
 
       <header class="section-heading">
-        <h2 id="latest-title">最新文章</h2>
-        <a class="text-link" th:href="@{${site.routes.archivesUri}}">查看归档</a>
+        <h2
+          id="latest-title"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新文章' : 'Latest posts'}"
+        >
+          Latest posts
+        </h2>
+        <a
+          class="text-link"
+          th:href="@{${site.routes.archivesUri}}"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '查看归档' : 'View archives'}"
+          >View archives</a
+        >
       </header>
 
       <ul class="post-list post-list--cards" th:if="${not #lists.isEmpty(posts.items)}">
         <include src="post-card.html"></include>
       </ul>
       <div class="empty-state" th:if="${#lists.isEmpty(posts.items)}">
-        <h2>暂时没有公开文章</h2>
-        <p>发布第一篇内容后，它会显示在这里。</p>
+        <h2
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '暂时没有公开文章' : 'No public posts yet'}"
+        >
+          No public posts yet
+        </h2>
+        <p
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布第一篇内容后，它会显示在这里。' : 'Your first published post will appear here.'}"
+        >
+          Your first published post will appear here.
+        </p>
       </div>
 
       <include src="pagination.html"></include>
@@ -73,9 +97,9 @@
 
     <aside
       class="home-sidebar"
-      aria-label="站点信息"
+      th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '站点信息' : 'Site information'}"
       th:if="${theme.config.content.show_home_sidebar}"
-      th:with="homeCategories = ${categoryFinder.listAll()}"
+      th:with="homeCategories = ${categoryFinder.listAll()},homeTags = ${tagFinder.listAll()}"
     >
       <section class="profile-panel">
         <img
@@ -91,7 +115,7 @@
         </div>
         <nav
           class="profile-socials"
-          aria-label="社交账号"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '社交账号' : 'Social profiles'}"
           th:if="${not #lists.isEmpty(theme.config.basic.socials)}"
         >
           <a
@@ -108,11 +132,13 @@
         </nav>
         <dl class="profile-stats">
           <div>
-            <dt>文章</dt>
+            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '文章' : 'Posts'}">Posts</dt>
             <dd th:text="${posts.total}">0</dd>
           </div>
           <div>
-            <dt>栏目</dt>
+            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '栏目' : 'Categories'}">
+              Categories
+            </dt>
             <dd th:text="${#lists.size(homeCategories)}">0</dd>
           </div>
         </dl>
@@ -120,8 +146,14 @@
 
       <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
         <header>
-          <h2>内容栏目</h2>
-          <a th:href="@{${site.routes.categoriesUri}}">全部</a>
+          <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '内容栏目' : 'Categories'}">
+            Categories
+          </h2>
+          <a
+            th:href="@{${site.routes.categoriesUri}}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
+            >All</a
+          >
         </header>
         <ul>
           <li th:each="category : ${homeCategories}">
@@ -133,15 +165,52 @@
         </ul>
       </section>
 
+      <section
+        class="sidebar-panel sidebar-panel--tags"
+        th:if="${(theme.config.content.show_home_tags == null or theme.config.content.show_home_tags) and not #lists.isEmpty(homeTags)}"
+      >
+        <header>
+          <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '常用标签' : 'Popular tags'}">
+            Popular tags
+          </h2>
+          <a
+            th:href="@{${site.routes.tagsUri}}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
+            >All</a
+          >
+        </header>
+        <ul
+          class="sidebar-tag-list"
+          data-popular-tags
+          th:attr="data-tag-limit=${theme.config.content.home_tag_count ?: 10}"
+        >
+          <li th:each="tag : ${homeTags}" th:attr="data-tag-count=${tag.postCount}">
+            <a th:href="@{${tag.status.permalink}}" th:text="${tag.spec.displayName}">Tag</a>
+          </li>
+        </ul>
+      </section>
+
       <include src="ad-slot.html" position="home_sidebar"></include>
 
-      <nav class="sidebar-shortcuts" aria-label="内容索引">
-        <a th:href="@{${site.routes.archivesUri}}">文章归档</a>
-        <a th:href="@{${site.routes.tagsUri}}">标签索引</a>
+      <nav
+        class="sidebar-shortcuts"
+        th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '内容索引' : 'Content indexes'}"
+      >
+        <a
+          th:href="@{${site.routes.archivesUri}}"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '文章归档' : 'Archives'}"
+          >Archives</a
+        >
+        <a
+          th:href="@{${site.routes.tagsUri}}"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '标签索引' : 'Tags'}"
+          >Tags</a
+        >
         <a
           th:if="${(theme.config.integrations?.show_links ?: true) and pluginFinder.available('PluginLinks')}"
           th:href="@{/links}"
-          >友情链接</a
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '友情链接' : 'Links'}"
+          >Links</a
         >
       </nav>
     </aside>

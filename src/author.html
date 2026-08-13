@@ -1,6 +1,6 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${author.spec.displayName} - ${site.title}|">作者</title>
+    <title th:text="|${author.spec.displayName} - ${site.title}|">Author</title>
   </template>
 
   <header class="author-heading">
@@ -12,10 +12,13 @@
       height="80"
     />
     <div>
-      <h1 th:text="${author.spec.displayName}">作者</h1>
+      <h1 th:text="${author.spec.displayName}">Author</h1>
       <p th:if="${not #strings.isEmpty(author.spec.bio)}" th:text="${author.spec.bio}"></p>
-      <p th:if="${#strings.isEmpty(author.spec.bio)}" th:text="|发布了 ${posts.total} 篇公开内容|">
-        作者内容
+      <p
+        th:if="${#strings.isEmpty(author.spec.bio)}"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布了 ' + posts.total + ' 篇公开内容' : posts.total + ' public posts'}"
+      >
+        Public posts
       </p>
     </div>
   </header>
@@ -24,8 +27,16 @@
     <include src="post-card.html"></include>
   </ul>
   <div class="empty-state" th:if="${#lists.isEmpty(posts.items)}">
-    <h2>该作者暂时没有公开文章</h2>
-    <p>返回首页浏览其他内容。</p>
+    <h2
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '该作者暂时没有公开文章' : 'No public posts from this author'}"
+    >
+      No public posts from this author
+    </h2>
+    <p
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '返回首页浏览其他内容。' : 'Return home to browse other posts.'}"
+    >
+      Return home to browse other posts.
+    </p>
   </div>
   <include src="pagination.html"></include>
 </include>

@@ -1,12 +1,12 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${singlePage.spec.title} - ${site.title}|">页面标题</title>
+    <title th:text="|${singlePage.spec.title} - ${site.title}|">Page title</title>
     <script type="module" src="./js/post.ts"></script>
   </template>
 
   <article class="article article--page" data-article>
     <header class="article-header">
-      <h1 class="article-title" th:text="${singlePage.spec.title}">页面标题</h1>
+      <h1 class="article-title" th:text="${singlePage.spec.title}">Page title</h1>
       <p
         class="article-deck"
         th:if="${not #strings.isEmpty(singlePage.status.excerpt)}"
@@ -25,7 +25,12 @@
     th:if="${haloCommentEnabled}"
     aria-labelledby="comments-title"
   >
-    <h2 id="comments-title">评论</h2>
+    <h2
+      id="comments-title"
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '评论' : 'Comments'}"
+    >
+      Comments
+    </h2>
     <halo:comment
       group="content.halo.run"
       kind="SinglePage"

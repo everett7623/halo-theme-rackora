@@ -1,11 +1,11 @@
 <section
   class="ad-slot"
   th:if="${theme.config.monetization.enabled and not #lists.isEmpty(theme.config.monetization.ads) and #lists.size(theme.config.monetization.ads.?[enabled and position == '{{position}}' and not #strings.isEmpty(name) and not #strings.isEmpty(url)]) > 0}"
-  aria-label="推广内容"
+  th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '推广内容' : 'Sponsored content'}"
 >
   <p
     class="ad-disclosure"
-    th:text="${theme.config.monetization.disclosure_text ?: '本站可能通过推广链接获得佣金，不影响内容判断与用户价格。'}"
+    th:text="${theme.config.monetization.disclosure_text ?: (theme.config.basic.ui_language == 'zh-CN' ? '本站可能通过推广链接获得佣金，不影响内容判断与用户价格。' : 'The site may earn a commission from promotional links without affecting editorial judgment or your price.')}"
   ></p>
   <ul class="ad-list">
     <li
@@ -17,7 +17,7 @@
         th:href="@{${ad.url}}"
         target="_blank"
         rel="sponsored nofollow noopener noreferrer"
-        th:attr="aria-label=|${ad.name}（推广链接）|"
+        th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? ad.name + '（推广链接）' : ad.name + ' (sponsored link)'}"
       >
         <img
           th:if="${not #strings.isEmpty(ad.image)}"
@@ -29,8 +29,10 @@
           decoding="async"
         />
         <span class="ad-card__body">
-          <small>推广</small>
-          <strong th:text="${ad.name}">广告名称</strong>
+          <small th:text="${theme.config.basic.ui_language == 'zh-CN' ? '推广' : 'Sponsored'}"
+            >Sponsored</small
+          >
+          <strong th:text="${ad.name}">Advertisement</strong>
           <span th:if="${not #strings.isEmpty(ad.description)}" th:text="${ad.description}"></span>
         </span>
         <i data-lucide="external-link" aria-hidden="true"></i>

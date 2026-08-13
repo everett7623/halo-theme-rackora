@@ -1,8 +1,8 @@
 <!doctype html>
 <html
-  th:lang="${theme.config.basic.site_language ?: 'zh-CN'}"
+  th:lang="${theme.config.basic.site_language ?: 'en-US'}"
   xmlns:th="http://www.thymeleaf.org"
-  th:attr="data-color-scheme=${theme.config.appearance.color_scheme ?: 'auto'}"
+  th:attr="data-color-scheme=${theme.config.appearance.color_scheme ?: 'auto'},data-ui-language=${theme.config.basic.ui_language ?: 'en'}"
   th:class="|color-scheme-${theme.config.appearance.color_scheme ?: 'auto'}|"
 >
   <head>
@@ -44,7 +44,7 @@
       th:content="${theme.config.seo.baidu_verification}"
     />
     <slot name="head">
-      <title th:text="${site.title}">站点标题</title>
+      <title th:text="${site.title}">Site title</title>
     </slot>
     <script>
       (() => {
@@ -113,11 +113,20 @@
     </script>
   </head>
   <body th:style="|--rack-accent: ${theme.config.appearance.accent_color ?: '#08775b'}|">
-    <a class="skip-link" href="#main-content">跳到正文</a>
+    <a
+      class="skip-link"
+      href="#main-content"
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '跳到正文' : 'Skip to content'}"
+      >Skip to content</a
+    >
 
     <header class="site-header site-header--compact">
       <div class="shell header-inner">
-        <a class="brand" th:href="@{/}" aria-label="返回首页">
+        <a
+          class="brand"
+          th:href="@{/}"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '返回首页' : 'Back to home'}"
+        >
           <img
             class="brand-mark"
             width="34"
@@ -137,7 +146,7 @@
         <button
           class="icon-button nav-toggle"
           type="button"
-          aria-label="打开导航"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '打开导航' : 'Open navigation'}"
           aria-controls="primary-nav"
           aria-expanded="false"
           data-nav-toggle
@@ -148,7 +157,7 @@
         <nav
           id="primary-nav"
           class="site-nav"
-          aria-label="主导航"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '主导航' : 'Primary navigation'}"
           th:with="menu = ${menuFinder.getPrimary()}"
           data-site-nav
         >
@@ -162,9 +171,27 @@
             </li>
           </ul>
           <ul class="fallback-nav" th:if="${menu == null or #lists.isEmpty(menu.menuItems)}">
-            <li><a th:href="@{/}">首页</a></li>
-            <li><a th:href="@{${site.routes.archivesUri}}">归档</a></li>
-            <li><a th:href="@{${site.routes.categoriesUri}}">栏目</a></li>
+            <li>
+              <a
+                th:href="@{/}"
+                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '首页' : 'Home'}"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a
+                th:href="@{${site.routes.archivesUri}}"
+                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '归档' : 'Archives'}"
+                >Archives</a
+              >
+            </li>
+            <li>
+              <a
+                th:href="@{${site.routes.categoriesUri}}"
+                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '栏目' : 'Categories'}"
+                >Categories</a
+              >
+            </li>
           </ul>
         </nav>
 
@@ -172,8 +199,8 @@
           <button
             class="icon-button"
             type="button"
-            title="搜索"
-            aria-label="搜索"
+            th:title="${theme.config.basic.ui_language == 'zh-CN' ? '搜索' : 'Search'}"
+            th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '搜索' : 'Search'}"
             th:if="${pluginFinder.available('PluginSearchWidget')}"
             onclick="SearchWidget.open()"
           >
@@ -182,8 +209,8 @@
           <button
             class="icon-button"
             type="button"
-            title="切换配色"
-            aria-label="切换配色"
+            th:title="${theme.config.basic.ui_language == 'zh-CN' ? '切换配色' : 'Toggle color scheme'}"
+            th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '切换配色' : 'Toggle color scheme'}"
             data-theme-toggle
           >
             <i data-lucide="moon" aria-hidden="true"></i>
@@ -206,14 +233,29 @@
             th:text="${theme.config.basic.footer_note ?: (site.subtitle ?: 'Independent publishing with clarity and care.')}"
           ></p>
         </div>
-        <nav aria-label="页脚导航">
-          <a th:href="@{${site.routes.archivesUri}}">归档</a>
-          <a th:href="@{${site.routes.categoriesUri}}">栏目</a>
-          <a th:href="@{${site.routes.tagsUri}}">标签</a>
+        <nav
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '页脚导航' : 'Footer navigation'}"
+        >
+          <a
+            th:href="@{${site.routes.archivesUri}}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '归档' : 'Archives'}"
+            >Archives</a
+          >
+          <a
+            th:href="@{${site.routes.categoriesUri}}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '栏目' : 'Categories'}"
+            >Categories</a
+          >
+          <a
+            th:href="@{${site.routes.tagsUri}}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '标签' : 'Tags'}"
+            >Tags</a
+          >
           <a
             th:if="${(theme.config.integrations?.show_links ?: true) and (theme.config.integrations?.show_links_in_footer ?: true) and pluginFinder.available('PluginLinks')}"
             th:href="@{/links}"
-            >友情链接</a
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '友情链接' : 'Links'}"
+            >Links</a
           >
           <a
             th:if="${pluginFinder.available('PluginFeed')}"
@@ -244,14 +286,20 @@
           th:if="${theme.config.basic.show_footer_stats or not #strings.isEmpty(theme.config.basic.site_launch_date)}"
           th:with="stats = ${siteStatsFinder.getStats()}"
         >
-          <span th:if="${theme.config.basic.show_footer_stats}" th:text="|${stats.post} 篇文章|"
-            >文章</span
+          <span
+            th:if="${theme.config.basic.show_footer_stats}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? stats.post + ' 篇文章' : stats.post + ' posts'}"
+            >Posts</span
           >
-          <span th:if="${theme.config.basic.show_footer_stats}" th:text="|${stats.comment} 条评论|"
-            >评论</span
+          <span
+            th:if="${theme.config.basic.show_footer_stats}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? stats.comment + ' 条评论' : stats.comment + ' comments'}"
+            >Comments</span
           >
-          <span th:if="${theme.config.basic.show_footer_stats}" th:text="|${stats.visit} 次访问|"
-            >访问</span
+          <span
+            th:if="${theme.config.basic.show_footer_stats}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? stats.visit + ' 次访问' : stats.visit + ' visits'}"
+            >Visits</span
           >
           <span
             th:if="${not #strings.isEmpty(theme.config.basic.site_launch_date)}"
@@ -265,8 +313,8 @@
     <button
       class="back-to-top"
       type="button"
-      title="返回顶部"
-      aria-label="返回顶部"
+      th:title="${theme.config.basic.ui_language == 'zh-CN' ? '返回顶部' : 'Back to top'}"
+      th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '返回顶部' : 'Back to top'}"
       data-back-to-top
     >
       <i data-lucide="chevron-up" aria-hidden="true"></i>

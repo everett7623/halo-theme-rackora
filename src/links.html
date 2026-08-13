@@ -1,16 +1,29 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${linksTitle} - ${site.title}|">友情链接</title>
+    <title th:text="|${linksTitle} - ${site.title}|">Links</title>
   </template>
 
   <header class="page-heading">
     <p class="eyebrow">Connections</p>
-    <h1 th:text="${linksTitle}">友情链接</h1>
-    <p>发现值得长期阅读的独立网站与创作者。</p>
+    <h1 th:text="${linksTitle}">Links</h1>
+    <p
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发现值得长期阅读的独立网站与创作者。' : 'Independent sites and creators worth following.'}"
+    >
+      Independent sites and creators worth following.
+    </p>
   </header>
 
-  <nav class="link-groups" aria-label="友链分组" th:if="${not #lists.isEmpty(simpleGroups)}">
-    <a th:href="@{/links}" th:classappend="${group == null} ? ' is-active'">全部</a>
+  <nav
+    class="link-groups"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '友链分组' : 'Link groups'}"
+    th:if="${not #lists.isEmpty(simpleGroups)}"
+  >
+    <a
+      th:href="@{/links}"
+      th:classappend="${group == null} ? ' is-active'"
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
+      >All</a
+    >
     <a
       th:each="item : ${simpleGroups}"
       th:href="@{/links(group=${item.metadata.name})}"
@@ -32,7 +45,7 @@
           decoding="async"
         />
         <span>
-          <strong th:text="${link.spec.displayName}">网站名称</strong>
+          <strong th:text="${link.spec.displayName}">Site name</strong>
           <small
             th:if="${not #strings.isEmpty(link.spec.description)}"
             th:text="${link.spec.description}"
@@ -44,12 +57,20 @@
   </ul>
 
   <div class="empty-state" th:if="${#lists.isEmpty(links)}">
-    <h2>暂时没有公开链接</h2>
-    <p>请在 Halo 链接管理插件中添加并发布友情链接。</p>
+    <h2
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '暂时没有公开链接' : 'No public links yet'}"
+    >
+      No public links yet
+    </h2>
+    <p
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '请在 Halo 链接管理插件中添加并发布友情链接。' : 'Add and publish links with the Halo Links plugin.'}"
+    >
+      Add and publish links with the Halo Links plugin.
+    </p>
   </div>
 
   <section class="comments comments--page" th:if="${haloCommentEnabled}">
-    <h2>留言</h2>
+    <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '留言' : 'Messages'}">Messages</h2>
     <halo:comment group="plugin.halo.run" kind="Plugin" th:attr="name=${pluginName}" />
   </section>
 </include>

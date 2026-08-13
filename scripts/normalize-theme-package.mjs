@@ -22,6 +22,7 @@ const requiredFiles = [
   "README.md",
   "LICENSE",
   "screenshot.png",
+  "docs/plugin-compatibility.md",
 ];
 const staticFiles = [
   {

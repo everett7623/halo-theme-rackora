@@ -31,6 +31,14 @@ hljs.registerLanguage("typescript", typescript);
 hljs.registerLanguage("xml", xml);
 hljs.registerLanguage("yaml", yaml);
 
+function isChineseUi(): boolean {
+  return document.documentElement.dataset.uiLanguage === "zh-CN";
+}
+
+function uiText(english: string, chinese: string): string {
+  return isChineseUi() ? chinese : english;
+}
+
 function slugify(value: string): string {
   return (
     value
@@ -64,14 +72,14 @@ function initTableOfContents(content: HTMLElement): void {
 
   const usedIds = new Set<string>();
   for (const heading of headings) {
-    const label = heading.textContent?.trim() || "章节";
+    const label = heading.textContent?.trim() || uiText("Section", "章节");
     heading.id = ensureUniqueId(heading.id || slugify(label), usedIds);
 
     const anchor = document.createElement("a");
     anchor.className = "heading-anchor";
     anchor.href = `#${heading.id}`;
     anchor.textContent = "#";
-    anchor.setAttribute("aria-label", `链接到 ${label}`);
+    anchor.setAttribute("aria-label", uiText(`Link to ${label}`, `链接到 ${label}`));
     heading.prepend(anchor);
 
     const link = document.createElement("a");
@@ -144,18 +152,18 @@ function initCodeBlocks(content: HTMLElement): void {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "code-copy";
-    button.setAttribute("aria-label", "复制代码");
-    button.innerHTML = '<i data-lucide="copy" aria-hidden="true"></i><span>复制</span>';
+    button.setAttribute("aria-label", uiText("Copy code", "复制代码"));
+    button.innerHTML = `<i data-lucide="copy" aria-hidden="true"></i><span>${uiText("Copy", "复制")}</span>`;
     button.addEventListener("click", async () => {
       try {
         await copyText(code.textContent || "");
-        button.innerHTML = '<i data-lucide="check" aria-hidden="true"></i><span>已复制</span>';
+        button.innerHTML = `<i data-lucide="check" aria-hidden="true"></i><span>${uiText("Copied", "已复制")}</span>`;
         window.setTimeout(() => {
-          button.innerHTML = '<i data-lucide="copy" aria-hidden="true"></i><span>复制</span>';
+          button.innerHTML = `<i data-lucide="copy" aria-hidden="true"></i><span>${uiText("Copy", "复制")}</span>`;
           document.dispatchEvent(new CustomEvent("rackora:icons"));
         }, 1600);
       } catch {
-        button.querySelector("span")!.textContent = "复制失败";
+        button.querySelector("span")!.textContent = uiText("Copy failed", "复制失败");
       }
       document.dispatchEvent(new CustomEvent("rackora:icons"));
     });
@@ -211,7 +219,9 @@ function initTables(content: HTMLElement): void {
     wrapper.setAttribute("role", "region");
     wrapper.setAttribute(
       "aria-label",
-      table.classList.contains("product-table") ? "产品比较表" : "数据表",
+      table.classList.contains("product-table")
+        ? uiText("Product comparison table", "产品比较表")
+        : uiText("Data table", "数据表"),
     );
     table.before(wrapper);
     wrapper.append(table);
@@ -220,7 +230,7 @@ function initTables(content: HTMLElement): void {
 
 function initAffiliateMarkup(content: HTMLElement): void {
   for (const link of content.querySelectorAll<HTMLAnchorElement>('a[rel~="sponsored"]')) {
-    link.dataset.sponsoredLabel = "合作链接";
+    link.dataset.sponsoredLabel = uiText("Sponsored", "合作链接");
   }
   for (const quote of content.querySelectorAll<HTMLElement>("blockquote")) {
     if (/affiliate|佣金|推广链接|合作链接/i.test(quote.textContent || "")) {
@@ -233,7 +243,8 @@ function initReadingMetrics(content: HTMLElement): void {
   const target = document.querySelector<HTMLElement>("[data-reading-time]");
   if (target) {
     const text = content.textContent?.replace(/\s+/g, "") || "";
-    target.textContent = `约 ${Math.max(1, Math.ceil(text.length / 450))} 分钟`;
+    const minutes = Math.max(1, Math.ceil(text.length / (isChineseUi() ? 450 : 900)));
+    target.textContent = isChineseUi() ? `约 ${minutes} 分钟` : `${minutes} min read`;
   }
 
   const progress = document.querySelector<HTMLElement>("[data-reading-progress]");

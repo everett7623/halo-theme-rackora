@@ -21,7 +21,12 @@
   </a>
   <div class="post-entry__body">
     <div class="post-entry__eyebrow">
-      <span class="status-label" th:if="${post.spec.pinned}">置顶</span>
+      <span
+        class="status-label"
+        th:if="${post.spec.pinned}"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? '置顶' : 'Pinned'}"
+        >Pinned</span
+      >
       <a
         class="category-link"
         th:if="${not #lists.isEmpty(post.categories)}"
@@ -38,11 +43,17 @@
     </h2>
     <p class="post-entry__excerpt" th:text="${post.status.excerpt}"></p>
     <div class="post-entry__meta">
-      <span th:text="|${post.stats.visit} 阅读|">0 阅读</span>
-      <span th:text="|${post.stats.comment} 评论|">0 评论</span>
+      <span
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? post.stats.visit + ' 阅读' : post.stats.visit + ' views'}"
+        >0 views</span
+      >
+      <span
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? post.stats.comment + ' 评论' : post.stats.comment + ' comments'}"
+        >0 comments</span
+      >
       <span
         th:if="${post.status.lastModifyTime != null}"
-        th:text="|更新 ${#temporals.format(post.status.lastModifyTime, 'MM-dd')}|"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? '更新 ' + #temporals.format(post.status.lastModifyTime, 'MM-dd') : 'Updated ' + #temporals.format(post.status.lastModifyTime, 'MM-dd')}"
       ></span>
     </div>
   </div>

@@ -3,6 +3,22 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.4.0] - 2026-08-14
+
+### 新增
+
+- 主题界面默认英文，并提供单一后台选项切换简体中文；动态导航、代码复制、阅读时间与运行时间同步切换。
+- 首页按文章数降序展示可配置数量的高频标签，标签汇总页继续展示完整列表。
+- 正文底部作者、原文地址、发布日期与许可声明，许可名称和地址可在后台设置。
+- 插件职责与精简指南，区分主题内置前端能力和必须保留的 Halo 服务插件。
+- 首页与正文两套英文本地预览夹具，用于桌面、移动端和暗色模式验收。
+
+### 调整
+
+- 正文标题、行内代码和代码块采用更清晰的 Fuwari 启发式层级，同时保留 Rackora 的单色、低图片技术出版风格。
+- 所有文章与标签页的标签名称移除 `#` 前缀。
+- `site_language` 默认值调整为 `en-US`，与英文默认界面和结构化数据一致。
+
 ## [0.3.0] - 2026-08-14
 
 ### 新增
@@ -47,6 +63,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.4.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.0
 [0.3.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.3.0
 [0.2.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.2.0
 [0.1.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.1.0

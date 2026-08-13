@@ -1,15 +1,35 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|页面不存在 - ${site.title}|">页面不存在</title>
+    <title
+      th:text="|${theme.config.basic.ui_language == 'zh-CN' ? '页面不存在' : 'Page not found'} - ${site.title}|"
+    >
+      Page not found
+    </title>
   </template>
 
   <section class="error-page">
     <p class="error-code">404</p>
-    <h1>页面不存在</h1>
-    <p>这个地址可能已经变更，或者内容已被合并。</p>
+    <h1 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '页面不存在' : 'Page not found'}">
+      Page not found
+    </h1>
+    <p
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '这个地址可能已经变更，或者内容已被合并。' : 'This address may have changed, or the content may have been consolidated.'}"
+    >
+      This address may have changed, or the content may have been consolidated.
+    </p>
     <div class="error-actions">
-      <a class="button button--primary" th:href="@{/}">返回首页</a>
-      <a class="button" th:href="@{${site.routes.archivesUri}}">浏览归档</a>
+      <a
+        class="button button--primary"
+        th:href="@{/}"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? '返回首页' : 'Back home'}"
+        >Back home</a
+      >
+      <a
+        class="button"
+        th:href="@{${site.routes.archivesUri}}"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? '浏览归档' : 'Browse archives'}"
+        >Browse archives</a
+      >
     </div>
   </section>
 </include>

@@ -24,7 +24,7 @@ async function read(relativePath) {
   return readFile(path.join(root, relativePath), "utf8");
 }
 
-const [themeSource, settingsSource, annotationSource, layout, packageSource, changelog] =
+const [themeSource, settingsSource, annotationSource, layout, packageSource, changelog, readme] =
   await Promise.all([
     read("theme.yaml"),
     read("settings.yaml"),
@@ -32,6 +32,7 @@ const [themeSource, settingsSource, annotationSource, layout, packageSource, cha
     read("src/partials/layout.html"),
     read("package.json"),
     read("CHANGELOG.md"),
+    read("README.md"),
   ]);
 const theme = YAML.parse(themeSource);
 const settings = YAML.parse(settingsSource);
@@ -55,6 +56,11 @@ assert.match(
   changelog,
   new RegExp(`^## \\[${packageManifest.version.replaceAll(".", "\\.")}\\]`, "m"),
   "CHANGELOG.md must contain the current release version",
+);
+assert.match(
+  readme,
+  new RegExp("Current release: `v" + packageManifest.version.replaceAll(".", "\\.") + "`"),
+  "README.md must identify the current release version",
 );
 
 assert.match(layout, /<html\b[^>]*xmlns:th=/, "layout must declare the Thymeleaf namespace");
@@ -81,8 +87,11 @@ for (const page of requiredPages) {
 const post = await read("src/post.html");
 const singlePage = await read("src/page.html");
 const home = await read("src/index.html");
+const tags = await read("src/tags.html");
+const tagPage = await read("src/tag.html");
 const adSlot = await read("src/partials/ad-slot.html");
 const mainScript = await read("src/js/main.ts");
+const postScript = await read("src/js/post.ts");
 assert.match(post, /kind=["']Post["']/, "post comments must target Post");
 assert.match(singlePage, /kind=["']SinglePage["']/, "page comments must target SinglePage");
 assert.match(post, /post\.owner\.permalink/, "posts must link to their Halo author page");
@@ -116,12 +125,33 @@ assert.match(home, /theme\.config\.basic\.socials/, "home profile must render co
 assert.match(mainScript, /\bGithub\b/, "social icons must be registered with Lucide");
 
 const basicForm = settings?.spec?.forms?.find((form) => form.group === "basic");
+assert.equal(
+  basicForm?.formSchema?.find((field) => field.name === "ui_language")?.value,
+  "en",
+  "theme UI must default to English",
+);
+assert.equal(
+  basicForm?.formSchema?.find((field) => field.name === "site_language")?.value,
+  "en-US",
+  "HTML and structured data language must default to English",
+);
 const socials = basicForm?.formSchema?.find((field) => field.name === "socials");
 assert.equal(socials?.$formkit, "array", "socials must use Halo's sortable array input");
 
 const contentForm = settings?.spec?.forms?.find((form) => form.group === "content");
 const imageMode = contentForm?.formSchema?.find((field) => field.name === "image_mode");
 assert.equal(imageMode?.value, "none", "article covers must default to low-image mode");
+assert.equal(
+  contentForm?.formSchema?.find((field) => field.name === "show_home_tags")?.value,
+  true,
+);
+assert.equal(contentForm?.formSchema?.find((field) => field.name === "home_tag_count")?.value, 10);
+assert.equal(
+  contentForm?.formSchema?.find((field) => field.name === "show_post_license")?.value,
+  true,
+);
+assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_name"));
+assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_url"));
 assert.deepEqual(
   settings?.spec?.forms?.map((form) => form.group),
   ["basic", "appearance", "content", "seo", "analytics", "integrations", "monetization"],
@@ -227,6 +257,30 @@ assert.match(
 assert.match(linksPage, /rel="friend noopener noreferrer"/, "friend links need safe attributes");
 assert.match(post, /postFinder\.list\(/, "post sidebar must provide an article list");
 assert.match(post, /commentFinder\.list\(/, "post sidebar must support recent comments");
+assert.match(home, /tagFinder\.listAll\(\)/, "home must query tags through Halo Tag Finder");
+assert.match(home, /data-popular-tags/, "home must expose sortable popular tags");
+assert.match(mainScript, /function initPopularTags\(/, "home tags must be sorted by post count");
+assert.match(
+  post,
+  /class=["']article-license["']/,
+  "posts must render the author and license notice",
+);
+assert.match(postScript, /function uiText\(/, "dynamic post controls must follow the UI language");
+assert.doesNotMatch(
+  tags,
+  /\|#\$\{tag\.spec\.displayName\}\|/,
+  "tag index must not prefix labels with #",
+);
+assert.doesNotMatch(
+  tagPage,
+  /\|#\$\{tag\.spec\.displayName\}\|/,
+  "tag pages must not prefix labels with #",
+);
+assert.doesNotMatch(
+  post,
+  /\|#\$\{tag\.spec\.displayName\}\|/,
+  "post tags must not prefix labels with #",
+);
 
 await read("public/images/rackora-mark.svg");
 const builtThemeMark = await read("templates/assets/images/rackora-mark.svg");

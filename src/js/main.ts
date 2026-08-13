@@ -41,6 +41,14 @@ const icons = {
   X,
 };
 
+function isChineseUi(): boolean {
+  return document.documentElement.dataset.uiLanguage === "zh-CN";
+}
+
+function uiText(english: string, chinese: string): string {
+  return isChineseUi() ? chinese : english;
+}
+
 function renderIcons(): void {
   createIcons({ icons });
 }
@@ -73,7 +81,7 @@ function initNavigation(): void {
     navigation.classList.remove("is-open");
     document.body.classList.remove("nav-open");
     toggle.setAttribute("aria-expanded", "false");
-    toggle.setAttribute("aria-label", "打开导航");
+    toggle.setAttribute("aria-label", uiText("Open navigation", "打开导航"));
     setButtonIcon(toggle, "menu");
   };
 
@@ -82,7 +90,10 @@ function initNavigation(): void {
     navigation.classList.toggle("is-open", open);
     document.body.classList.toggle("nav-open", open);
     toggle.setAttribute("aria-expanded", String(open));
-    toggle.setAttribute("aria-label", open ? "关闭导航" : "打开导航");
+    toggle.setAttribute(
+      "aria-label",
+      open ? uiText("Close navigation", "关闭导航") : uiText("Open navigation", "打开导航"),
+    );
     setButtonIcon(toggle, open ? "x" : "menu");
   });
 
@@ -107,8 +118,12 @@ function initThemeToggle(): void {
 
   const update = (): void => {
     const scheme = currentScheme();
-    toggle.setAttribute("aria-label", scheme === "dark" ? "切换为浅色" : "切换为深色");
-    toggle.setAttribute("title", scheme === "dark" ? "切换为浅色" : "切换为深色");
+    const label =
+      scheme === "dark"
+        ? uiText("Switch to light mode", "切换为浅色")
+        : uiText("Switch to dark mode", "切换为深色");
+    toggle.setAttribute("aria-label", label);
+    toggle.setAttribute("title", label);
     setButtonIcon(toggle, scheme === "dark" ? "sun" : "moon");
   };
 
@@ -149,7 +164,27 @@ function initSiteUptime(): void {
     return;
   }
 
-  target.textContent = `运行 ${Math.floor(elapsed / 86_400_000) + 1} 天`;
+  const days = Math.floor(elapsed / 86_400_000) + 1;
+  target.textContent = isChineseUi() ? `运行 ${days} 天` : `Online for ${days} days`;
+}
+
+function initPopularTags(): void {
+  const list = document.querySelector<HTMLElement>("[data-popular-tags]");
+  if (!list) return;
+
+  const limit = Math.max(1, Number.parseInt(list.dataset.tagLimit || "10", 10) || 10);
+  const items = Array.from(list.children) as HTMLElement[];
+  items
+    .sort((left, right) => {
+      const countDifference =
+        Number.parseInt(right.dataset.tagCount || "0", 10) -
+        Number.parseInt(left.dataset.tagCount || "0", 10);
+      return countDifference || left.textContent!.localeCompare(right.textContent!);
+    })
+    .forEach((item, index) => {
+      if (index < limit) list.append(item);
+      else item.remove();
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -158,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initThemeToggle();
   initBackToTop();
   initSiteUptime();
+  initPopularTags();
 });
 
 document.addEventListener("rackora:icons", renderIcons);

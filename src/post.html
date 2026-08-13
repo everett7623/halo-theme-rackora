@@ -14,7 +14,7 @@
       th:attr="itemid=${post.status.permalink}"
     >
       <link itemprop="mainEntityOfPage" th:href="@{${post.status.permalink}}" />
-      <meta itemprop="inLanguage" th:content="${theme.config.basic.site_language ?: 'zh-CN'}" />
+      <meta itemprop="inLanguage" th:content="${theme.config.basic.site_language ?: 'en-US'}" />
       <span
         hidden
         itemprop="publisher"
@@ -34,12 +34,18 @@
       <header class="article-header">
         <nav
           class="breadcrumbs"
-          aria-label="面包屑"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '面包屑' : 'Breadcrumb'}"
           itemscope
           itemtype="https://schema.org/BreadcrumbList"
         >
           <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-            <a itemprop="item" th:href="@{/}"><span itemprop="name">首页</span></a>
+            <a itemprop="item" th:href="@{/}"
+              ><span
+                itemprop="name"
+                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '首页' : 'Home'}"
+                >Home</span
+              ></a
+            >
             <meta itemprop="position" content="1" />
           </span>
           <span aria-hidden="true">/</span>
@@ -74,26 +80,33 @@
               itemprop="url"
               th:href="@{${post.owner.permalink}}"
               rel="author"
-              ><span itemprop="name" th:text="${post.owner.displayName}">作者</span></a
+              ><span itemprop="name" th:text="${post.owner.displayName}">Author</span></a
             >
           </span>
           <time
             itemprop="datePublished"
             th:datetime="${post.spec.publishTime}"
-            th:text="|发布于 ${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}|"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布于 ' + #temporals.format(post.spec.publishTime, 'yyyy-MM-dd') : 'Published ' + #temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"
           ></time>
           <time
             itemprop="dateModified"
             th:if="${post.status.lastModifyTime != null}"
             th:datetime="${post.status.lastModifyTime}"
-            th:text="|更新于 ${#temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd')}|"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '更新于 ' + #temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd') : 'Updated ' + #temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd')}"
           ></time>
           <span
             th:if="${not #strings.isEmpty(#annotations.get(post, 'rackora_verified_at'))}"
-            th:text="|核验于 ${#annotations.get(post, 'rackora_verified_at')}|"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '核验于 ' + #annotations.get(post, 'rackora_verified_at') : 'Verified ' + #annotations.get(post, 'rackora_verified_at')}"
           ></span>
-          <span data-reading-time>计算阅读时间</span>
-          <span th:text="|${post.stats.visit} 阅读|">0 阅读</span>
+          <span
+            data-reading-time
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '计算阅读时间' : 'Calculating reading time'}"
+            >Calculating reading time</span
+          >
+          <span
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? post.stats.visit + ' 阅读' : post.stats.visit + ' views'}"
+            >0 views</span
+          >
         </div>
       </header>
 
@@ -102,15 +115,20 @@
         th:with="relation = ${#annotations.getOrDefault(post, 'rackora_affiliate_relation', 'none')}"
         th:if="${relation != 'none'}"
         th:switch="${relation}"
-        aria-label="内容关系披露"
+        th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '内容关系披露' : 'Content relationship disclosure'}"
       >
-        <p th:case="'affiliate'">
-          本文包含 Affiliate / Referral 推广链接，本站可能获得佣金，不影响用户价格与编辑判断。
-        </p>
-        <p th:case="'sponsored_review'">
-          本文包含商家提供的送测资源；测试方法、结果与限制仍由本站独立记录。
-        </p>
-        <p th:case="'self_purchased'">本文涉及的产品或服务由本站自购测试。</p>
+        <p
+          th:case="'affiliate'"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含 Affiliate / Referral 推广链接，本站可能获得佣金，不影响用户价格与编辑判断。' : 'This post contains affiliate or referral links. The site may earn a commission without affecting your price or our editorial judgment.'}"
+        ></p>
+        <p
+          th:case="'sponsored_review'"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含商家提供的送测资源；测试方法、结果与限制仍由本站独立记录。' : 'A vendor supplied resources for this review; the methods, results, and limitations remain independently documented.'}"
+        ></p>
+        <p
+          th:case="'self_purchased'"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文涉及的产品或服务由本站自购测试。' : 'The product or service covered in this post was independently purchased for testing.'}"
+        ></p>
       </aside>
 
       <figure
@@ -141,43 +159,102 @@
       <include src="ad-slot.html" position="post_after"></include>
 
       <footer class="article-footer">
-        <div class="article-tags" th:if="${not #lists.isEmpty(post.tags)}" aria-label="文章标签">
+        <div
+          class="article-tags"
+          th:if="${not #lists.isEmpty(post.tags)}"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文章标签' : 'Post tags'}"
+        >
           <a
             th:each="tag : ${post.tags}"
             th:href="@{${tag.status.permalink}}"
-            th:text="|#${tag.spec.displayName}|"
+            th:text="${tag.spec.displayName}"
           ></a>
         </div>
 
+        <aside
+          class="article-license"
+          th:if="${theme.config.content.show_post_license == null or theme.config.content.show_post_license}"
+          th:with="licenseName = ${theme.config.content.license_name ?: 'All rights reserved'},licenseUrl = ${theme.config.content.license_url}"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '作者与版权声明' : 'Author and copyright notice'}"
+        >
+          <div class="article-license__lead">
+            <strong th:text="${post.spec.title}">Post title</strong>
+            <a th:href="@{${post.status.permalink}}" th:text="${post.status.permalink}"></a>
+          </div>
+          <dl>
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '作者' : 'Author'}">
+                Author
+              </dt>
+              <dd th:text="${post.owner.displayName}">Author</dd>
+            </div>
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布于' : 'Published'}">
+                Published
+              </dt>
+              <dd th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}">
+                2026-01-01
+              </dd>
+            </div>
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '许可' : 'License'}">
+                License
+              </dt>
+              <dd>
+                <a
+                  th:if="${not #strings.isEmpty(licenseUrl)}"
+                  th:href="@{${licenseUrl}}"
+                  th:text="${licenseName}"
+                  target="_blank"
+                  rel="license noopener noreferrer"
+                ></a>
+                <span th:if="${#strings.isEmpty(licenseUrl)}" th:text="${licenseName}"></span>
+              </dd>
+            </div>
+          </dl>
+          <span class="article-license__mark" aria-hidden="true">©</span>
+        </aside>
+
         <nav
           class="post-navigation"
-          aria-label="相邻文章"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '相邻文章' : 'Adjacent posts'}"
           th:with="cursor = ${postFinder.cursor(post.metadata.name)}"
         >
           <a th:if="${cursor.hasPrevious()}" th:href="@{${cursor.previous.status.permalink}}">
-            <span>上一篇</span>
+            <span th:text="${theme.config.basic.ui_language == 'zh-CN' ? '上一篇' : 'Previous'}"
+              >Previous</span
+            >
             <strong th:text="${cursor.previous.spec.title}"></strong>
           </a>
           <a th:if="${cursor.hasNext()}" th:href="@{${cursor.next.status.permalink}}">
-            <span>下一篇</span>
+            <span th:text="${theme.config.basic.ui_language == 'zh-CN' ? '下一篇' : 'Next'}"
+              >Next</span
+            >
             <strong th:text="${cursor.next.spec.title}"></strong>
           </a>
         </nav>
       </footer>
 
       <section class="comments" th:if="${haloCommentEnabled}" aria-labelledby="comments-title">
-        <h2 id="comments-title">评论</h2>
+        <h2
+          id="comments-title"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '评论' : 'Comments'}"
+        >
+          Comments
+        </h2>
         <halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />
       </section>
     </article>
 
     <aside
       class="article-sidebar"
-      aria-label="文章辅助导航"
+      th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文章辅助导航' : 'Post navigation'}"
       th:if="${theme.config.content.show_post_sidebar == null or theme.config.content.show_post_sidebar}"
     >
       <section class="article-sidebar__section" data-toc-container hidden>
-        <h2>本页目录</h2>
+        <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
+          On this page
+        </h2>
         <nav data-toc></nav>
       </section>
 
@@ -185,7 +262,9 @@
         class="article-sidebar__section"
         th:with="sidebarPosts = ${postFinder.list({page: 1, size: theme.config.content.post_sidebar_count ?: 5, sort: {'spec.publishTime,desc'}})}"
       >
-        <h2>最新文章</h2>
+        <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新文章' : 'Latest posts'}">
+          Latest posts
+        </h2>
         <ol class="article-sidebar__posts">
           <li th:each="sidebarPost : ${sidebarPosts.items}">
             <a th:href="@{${sidebarPost.status.permalink}}" th:text="${sidebarPost.spec.title}"></a>
@@ -198,17 +277,22 @@
         th:if="${theme.config.content.show_post_comments}"
         th:with="sidebarComments = ${commentFinder.list({group: 'content.halo.run', version: 'v1alpha1', kind: 'Post', name: post.metadata.name}, 1, theme.config.content.post_comment_count ?: 3)}"
       >
-        <h2>最新评论</h2>
+        <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新评论' : 'Recent comments'}">
+          Recent comments
+        </h2>
         <ul class="article-sidebar__comments" th:if="${not #lists.isEmpty(sidebarComments.items)}">
           <li th:each="comment : ${sidebarComments.items}">
-            <strong th:text="${comment.spec.owner.displayName}">访客</strong>
+            <strong th:text="${comment.spec.owner.displayName}">Guest</strong>
             <p
               th:text="${#strings.abbreviate(#strings.replace(comment.spec.content, '&nbsp;', ' '), 96)}"
             ></p>
           </li>
         </ul>
         <p class="article-sidebar__empty" th:if="${#lists.isEmpty(sidebarComments.items)}">
-          暂无评论
+          <span
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '暂无评论' : 'No comments yet'}"
+            >No comments yet</span
+          >
         </p>
       </section>
     </aside>
