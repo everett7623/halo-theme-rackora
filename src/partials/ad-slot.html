@@ -1,0 +1,40 @@
+<section
+  class="ad-slot"
+  th:if="${theme.config.monetization.enabled and not #lists.isEmpty(theme.config.monetization.ads) and #lists.size(theme.config.monetization.ads.?[enabled and position == '{{position}}' and not #strings.isEmpty(name) and not #strings.isEmpty(url)]) > 0}"
+  aria-label="推广内容"
+>
+  <p
+    class="ad-disclosure"
+    th:text="${theme.config.monetization.disclosure_text ?: '本站可能通过推广链接获得佣金，不影响内容判断与用户价格。'}"
+  ></p>
+  <ul class="ad-list">
+    <li
+      class="ad-card"
+      th:each="ad : ${theme.config.monetization.ads}"
+      th:if="${ad.enabled and ad.position == '{{position}}' and not #strings.isEmpty(ad.name) and not #strings.isEmpty(ad.url)}"
+    >
+      <a
+        th:href="@{${ad.url}}"
+        target="_blank"
+        rel="sponsored nofollow noopener noreferrer"
+        th:attr="aria-label=|${ad.name}（推广链接）|"
+      >
+        <img
+          th:if="${not #strings.isEmpty(ad.image)}"
+          th:src="${ad.image}"
+          th:alt="${ad.name}"
+          width="160"
+          height="90"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="ad-card__body">
+          <small>推广</small>
+          <strong th:text="${ad.name}">广告名称</strong>
+          <span th:if="${not #strings.isEmpty(ad.description)}" th:text="${ad.description}"></span>
+        </span>
+        <i data-lucide="external-link" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</section>

@@ -1,76 +1,128 @@
-# Theme Vite Starter
+# Rackora
 
-面向 [Halo](https://www.halo.run/) 的主题脚手架：在 `src/` 中编写模板与前端资源，经构建生成 Halo 实际读取的 `templates/` 目录。
+Rackora 是面向 VPS 优惠、机房测评、横向对比和技术教程的独立 Halo 2.x 主题。主题以
+1vps.top 的现有栏目与长中文内容为基础，以 Fuwari 的双栏信息组织为主，结合 AstroPaper、
+PaperMod 和纯文本博客常见的低图片文章流、明暗模式和响应式体验。主题包含原 Joe3 SEO
+补丁中的唯一 H1 与栏目简介修复，但索引策略服从最新内容治理契约。
 
-官方主题开发指南：<https://docs.halo.run/developer-guide/theme/prepare>
+## 设计原则
 
-## 技术栈
+- 保留 1vps.top 的栏目导航、文章流、阅读数据和中文长标题承载能力。
+- 借鉴 [Fuwari](https://github.com/saicaca/fuwari) 的信息层级，不依赖 Astro、Svelte、
+  Tailwind 或 Pagefind 运行时。
+- 默认不显示横幅、列表封面和正文封面；图片可继续用于分享或由站点主动开启。
+- 首页标签云不枚举全部标签，避免放大站点当前的标签结构债务。
+- 文章列表采用分隔线而非卡片墙，使用安静的技术出版风；VPS 配置表、代码、目录和核验
+  信息优先。
+- SEO 元数据由 Halo 注入，主题不重复输出 canonical、description、Open Graph 或
+  Twitter Card。
+- 栏目是一级内容类型导航，标签只做受控的二级筛选；主题不根据标签猜测 Pillar。
+- 合并、`noindex`、canonical 和重定向由内容治理决定，不由页面模板硬编码。
 
-| 类别     | 说明                                                                                                                                                                                                  |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 运行时   | Halo 使用 **Thymeleaf** 渲染主题；模板变量与 Finder API 随 Halo 版本演进，请以[官方文档](https://docs.halo.run/developer-guide/theme/prepare)为准。                                                   |
-| 构建     | Vite，同时集成 [Vite Plus](https://viteplus.dev/)，集成格式化、Lint 等功能                                                                                                                            |
-| 语言     | **TypeScript**（`tsc` 参与 `build` 脚本）                                                                                                                                                             |
-| 主题插件 | [`@halo-dev/vite-plugin-halo-theme`](https://www.npmjs.com/package/@halo-dev/vite-plugin-halo-theme) — 源码见 [halo-sigs/vite-plugin-halo-theme](https://github.com/halo-sigs/vite-plugin-halo-theme) |
-| 打包发布 | [`@halo-dev/theme-package-cli`](https://github.com/halo-dev/theme-package-cli) — 将主题打成 ZIP 供控制台上传                                                                                          |
-| 包管理   | **pnpm**（版本见 `package.json` 的 `packageManager`）                                                                                                                                                 |
+Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码，仅将布局与交互模式
+重新实现为 Halo Thymeleaf 模板。
 
-## 目录结构
+## 功能
 
-- **`src/` 是源码目录**：在此维护 `.html` 页面与 `partials/` 片段、`css/`、`js/`（含 TS）等。插件在 **Vite 构建时** 处理 `<include>` / `<slot>` 等语法（与服务器上 **Thymeleaf 运行时** 互不替代，可同时使用）。
-- **`templates/` 是构建产物**：Halo 只认主题根目录下的 `templates/`（内含页面 HTML 与 `templates/assets/` 等）。**不要**把 `src/` 当作 Halo 直接读取的路径；开发或发版前需执行构建，使 `templates/` 与当前源码一致。
+- 首页可选横幅、带可排序社交链接的站点资料侧栏、栏目索引和低图片文章流。
+- 首页、文章、独立页、归档、标签、栏目、作者和 404 共 10 个 Halo 路由模板。
+- 响应式导航、明暗模式、返回顶部和减少动态效果适配。
+- 文章署名、阅读进度、预计阅读时间、自动目录、标题锚点和相邻文章导航。
+- Highlight.js 按需语言包、代码复制、横向表格容器和 VPS 产品表识别。
+- 评论插件、搜索组件和 Halo 页脚扩展点。
+- 栏目页唯一 H1，并复用 Halo 栏目 description。
+- Affiliate 披露样式和已有 `rel="sponsored"` 链接标记，不自动误判普通资料外链。
+- 浅色、深色、打印和移动端样式。
 
-```
-.
-├── src/                 # 源码：页面 HTML、partials、css、js
-├── public/              # 可选；复制到 templates/assets/
-├── templates/           # 构建生成
-├── theme.yaml           # 主题元数据（必填）
-├── settings.yaml        # 控制台主题设置表单（可选）
-├── vite.config.ts
-└── package.json
-```
+## 兼容性
 
-### `@halo-dev/vite-plugin-halo-theme`
+- Halo `>= 2.20.0`
+- Node.js 24
+- pnpm 10.33.0
 
-1. **多页入口**：自动将 `src/` 下（除 `src/partials/` 外）的 `.html` 作为入口，输出到 `templates/` 下同名文件（例如 `src/index.html` → `templates/index.html`）。
-2. **静态资源**：`src/` 中的 CSS/JS 由 Vite 打包进 `templates/assets/`；`public/` 中的文件会原样复制到 `templates/assets/`（不经打包）。
-3. **模板复用**：支持构建期 `<include>`、`<slot>`，减轻纯 Thymeleaf 片段的重复书写。
-4. **资源路径约定**：所有 HTML（含 `partials`）里引用静态资源时，路径按 **`src/` 根** 解析，而不是按当前文件所在子目录；说明见 [vite-plugin-halo-theme](https://github.com/halo-sigs/vite-plugin-halo-theme)。
+## 安装
+
+1. 从 Release 下载主题 ZIP，或在仓库根目录执行 `pnpm install && pnpm build`。
+2. 在 Halo Console 的主题管理中上传生成的 ZIP 并安装。
+3. 启用前检查站点菜单、Logo、标题、副标题、栏目 description 和搜索/评论插件。
+4. 启用后分别验证首页、文章、独立页、归档、栏目、标签、作者和 404 页面。
+
+主题目录名和 `theme.yaml` 的 `metadata.name` 必须保持为 `theme-rackora`。
+
+## 主题设置
+
+主题后台按职责分为 5 组：
+
+| 分组       | 设置                                                         |
+| ---------- | ------------------------------------------------------------ |
+| 资料       | 可排序社交账号                                               |
+| 外观       | 默认配色、强调色、可选首页横幅                               |
+| 内容       | 文章封面模式、首页资料侧栏                                   |
+| SEO        | 标签/归档索引策略、Google/Bing/百度站点验证                  |
+| 广告与联盟 | 总开关、统一披露文案、可排序广告位、位置、图片和推广跳转地址 |
+
+首页横幅留空、文章封面选择“不显示”即为默认少图方案。目录、阅读时间和代码复制按内容
+自动启用。站点标题、Logo、副标题、全站 description、canonical、Open Graph 和 Twitter
+Card 直接复用 Halo 系统资料，避免主题设置产生两套互相冲突的数据。
+
+广告位支持首页文章区顶部、首页右侧栏、正文前和正文后。主题只接受结构化文字/图片广告，
+不会执行广告脚本；推广地址自动增加 `sponsored nofollow noopener noreferrer`，广告总开关
+默认关闭。
+
+## 内容编辑字段
+
+主题通过 Halo 元数据表单提供与内容治理相关的字段：
+
+- 文章：主关键词、搜索意图、推广关系、内容核验日期、下次复核日期和已审核 Pillar 标识。
+- 标签：索引策略与可见简介，可为保留标签单独允许索引。
+- 栏目：精选文章，用于栏目页的“精选内容”入口。
+
+这些字段出现在对应文章、标签和栏目编辑页，不集中堆放在主题设置中。主关键词只用于编辑
+审核，不输出无 SEO 价值的 `meta keywords`；Pillar 只接受人工确认值，主题不根据标签猜测。
 
 ## 开发
 
-```bash
-git clone git@github.com:halo-dev/theme-vite-starter.git ~/halo2-dev/themes/theme-vite-starter
-cd ~/halo2-dev/themes/theme-vite-starter
+```powershell
 pnpm install
-pnpm dev
-```
-
-`pnpm dev` 等价于对主题执行 `vp build --watch`：修改 `src/` 后会持续重新生成 `templates/`。将主题目录链到或复制到 Halo 的 `themes/<metadata.name>/` 后，在控制台安装并启用主题即可预览。
-
-开发 Halo 端建议关闭 Thymeleaf 缓存（例如环境变量 `SPRING_THYMELEAF_CACHE=false` 或配置 `spring.thymeleaf.cache: false`），便于模板热更新调试。
-
-## 构建与打包
-
-```bash
-pnpm build
-```
-
-该命令会执行 TypeScript 检查、`vp build` 生成 `templates/`，并调用 `theme-package` 生成可分发的 ZIP。默认会打包 `templates/`、`theme.yaml` / `settings.yaml` 等必要文件，详见 [theme-package-cli](https://github.com/halo-dev/theme-package-cli)。
-
-仅需要产物目录、不需要 ZIP 时：
-
-```bash
 pnpm build-only
+pnpm test
+pnpm test:budget
+pnpm preview
 ```
 
-## 其他脚本
+- `src/`：主题源码，包含页面、局部模板、CSS 和 TypeScript。
+- `public/`：不经构建处理的静态资源。
+- `templates/`：Vite 构建输出，Halo 实际读取的模板目录。
+- `scripts/validate-theme.mjs`：路由、H1、内容契约、配置和扩展点静态检查。
+- `scripts/check-performance-budget.mjs`：构建后 CSS/JS gzip 预算检查。
+- `scripts/create-preview.mjs`：生成不进入主题包的本地视觉夹具，不替代 Halo 运行时测试。
 
-| 命令         | 作用                                     |
-| ------------ | ---------------------------------------- |
-| `pnpm check` | `vp check --fix`（执行格式化和代码检查） |
+`pnpm dev` 持续构建 `templates/`。开发 Halo 实例建议设置
+`SPRING_THYMELEAF_CACHE=false`。
 
-## Agent Skills
+## 版本与发布
 
-仓库在 `.agents/skills/` 下内置了 **Halo 主题开发** 相关的 Agent Skill（例如 `halo-theme-dev`），整理了 Thymeleaf 要点、Finder API、`theme.yaml` / `settings.yaml`、vite 插件用法等参考材料。若在 Cursor 等支持 Agent Skills 的环境里开发，启用后可让 AI 更贴合 Halo 主题的约定来辅助编写与修改主题。
+Rackora 使用语义化版本：修复递增补丁号，向后兼容的新功能递增次版本号，不兼容调整递增主版本号。
+每次发布必须同步修改 `package.json`、`theme.yaml` 和 [`CHANGELOG.md`](CHANGELOG.md)，提交后创建
+`vX.Y.Z` 标签，并将 `dist/theme-rackora-X.Y.Z.zip` 附加到同版本 GitHub Release。`pnpm test`
+会阻止两个版本号不一致的提交。
+
+## SEO 边界
+
+主题已覆盖 Joe3 `1.5.1-seo.3` 补丁中的唯一 H1、栏目简介与临时标签
+`noindex,follow` 策略，并在正文中输出作者、摘要、发布时间、更新时间、内容核验日期、可见
+面包屑、`BlogPosting` 和 `BreadcrumbList`。标签可以逐项覆盖全局索引策略。索引、合并、
+canonical 和重定向仍必须由内容治理结果决定。下列工作不属于主题单独可完成的范围：
+
+- 从 Halo sitemap 移除低价值标签 URL。
+- 为保留标签和栏目撰写独立简介、精选内容与真实 meta description。
+- 修复反向代理或 Halo 路由层的 HEAD 404。
+- 在线验证 BlogPosting、Breadcrumb、canonical 和 Rich Results。
+- 迁移、合并或删除历史标签引用。
+- 在 P2-03 完成前渲染或推断 Pillar / Cluster 新字段。
+
+部署前后的操作门禁和站点任务仍以 `D:\EvenFrank\Workspace\Halo\1vps.top\plan` 为准。
+
+## 许可证
+
+[GPL-3.0](LICENSE)

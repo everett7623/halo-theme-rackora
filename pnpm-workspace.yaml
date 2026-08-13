@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - esbuild
+
+overrides:
+  vitest: npm:@voidzero-dev/vite-plus-test@latest

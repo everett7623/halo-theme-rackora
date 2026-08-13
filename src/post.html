@@ -1,56 +1,161 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${post.spec.title} - ${site.title}|">Post Title</title>
+    <title th:text="|${post.spec.title} - ${site.title}|">文章标题</title>
     <script type="module" src="./js/post.ts"></script>
   </template>
 
-  <article>
-    <header class="article-header">
-      <h1 class="article-title" th:text="${post.spec.title}"></h1>
-      <div class="article-meta">
-        <time th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></time>
-        <span th:if="${not #lists.isEmpty(post.categories)}">
-          &nbsp;·&nbsp;
+  <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+  <div class="article-layout">
+    <article
+      class="article"
+      data-article
+      itemscope
+      itemtype="https://schema.org/BlogPosting"
+      th:attr="itemid=${post.status.permalink}"
+    >
+      <header class="article-header">
+        <nav
+          class="breadcrumbs"
+          aria-label="面包屑"
+          itemscope
+          itemtype="https://schema.org/BreadcrumbList"
+        >
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a itemprop="item" th:href="@{/}"><span itemprop="name">首页</span></a>
+            <meta itemprop="position" content="1" />
+          </span>
+          <span aria-hidden="true">/</span>
+          <span
+            th:if="${not #lists.isEmpty(post.categories)}"
+            itemprop="itemListElement"
+            itemscope
+            itemtype="https://schema.org/ListItem"
+          >
+            <a itemprop="item" th:href="@{${post.categories[0].status.permalink}}">
+              <span itemprop="name" th:text="${post.categories[0].spec.displayName}">栏目</span>
+            </a>
+            <meta itemprop="position" content="2" />
+          </span>
+          <span th:if="${not #lists.isEmpty(post.categories)}" aria-hidden="true">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page" th:text="${post.spec.title}">文章</span>
+            <meta itemprop="position" th:content="${#lists.isEmpty(post.categories) ? '2' : '3'}" />
+          </span>
+        </nav>
+        <h1 class="article-title" itemprop="headline" th:text="${post.spec.title}">文章标题</h1>
+        <p
+          class="article-deck"
+          itemprop="description"
+          th:if="${not #strings.isEmpty(post.status.excerpt)}"
+          th:text="${post.status.excerpt}"
+        ></p>
+        <div class="article-meta">
+          <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <a
+              class="article-author"
+              itemprop="url"
+              th:href="@{${post.owner.permalink}}"
+              rel="author"
+              ><span itemprop="name" th:text="${post.owner.displayName}">作者</span></a
+            >
+          </span>
+          <time
+            itemprop="datePublished"
+            th:datetime="${post.spec.publishTime}"
+            th:text="|发布于 ${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}|"
+          ></time>
+          <time
+            itemprop="dateModified"
+            th:if="${post.status.lastModifyTime != null}"
+            th:datetime="${post.status.lastModifyTime}"
+            th:text="|更新于 ${#temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd')}|"
+          ></time>
+          <span
+            th:if="${not #strings.isEmpty(#annotations.get(post, 'rackora_verified_at'))}"
+            th:text="|核验于 ${#annotations.get(post, 'rackora_verified_at')}|"
+          ></span>
+          <span data-reading-time>计算阅读时间</span>
+          <span th:text="|${post.stats.visit} 阅读|">0 阅读</span>
+        </div>
+      </header>
+
+      <aside
+        class="article-disclosure"
+        th:with="relation = ${#annotations.getOrDefault(post, 'rackora_affiliate_relation', 'none')}"
+        th:if="${relation != 'none'}"
+        th:switch="${relation}"
+        aria-label="内容关系披露"
+      >
+        <p th:case="'affiliate'">
+          本文包含 Affiliate / Referral 推广链接，本站可能获得佣金，不影响用户价格与编辑判断。
+        </p>
+        <p th:case="'sponsored_review'">
+          本文包含商家提供的送测资源；测试方法、结果与限制仍由本站独立记录。
+        </p>
+        <p th:case="'self_purchased'">本文涉及的产品或服务由本站自购测试。</p>
+      </aside>
+
+      <figure
+        class="article-cover"
+        th:if="${(theme.config.content.image_mode == 'article' or theme.config.content.image_mode == 'all') and not #strings.isEmpty(post.spec.cover)}"
+      >
+        <img
+          th:src="${post.spec.cover}"
+          th:alt="${post.spec.title}"
+          itemprop="image"
+          decoding="async"
+          fetchpriority="high"
+          width="1280"
+          height="720"
+        />
+      </figure>
+
+      <include src="ad-slot.html" position="post_before"></include>
+
+      <div
+        id="article-content"
+        class="article-content"
+        itemprop="articleBody"
+        th:utext="${post.content.content}"
+        data-article-content
+      ></div>
+
+      <include src="ad-slot.html" position="post_after"></include>
+
+      <footer class="article-footer">
+        <div class="article-tags" th:if="${not #lists.isEmpty(post.tags)}" aria-label="文章标签">
           <a
-            th:each="cat : ${post.categories}"
-            th:href="@{${cat.status.permalink}}"
-            th:text="${cat.spec.displayName}"
-            class="category"
+            th:each="tag : ${post.tags}"
+            th:href="@{${tag.status.permalink}}"
+            th:text="|#${tag.spec.displayName}|"
           ></a>
-        </span>
-      </div>
-    </header>
+        </div>
 
-    <div class="article-content" th:utext="${post.content.content}"></div>
+        <nav
+          class="post-navigation"
+          aria-label="相邻文章"
+          th:with="cursor = ${postFinder.cursor(post.metadata.name)}"
+        >
+          <a th:if="${cursor.hasPrevious()}" th:href="@{${cursor.previous.status.permalink}}">
+            <span>上一篇</span>
+            <strong th:text="${cursor.previous.spec.title}"></strong>
+          </a>
+          <a th:if="${cursor.hasNext()}" th:href="@{${cursor.next.status.permalink}}">
+            <span>下一篇</span>
+            <strong th:text="${cursor.next.spec.title}"></strong>
+          </a>
+        </nav>
+      </footer>
 
-    <div class="article-tags" th:if="${not #lists.isEmpty(post.tags)}">
-      <a
-        th:each="tag : ${post.tags}"
-        th:href="@{${tag.status.permalink}}"
-        th:text="${tag.spec.displayName}"
-        class="tag"
-      ></a>
-    </div>
+      <section class="comments" th:if="${haloCommentEnabled}" aria-labelledby="comments-title">
+        <h2 id="comments-title">评论</h2>
+        <halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />
+      </section>
+    </article>
 
-    <nav class="post-nav" th:with="cursor = ${postFinder.cursor(post.metadata.name)}">
-      <span>
-        <a
-          th:if="${cursor.hasPrevious()}"
-          th:href="@{${cursor.previous.status.permalink}}"
-          th:text="|← ${cursor.previous.spec.title}|"
-        ></a>
-      </span>
-      <span>
-        <a
-          th:if="${cursor.hasNext()}"
-          th:href="@{${cursor.next.status.permalink}}"
-          th:text="|${cursor.next.spec.title} →|"
-        ></a>
-      </span>
-    </nav>
-  </article>
-
-  <div th:if="${haloCommentEnabled}">
-    <halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />
+    <aside class="article-sidebar" aria-label="文章目录" data-toc-container hidden>
+      <p>本页目录</p>
+      <nav data-toc></nav>
+    </aside>
   </div>
 </include>

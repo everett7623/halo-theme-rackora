@@ -1,0 +1,100 @@
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: theme-rackora-post-seo-4m2xp
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: Post
+  formSchema:
+    - $formkit: text
+      name: rackora_primary_keyword
+      label: 主关键词
+      help: 仅用于编辑审核，不输出已被搜索引擎忽略的 meta keywords。
+      value: ""
+    - $formkit: select
+      name: rackora_search_intent
+      label: 搜索意图
+      value: ""
+      clearable: true
+      options:
+        - label: 信息型
+          value: informational
+        - label: 商业调查型
+          value: commercial
+        - label: 交易型
+          value: transactional
+        - label: 导航型
+          value: navigational
+    - $formkit: select
+      name: rackora_affiliate_relation
+      label: 推广关系
+      value: none
+      options:
+        - label: 无推广关系
+          value: none
+        - label: 包含 Affiliate / Referral
+          value: affiliate
+        - label: 商家送测
+          value: sponsored_review
+        - label: 本站自购
+          value: self_purchased
+    - $formkit: date
+      name: rackora_verified_at
+      label: 内容核验日期
+      help: 用于编辑维护计划；不要仅为改日期而更新文章。
+      value: ""
+    - $formkit: date
+      name: rackora_review_due
+      label: 下次复核日期
+      value: ""
+    - $formkit: text
+      name: rackora_pillar
+      label: Pillar 标识
+      help: 仅填写已按内容架构审核确认的归属；主题不会根据标签自动猜测。
+      value: ""
+
+---
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: theme-rackora-tag-seo-7k9dn
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: Tag
+  formSchema:
+    - $formkit: select
+      name: rackora_index_policy
+      label: 索引策略
+      help: “跟随主题”使用 SEO 页签的全局策略；保留标签可单独允许索引。
+      value: inherit
+      options:
+        - label: 跟随主题
+          value: inherit
+        - label: 允许索引
+          value: index
+        - label: 暂不索引
+          value: noindex
+    - $formkit: textarea
+      name: rackora_description
+      label: 标签简介
+      help: 为保留标签填写独立、可见的简介；不自动生成或拼接关键词。
+      rows: 3
+      value: ""
+
+---
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: theme-rackora-category-featured-2h8qs
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: Category
+  formSchema:
+    - $formkit: postSelect
+      name: rackora_featured_post
+      label: 精选文章
+      help: 用于栏目页的“精选内容”入口，留空即不显示。
+      value: ""

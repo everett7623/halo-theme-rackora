@@ -1,18 +1,49 @@
-<li class="post-item" th:each="post : ${posts.items}">
-  <h2 class="post-title">
-    <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
-  </h2>
-  <p class="post-meta">
-    <time th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></time>
-    <span th:if="${not #lists.isEmpty(post.categories)}">
-      &nbsp;·&nbsp;
+<li
+  class="post-entry"
+  th:each="post : ${posts.items}"
+  th:classappend="${post.spec.pinned} ? ' is-pinned'"
+>
+  <a
+    class="post-cover"
+    th:if="${(theme.config.content.image_mode == 'list' or theme.config.content.image_mode == 'all') and not #strings.isEmpty(post.spec.cover)}"
+    th:href="@{${post.status.permalink}}"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <img
+      th:src="${post.spec.cover}"
+      th:alt="${post.spec.title}"
+      loading="lazy"
+      decoding="async"
+      width="320"
+      height="180"
+    />
+  </a>
+  <div class="post-entry__body">
+    <div class="post-entry__eyebrow">
+      <span class="status-label" th:if="${post.spec.pinned}">置顶</span>
       <a
-        th:each="cat : ${post.categories}"
-        th:href="@{${cat.status.permalink}}"
-        th:text="${cat.spec.displayName}"
-        class="category"
+        class="category-link"
+        th:if="${not #lists.isEmpty(post.categories)}"
+        th:href="@{${post.categories[0].status.permalink}}"
+        th:text="${post.categories[0].spec.displayName}"
       ></a>
-    </span>
-  </p>
-  <p class="post-excerpt" th:text="${post.status.excerpt}"></p>
+      <time
+        th:datetime="${post.spec.publishTime}"
+        th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"
+      ></time>
+    </div>
+    <h2 class="post-entry__title">
+      <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
+    </h2>
+    <p class="post-entry__excerpt" th:text="${post.status.excerpt}"></p>
+    <div class="post-entry__meta">
+      <span th:text="|${post.stats.visit} 阅读|">0 阅读</span>
+      <span th:text="|${post.stats.comment} 评论|">0 评论</span>
+      <span
+        th:if="${post.status.lastModifyTime != null}"
+        th:text="|更新 ${#temporals.format(post.status.lastModifyTime, 'MM-dd')}|"
+      ></span>
+    </div>
+  </div>
 </li>

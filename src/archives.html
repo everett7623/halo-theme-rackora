@@ -1,32 +1,50 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|Archives - ${site.title}|">Archives</title>
+    <title th:text="|全部文章 - ${site.title}|">全部文章</title>
+    <meta name="robots" content="noindex,follow" th:if="${theme.config.seo.noindex_archives}" />
   </template>
 
-  <h1>Archives</h1>
+  <header class="archive-heading">
+    <h1>全部文章</h1>
+    <p th:text="|共 ${archives.total} 篇公开内容，按发布时间整理。|">按发布时间整理。</p>
+  </header>
 
-  <th:block th:each="archive : ${archives.items}">
-    <div class="archive-year">
-      <h2 th:text="${archive.year}"></h2>
-      <th:block th:each="month : ${archive.months}">
-        <h3 th:text="|${archive.year}-${month.month}|"></h3>
-        <ul class="post-list">
-          <li class="post-item" th:each="post : ${month.posts}">
-            <h2 class="post-title">
-              <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
-            </h2>
-            <p class="post-meta">
-              <time th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></time>
-            </p>
+  <div class="timeline" th:if="${not #lists.isEmpty(archives.items)}">
+    <section class="timeline-year" th:each="archive : ${archives.items}">
+      <h2 th:text="${archive.year}">2026</h2>
+      <div class="timeline-month" th:each="month : ${archive.months}">
+        <h3 th:text="|${month.month} 月|">1 月</h3>
+        <ol>
+          <li th:each="post : ${month.posts}">
+            <time
+              th:datetime="${post.spec.publishTime}"
+              th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"
+            ></time>
+            <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
           </li>
-        </ul>
-      </th:block>
-    </div>
-  </th:block>
+        </ol>
+      </div>
+    </section>
+  </div>
 
-  <nav class="pagination" th:if="${archives.hasPrevious() || archives.hasNext()}">
-    <a th:if="${archives.hasPrevious()}" th:href="@{${archives.prevUrl}}">Previous</a>
-    <span th:text="|${archives.page} / ${archives.totalPages}|"></span>
-    <a th:if="${archives.hasNext()}" th:href="@{${archives.nextUrl}}">Next</a>
+  <div class="empty-state" th:if="${#lists.isEmpty(archives.items)}">
+    <h2>归档还是空的</h2>
+    <p>公开文章发布后会按年份和月份显示。</p>
+  </div>
+
+  <nav
+    class="pagination"
+    aria-label="归档分页"
+    th:if="${archives.hasPrevious() || archives.hasNext()}"
+  >
+    <a class="pagination__link" th:if="${archives.hasPrevious()}" th:href="@{${archives.prevUrl}}">
+      <i data-lucide="arrow-left" aria-hidden="true"></i><span>上一页</span>
+    </a>
+    <span class="pagination__status" th:text="|${archives.page} / ${archives.totalPages}|"
+      >1 / 1</span
+    >
+    <a class="pagination__link" th:if="${archives.hasNext()}" th:href="@{${archives.nextUrl}}">
+      <span>下一页</span><i data-lucide="arrow-right" aria-hidden="true"></i>
+    </a>
   </nav>
 </include>

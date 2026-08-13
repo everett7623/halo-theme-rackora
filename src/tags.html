@@ -1,18 +1,24 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|Tags - ${site.title}|">Tags</title>
+    <title th:text="|全部标签 - ${site.title}|">全部标签</title>
+    <meta name="robots" content="noindex,follow" th:if="${theme.config.seo.noindex_tags}" />
   </template>
 
-  <h1>Tags</h1>
-  <ul class="tag-list">
-    <li th:each="tag : ${tags.items}">
-      <a th:href="@{${tag.status.permalink}}" th:text="${tag.spec.displayName}" class="tag"></a>
+  <header class="archive-heading">
+    <h1>全部标签</h1>
+    <p>标签是受控的二级筛选，用于补充地区、线路、商家与使用场景。</p>
+  </header>
+
+  <ul class="tag-cloud" th:if="${not #lists.isEmpty(tags)}">
+    <li th:each="tag : ${tags}">
+      <a th:href="@{${tag.status.permalink}}">
+        <span th:text="|#${tag.spec.displayName}|">#标签</span>
+        <small th:text="${tag.postCount}">0</small>
+      </a>
     </li>
   </ul>
-
-  <nav class="pagination" th:if="${tags.hasPrevious() || tags.hasNext()}">
-    <a th:if="${tags.hasPrevious()}" th:href="@{${tags.prevUrl}}">Previous</a>
-    <span th:text="|${tags.page} / ${tags.totalPages}|"></span>
-    <a th:if="${tags.hasNext()}" th:href="@{${tags.nextUrl}}">Next</a>
-  </nav>
+  <div class="empty-state" th:if="${#lists.isEmpty(tags)}">
+    <h2>尚未创建标签</h2>
+    <p>发布带标签的文章后，它们会显示在这里。</p>
+  </div>
 </include>

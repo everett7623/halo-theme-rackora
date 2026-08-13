@@ -1,13 +1,33 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${tag.spec.displayName} - ${site.title}|">Tag Archive</title>
+    <title th:text="|${tag.spec.displayName} - ${site.title}|">标签</title>
+    <meta
+      name="robots"
+      content="noindex,follow"
+      th:if="${#annotations.getOrDefault(tag, 'rackora_index_policy', 'inherit') == 'noindex' or (#annotations.getOrDefault(tag, 'rackora_index_policy', 'inherit') == 'inherit' and theme.config.seo.noindex_tags)}"
+    />
   </template>
 
-  <h1 th:text="|Tag: ${tag.spec.displayName}|"></h1>
+  <header class="archive-heading">
+    <h1 th:text="|#${tag.spec.displayName}|">#标签</h1>
+    <p
+      th:if="${not #strings.isEmpty(#annotations.get(tag, 'rackora_description'))}"
+      th:text="${#annotations.get(tag, 'rackora_description')}"
+    ></p>
+    <p
+      th:if="${#strings.isEmpty(#annotations.get(tag, 'rackora_description'))}"
+      th:text="|${posts.total} 篇相关内容|"
+    >
+      相关内容
+    </p>
+  </header>
 
-  <ul class="post-list">
+  <ul class="post-list" th:if="${not #lists.isEmpty(posts.items)}">
     <include src="post-card.html"></include>
   </ul>
-
+  <div class="empty-state" th:if="${#lists.isEmpty(posts.items)}">
+    <h2>这个标签暂时没有文章</h2>
+    <p>标签调整后，这里可能暂时为空。</p>
+  </div>
   <include src="pagination.html"></include>
 </include>

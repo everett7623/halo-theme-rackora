@@ -1,12 +1,128 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="${site.title}">Home</title>
-    <script type="module" src="./js/index.ts"></script>
+    <title th:text="${site.title}">首页</title>
+    <script type="application/ld+json" th:inline="javascript">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": /*[[${site.title}]]*/ "站点标题",
+        "url": /*[[${site.url}]]*/ "https://example.com/",
+        "description": /*[[${site.seo.description}]]*/ ""
+      }
+    </script>
   </template>
 
-  <ul class="post-list">
-    <include src="post-card.html"></include>
-  </ul>
+  <figure class="home-banner" th:if="${not #strings.isEmpty(theme.config.appearance.banner_image)}">
+    <img
+      th:src="${theme.config.appearance.banner_image}"
+      th:alt="|${site.title} 横幅|"
+      width="1600"
+      height="480"
+      decoding="async"
+      fetchpriority="high"
+    />
+  </figure>
 
-  <include src="pagination.html"></include>
+  <div
+    class="home-grid"
+    th:classappend="${theme.config.content.show_home_sidebar} ? '' : ' home-grid--single'"
+  >
+    <section class="home-heading" aria-labelledby="home-title">
+      <h1 id="home-title" th:text="${site.title}">站点标题</h1>
+      <p th:if="${not #strings.isEmpty(site.subtitle)}" th:text="${site.subtitle}"></p>
+      <div class="home-heading__meta">
+        <span th:text="|${posts.total} 篇内容|">0 篇内容</span>
+        <span>价格与库存按核验时间为准</span>
+      </div>
+    </section>
+
+    <section class="content-section" aria-labelledby="latest-title">
+      <include src="ad-slot.html" position="home_top"></include>
+
+      <header class="section-heading">
+        <h2 id="latest-title">最新文章</h2>
+        <a class="text-link" th:href="@{${site.routes.archivesUri}}">查看归档</a>
+      </header>
+
+      <ul class="post-list post-list--cards" th:if="${not #lists.isEmpty(posts.items)}">
+        <include src="post-card.html"></include>
+      </ul>
+      <div class="empty-state" th:if="${#lists.isEmpty(posts.items)}">
+        <h2>暂时没有公开文章</h2>
+        <p>发布第一篇内容后，它会显示在这里。</p>
+      </div>
+
+      <include src="pagination.html"></include>
+    </section>
+
+    <aside
+      class="home-sidebar"
+      aria-label="站点信息"
+      th:if="${theme.config.content.show_home_sidebar}"
+      th:with="homeCategories = ${categoryFinder.listAll()}"
+    >
+      <section class="profile-panel">
+        <img
+          class="profile-panel__mark"
+          width="64"
+          height="64"
+          th:src="${#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo}"
+          th:alt="${site.title}"
+        />
+        <div>
+          <h2 th:text="${site.title}">Rackora</h2>
+          <p th:text="${site.subtitle ?: '独立测试、透明披露、持续更新。'}"></p>
+        </div>
+        <nav
+          class="profile-socials"
+          aria-label="社交账号"
+          th:if="${not #lists.isEmpty(theme.config.basic.socials)}"
+        >
+          <a
+            th:each="social : ${theme.config.basic.socials}"
+            th:if="${not #strings.isEmpty(social.name) and not #strings.isEmpty(social.url)}"
+            th:href="@{${social.url}}"
+            th:title="${social.name}"
+            th:attr="aria-label=${social.name}"
+            target="_blank"
+            rel="me noopener noreferrer"
+          >
+            <i th:attr="data-lucide=${social.icon ?: 'globe'}" aria-hidden="true"></i>
+          </a>
+        </nav>
+        <dl class="profile-stats">
+          <div>
+            <dt>文章</dt>
+            <dd th:text="${posts.total}">0</dd>
+          </div>
+          <div>
+            <dt>栏目</dt>
+            <dd th:text="${#lists.size(homeCategories)}">0</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
+        <header>
+          <h2>内容栏目</h2>
+          <a th:href="@{${site.routes.categoriesUri}}">全部</a>
+        </header>
+        <ul>
+          <li th:each="category : ${homeCategories}">
+            <a th:href="@{${category.status.permalink}}">
+              <span th:text="${category.spec.displayName}">栏目</span>
+              <small th:text="${category.postCount}">0</small>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <include src="ad-slot.html" position="home_sidebar"></include>
+
+      <nav class="sidebar-shortcuts" aria-label="内容索引">
+        <a th:href="@{${site.routes.archivesUri}}">文章归档</a>
+        <a th:href="@{${site.routes.tagsUri}}">标签索引</a>
+      </nav>
+    </aside>
+  </div>
 </include>

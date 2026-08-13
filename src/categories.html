@@ -1,22 +1,29 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|Categories - ${site.title}|">Categories</title>
+    <title th:text="|全部栏目 - ${site.title}|">全部栏目</title>
   </template>
 
-  <h1>Categories</h1>
-  <ul class="category-list">
-    <li th:each="cat : ${categories.items}">
-      <a
-        th:href="@{${cat.status.permalink}}"
-        th:text="|${cat.spec.displayName} (${cat.postCount})|"
-        class="category"
-      ></a>
+  <header class="archive-heading">
+    <h1>全部栏目</h1>
+    <p>栏目是站点的一级内容导航，用于区分优惠、测评、教程和工具。</p>
+  </header>
+
+  <ul class="taxonomy-grid" th:if="${not #lists.isEmpty(categories)}">
+    <li th:each="category : ${categories}">
+      <a th:href="@{${category.status.permalink}}">
+        <strong th:text="${category.spec.displayName}">栏目</strong>
+        <span class="taxonomy-grid__count" th:text="${category.postCount}">0</span>
+        <span th:text="${category.spec.description ?: '查看该栏目下的全部内容'}"></span>
+      </a>
+      <ul class="taxonomy-children" th:if="${not #lists.isEmpty(category.children)}">
+        <li th:each="child : ${category.children}">
+          <a th:href="@{${child.status.permalink}}" th:text="${child.spec.displayName}"></a>
+        </li>
+      </ul>
     </li>
   </ul>
-
-  <nav class="pagination" th:if="${categories.hasPrevious() || categories.hasNext()}">
-    <a th:if="${categories.hasPrevious()}" th:href="@{${categories.prevUrl}}">Previous</a>
-    <span th:text="|${categories.page} / ${categories.totalPages}|"></span>
-    <a th:if="${categories.hasNext()}" th:href="@{${categories.nextUrl}}">Next</a>
-  </nav>
+  <div class="empty-state" th:if="${#lists.isEmpty(categories)}">
+    <h2>尚未创建栏目</h2>
+    <p>在 Halo 后台建立栏目后，它们会显示在这里。</p>
+  </div>
 </include>

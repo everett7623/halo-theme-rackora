@@ -1,14 +1,38 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${category.spec.displayName} - ${site.title}|">Category Archive</title>
+    <title th:text="|${category.spec.displayName} - ${site.title}|">栏目</title>
   </template>
 
-  <h1 th:text="|Category: ${category.spec.displayName}|"></h1>
-  <p th:if="${category.spec.description}" th:text="${category.spec.description}"></p>
+  <header class="archive-heading">
+    <h1 th:text="${category.spec.displayName}">栏目名称</h1>
+    <p
+      th:if="${not #strings.isEmpty(category.spec.description)}"
+      th:text="${category.spec.description}"
+    ></p>
+    <p th:if="${#strings.isEmpty(category.spec.description)}" th:text="|${posts.total} 篇相关内容|">
+      相关内容
+    </p>
+  </header>
 
-  <ul class="post-list">
+  <aside
+    class="featured-entry"
+    th:if="${not #strings.isEmpty(#annotations.get(category, 'rackora_featured_post'))}"
+    th:with="featuredPost = ${postFinder.getByName(#annotations.get(category, 'rackora_featured_post'))}"
+  >
+    <small>精选内容</small>
+    <a
+      th:if="${featuredPost != null}"
+      th:href="@{${featuredPost.status.permalink}}"
+      th:text="${featuredPost.spec.title}"
+    ></a>
+  </aside>
+
+  <ul class="post-list" th:if="${not #lists.isEmpty(posts.items)}">
     <include src="post-card.html"></include>
   </ul>
-
+  <div class="empty-state" th:if="${#lists.isEmpty(posts.items)}">
+    <h2>这个栏目暂时没有文章</h2>
+    <p>可以先浏览其他栏目或返回首页。</p>
+  </div>
   <include src="pagination.html"></include>
 </include>

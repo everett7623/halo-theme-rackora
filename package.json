@@ -1,29 +1,33 @@
 {
+  "name": "halo-theme-rackora",
+  "version": "0.2.0",
+  "private": true,
+  "description": "A fast Halo theme for VPS affiliate publishing and technical content.",
   "type": "module",
   "scripts": {
-    "build": "tsc && vp build && theme-package",
+    "build": "tsc && vp build && theme-package && node scripts/normalize-theme-package.mjs",
     "build-only": "tsc && vp build",
     "dev": "vp build --watch",
+    "preview": "node scripts/create-preview.mjs && vite .preview --host 127.0.0.1 --port 4173",
     "check": "vp check --fix",
+    "test": "node scripts/validate-theme.mjs",
+    "test:budget": "node scripts/check-performance-budget.mjs",
     "prepare": "vp config",
     "skills:update": "npx skills update"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "lucide": "^0.468.0"
   },
   "devDependencies": {
     "@halo-dev/theme-package-cli": "^1.0.1",
     "@halo-dev/vite-plugin-halo-theme": "^1.0.3",
-    "@types/node": "18.11.9",
+    "@types/node": "^24.0.0",
+    "archiver": "^7.0.1",
     "typescript": "^5.9.3",
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
-    "vite-plus": "latest"
+    "vite": "^8.0.0",
+    "vite-plus": "latest",
+    "yaml": "^2.8.3"
   },
-  "packageManager": "pnpm@10.33.0",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ],
-    "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
-    }
-  }
+  "packageManager": "pnpm@10.33.0"
 }
