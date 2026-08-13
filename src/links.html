@@ -1,0 +1,55 @@
+<include src="layout.html">
+  <template name="head">
+    <title th:text="|${linksTitle} - ${site.title}|">友情链接</title>
+  </template>
+
+  <header class="page-heading">
+    <p class="eyebrow">Connections</p>
+    <h1 th:text="${linksTitle}">友情链接</h1>
+    <p>发现值得长期阅读的独立网站与创作者。</p>
+  </header>
+
+  <nav class="link-groups" aria-label="友链分组" th:if="${not #lists.isEmpty(simpleGroups)}">
+    <a th:href="@{/links}" th:classappend="${group == null} ? ' is-active'">全部</a>
+    <a
+      th:each="item : ${simpleGroups}"
+      th:href="@{/links(group=${item.metadata.name})}"
+      th:classappend="${group == item.metadata.name} ? ' is-active'"
+      th:text="${item.spec.displayName}"
+    ></a>
+  </nav>
+
+  <ul class="friend-grid" th:if="${not #lists.isEmpty(links)}">
+    <li th:each="link : ${links}">
+      <a th:href="@{${link.spec.url}}" target="_blank" rel="friend noopener noreferrer">
+        <img
+          th:if="${not #strings.isEmpty(link.spec.logo)}"
+          th:src="${link.spec.logo}"
+          th:alt="${link.spec.displayName}"
+          width="44"
+          height="44"
+          loading="lazy"
+          decoding="async"
+        />
+        <span>
+          <strong th:text="${link.spec.displayName}">网站名称</strong>
+          <small
+            th:if="${not #strings.isEmpty(link.spec.description)}"
+            th:text="${link.spec.description}"
+          ></small>
+        </span>
+        <i data-lucide="external-link" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+
+  <div class="empty-state" th:if="${#lists.isEmpty(links)}">
+    <h2>暂时没有公开链接</h2>
+    <p>请在 Halo 链接管理插件中添加并发布友情链接。</p>
+  </div>
+
+  <section class="comments comments--page" th:if="${haloCommentEnabled}">
+    <h2>留言</h2>
+    <halo:comment group="plugin.halo.run" kind="Plugin" th:attr="name=${pluginName}" />
+  </section>
+</include>

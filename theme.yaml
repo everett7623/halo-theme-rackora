@@ -6,15 +6,15 @@ spec:
   displayName: Rackora
   author:
     name: everettlabs
-    website: https://github.com/everett7623
-  description: 面向 VPS 测评、优惠、对比和技术教程的极简内容型 Halo 主题。
-  logo: https://raw.githubusercontent.com/everett7623/halo-theme-rackora/main/public/images/rackora-mark.svg
+    website: https://everettlabs.dev/
+  description: A minimal, content-first Halo theme for independent publishing, knowledge bases, and technical writing.
+  logo: /themes/theme-rackora/assets/images/rackora-mark.svg
   homepage: https://github.com/everett7623/halo-theme-rackora#readme
   repo: https://github.com/everett7623/halo-theme-rackora
   issues: https://github.com/everett7623/halo-theme-rackora/issues
   settingName: "theme-rackora-setting"
   configMapName: "theme-rackora-configMap"
-  version: 0.2.0
+  version: 0.3.0
   requires: ">=2.20.0"
   license:
     - name: "GPL-3.0"

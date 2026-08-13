@@ -13,6 +13,24 @@
       itemtype="https://schema.org/BlogPosting"
       th:attr="itemid=${post.status.permalink}"
     >
+      <link itemprop="mainEntityOfPage" th:href="@{${post.status.permalink}}" />
+      <meta itemprop="inLanguage" th:content="${theme.config.basic.site_language ?: 'zh-CN'}" />
+      <span
+        hidden
+        itemprop="publisher"
+        itemscope
+        itemtype="https://schema.org/Organization"
+        th:attr="itemid=${site.url + '#organization'}"
+      >
+        <meta itemprop="name" th:content="${theme.config.seo.organization_name ?: site.title}" />
+        <link itemprop="url" th:href="@{${site.url}}" />
+        <span itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+          <link
+            itemprop="url"
+            th:href="@{${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)}}"
+          />
+        </span>
+      </span>
       <header class="article-header">
         <nav
           class="breadcrumbs"
@@ -153,9 +171,46 @@
       </section>
     </article>
 
-    <aside class="article-sidebar" aria-label="文章目录" data-toc-container hidden>
-      <p>本页目录</p>
-      <nav data-toc></nav>
+    <aside
+      class="article-sidebar"
+      aria-label="文章辅助导航"
+      th:if="${theme.config.content.show_post_sidebar == null or theme.config.content.show_post_sidebar}"
+    >
+      <section class="article-sidebar__section" data-toc-container hidden>
+        <h2>本页目录</h2>
+        <nav data-toc></nav>
+      </section>
+
+      <section
+        class="article-sidebar__section"
+        th:with="sidebarPosts = ${postFinder.list({page: 1, size: theme.config.content.post_sidebar_count ?: 5, sort: {'spec.publishTime,desc'}})}"
+      >
+        <h2>最新文章</h2>
+        <ol class="article-sidebar__posts">
+          <li th:each="sidebarPost : ${sidebarPosts.items}">
+            <a th:href="@{${sidebarPost.status.permalink}}" th:text="${sidebarPost.spec.title}"></a>
+          </li>
+        </ol>
+      </section>
+
+      <section
+        class="article-sidebar__section"
+        th:if="${theme.config.content.show_post_comments}"
+        th:with="sidebarComments = ${commentFinder.list({group: 'content.halo.run', version: 'v1alpha1', kind: 'Post', name: post.metadata.name}, 1, theme.config.content.post_comment_count ?: 3)}"
+      >
+        <h2>最新评论</h2>
+        <ul class="article-sidebar__comments" th:if="${not #lists.isEmpty(sidebarComments.items)}">
+          <li th:each="comment : ${sidebarComments.items}">
+            <strong th:text="${comment.spec.owner.displayName}">访客</strong>
+            <p
+              th:text="${#strings.abbreviate(#strings.replace(comment.spec.content, '&nbsp;', ' '), 96)}"
+            ></p>
+          </li>
+        </ul>
+        <p class="article-sidebar__empty" th:if="${#lists.isEmpty(sidebarComments.items)}">
+          暂无评论
+        </p>
+      </section>
     </aside>
   </div>
 </include>

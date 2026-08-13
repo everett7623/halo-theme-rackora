@@ -1,10 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
   <title id="title">Rackora</title>
-  <rect width="64" height="64" rx="12" fill="#13211c"/>
-  <rect x="14" y="14" width="36" height="10" rx="3" fill="#f4f7f5"/>
-  <rect x="14" y="27" width="36" height="10" rx="3" fill="#f4f7f5"/>
-  <rect x="14" y="40" width="36" height="10" rx="3" fill="#f4f7f5"/>
-  <circle cx="43" cy="19" r="2" fill="#28c18b"/>
-  <circle cx="43" cy="32" r="2" fill="#28c18b"/>
-  <circle cx="43" cy="45" r="2" fill="#e9695f"/>
+  <desc id="desc">An abstract open page and reading path</desc>
+  <rect width="64" height="64" rx="14" fill="#13211c"/>
+  <path d="M15 16h20c8.3 0 14 5.4 14 13.2S43.3 42.5 35 42.5H25V51H15V16Z" fill="#f4f7f5"/>
+  <path d="M25 25h10c2.8 0 4.5 1.7 4.5 4.2 0 2.6-1.7 4.3-4.5 4.3H25V25Z" fill="#13211c"/>
+  <path d="m34 42 14 10" fill="none" stroke="#28c18b" stroke-width="6" stroke-linecap="round"/>
 </svg>

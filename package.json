@@ -1,8 +1,8 @@
 {
   "name": "halo-theme-rackora",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "A fast Halo theme for VPS affiliate publishing and technical content.",
+  "description": "A minimal, content-first Halo theme for independent publishing and technical writing.",
   "type": "module",
   "scripts": {
     "build": "tsc && vp build && theme-package && node scripts/normalize-theme-package.mjs",

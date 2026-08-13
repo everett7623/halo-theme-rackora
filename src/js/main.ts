@@ -138,11 +138,26 @@ function initBackToTop(): void {
   update();
 }
 
+function initSiteUptime(): void {
+  const target = document.querySelector<HTMLElement>("[data-site-launch]");
+  if (!target) return;
+
+  const launchDate = new Date(`${target.dataset.siteLaunch}T00:00:00`);
+  const elapsed = Date.now() - launchDate.getTime();
+  if (!Number.isFinite(elapsed) || elapsed < 0) {
+    target.remove();
+    return;
+  }
+
+  target.textContent = `运行 ${Math.floor(elapsed / 86_400_000) + 1} 天`;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderIcons();
   initNavigation();
   initThemeToggle();
   initBackToTop();
+  initSiteUptime();
 });
 
 document.addEventListener("rackora:icons", renderIcons);

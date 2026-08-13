@@ -1,6 +1,6 @@
 <!doctype html>
 <html
-  lang="zh-CN"
+  th:lang="${theme.config.basic.site_language ?: 'zh-CN'}"
   xmlns:th="http://www.thymeleaf.org"
   th:attr="data-color-scheme=${theme.config.appearance.color_scheme ?: 'auto'}"
   th:class="|color-scheme-${theme.config.appearance.color_scheme ?: 'auto'}|"
@@ -10,6 +10,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f6f8f7" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#101714" media="(prefers-color-scheme: dark)" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      th:if="${#strings.isEmpty(site.favicon)}"
+      th:href="${#theme.assets('/images/rackora-mark.svg')}"
+    />
+    <meta
+      name="geo.region"
+      th:if="${not #strings.isEmpty(theme.config.basic.site_region)}"
+      th:content="${theme.config.basic.site_region}"
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      th:if="${pluginFinder.available('PluginFeed')}"
+      th:title="|${site.title} RSS|"
+      th:href="@{${#strings.isEmpty(theme.config.basic.rss_url) ? '/rss.xml' : theme.config.basic.rss_url}}"
+    />
     <meta
       name="google-site-verification"
       th:if="${not #strings.isEmpty(theme.config.seo.google_verification)}"
@@ -47,6 +65,52 @@
       })();
     </script>
     <script type="module" src="/js/main.ts"></script>
+    <script
+      async
+      th:if="${theme.config.analytics?.enabled and #strings.startsWith(theme.config.analytics.ga4_id ?: '', 'G-')}"
+      th:src="|https://www.googletagmanager.com/gtag/js?id=${theme.config.analytics.ga4_id}|"
+    ></script>
+    <script
+      th:if="${theme.config.analytics?.enabled and #strings.startsWith(theme.config.analytics.ga4_id ?: '', 'G-')}"
+      th:inline="javascript"
+    >
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", /*[[${theme.config.analytics.ga4_id}]]*/ "");
+    </script>
+    <script
+      th:if="${theme.config.analytics?.enabled and not #strings.isEmpty(theme.config.analytics.clarity_id)}"
+      th:inline="javascript"
+    >
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", /*[[${theme.config.analytics.clarity_id}]]*/ "");
+    </script>
+    <script
+      th:if="${theme.config.analytics?.enabled and #strings.length(theme.config.analytics.baidu_analytics_id ?: '') == 32}"
+      th:inline="javascript"
+    >
+      window._hmt = window._hmt || [];
+      (function () {
+        const script = document.createElement("script");
+        script.async = true;
+        script.src =
+          "https://hm.baidu.com/hm.js?" + /*[[${theme.config.analytics.baidu_analytics_id}]]*/ "";
+        document.head.appendChild(script);
+      })();
+    </script>
   </head>
   <body th:style="|--rack-accent: ${theme.config.appearance.accent_color ?: '#08775b'}|">
     <a class="skip-link" href="#main-content">跳到正文</a>
@@ -138,12 +202,24 @@
       <div class="shell footer-inner">
         <div>
           <strong th:text="${site.title}">Rackora</strong>
-          <p th:text="${site.subtitle ?: '独立测试、透明披露、持续更新。'}"></p>
+          <p
+            th:text="${theme.config.basic.footer_note ?: (site.subtitle ?: 'Independent publishing with clarity and care.')}"
+          ></p>
         </div>
         <nav aria-label="页脚导航">
           <a th:href="@{${site.routes.archivesUri}}">归档</a>
           <a th:href="@{${site.routes.categoriesUri}}">栏目</a>
           <a th:href="@{${site.routes.tagsUri}}">标签</a>
+          <a
+            th:if="${(theme.config.integrations?.show_links ?: true) and (theme.config.integrations?.show_links_in_footer ?: true) and pluginFinder.available('PluginLinks')}"
+            th:href="@{/links}"
+            >友情链接</a
+          >
+          <a
+            th:if="${pluginFinder.available('PluginFeed')}"
+            th:href="@{${#strings.isEmpty(theme.config.basic.rss_url) ? '/rss.xml' : theme.config.basic.rss_url}}"
+            >RSS</a
+          >
         </nav>
         <small>
           <span>Powered by Halo</span>
@@ -151,7 +227,37 @@
           <a href="https://github.com/everett7623/halo-theme-rackora" rel="noopener" target="_blank"
             >Rackora</a
           >
+          <span aria-hidden="true"> · </span>
+          <a
+            th:href="@{${theme.config.basic.studio_url ?: 'https://everettlabs.dev/'}}"
+            rel="noopener"
+            target="_blank"
+            >Everett Labs</a
+          >
+          <span th:if="${not #strings.isEmpty(theme.config.basic.site_region)}">
+            <span aria-hidden="true"> · </span>
+            <span th:text="|Region ${theme.config.basic.site_region}|">Region</span>
+          </span>
         </small>
+        <p
+          class="footer-stats"
+          th:if="${theme.config.basic.show_footer_stats or not #strings.isEmpty(theme.config.basic.site_launch_date)}"
+          th:with="stats = ${siteStatsFinder.getStats()}"
+        >
+          <span th:if="${theme.config.basic.show_footer_stats}" th:text="|${stats.post} 篇文章|"
+            >文章</span
+          >
+          <span th:if="${theme.config.basic.show_footer_stats}" th:text="|${stats.comment} 条评论|"
+            >评论</span
+          >
+          <span th:if="${theme.config.basic.show_footer_stats}" th:text="|${stats.visit} 次访问|"
+            >访问</span
+          >
+          <span
+            th:if="${not #strings.isEmpty(theme.config.basic.site_launch_date)}"
+            th:attr="data-site-launch=${theme.config.basic.site_launch_date}"
+          ></span>
+        </p>
       </div>
       <halo:footer />
     </footer>

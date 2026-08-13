@@ -1298,17 +1298,23 @@ img {
   max-height: calc(100vh - var(--rack-header-height) - 60px);
   align-self: start;
   overflow: auto;
-  padding-left: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.article-sidebar__section {
+  padding-left: 16px;
   border-left: 1px solid var(--rack-line);
 }
 
-.article-sidebar > p {
+.article-sidebar__section h2 {
   margin: 0 0 12px;
   color: var(--rack-muted);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.7rem;
   font-weight: 720;
-  letter-spacing: 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .article-sidebar nav {
@@ -1334,6 +1340,140 @@ img {
 .article-sidebar a.is-active {
   color: var(--rack-accent);
   background: var(--rack-accent-soft);
+}
+
+.article-sidebar__posts,
+.article-sidebar__comments {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-sidebar__posts li + li,
+.article-sidebar__comments li + li {
+  border-top: 1px solid var(--rack-line);
+}
+
+.article-sidebar__posts a {
+  padding-block: 8px;
+  color: var(--rack-ink-soft);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.article-sidebar__comments li {
+  padding: 9px 8px;
+}
+
+.article-sidebar__comments strong {
+  display: block;
+  overflow: hidden;
+  color: var(--rack-ink-soft);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.article-sidebar__comments p,
+.article-sidebar__empty {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 4px 0 0;
+  color: var(--rack-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.page-heading {
+  max-width: var(--rack-content);
+  margin: 0 auto 32px;
+}
+
+.link-groups {
+  max-width: var(--rack-content);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 auto 20px;
+}
+
+.link-groups a {
+  padding: 6px 10px;
+  color: var(--rack-muted);
+  border: 1px solid var(--rack-line);
+  border-radius: 5px;
+  font-size: 0.78rem;
+  text-decoration: none;
+}
+
+.link-groups a:hover,
+.link-groups a.is-active {
+  color: var(--rack-accent);
+  background: var(--rack-accent-soft);
+  border-color: var(--rack-accent);
+}
+
+.friend-grid {
+  max-width: var(--rack-content);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.friend-grid > li > a {
+  min-height: 84px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  color: var(--rack-ink);
+  background: var(--rack-surface);
+  border: 1px solid var(--rack-line);
+  border-radius: 7px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 2%);
+  text-decoration: none;
+}
+
+.friend-grid > li > a:hover {
+  border-color: var(--rack-line-strong);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 5%);
+  transform: translateY(-1px);
+}
+
+.friend-grid img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.friend-grid span,
+.friend-grid strong,
+.friend-grid small {
+  min-width: 0;
+  display: block;
+}
+
+.friend-grid small {
+  overflow: hidden;
+  margin-top: 4px;
+  color: var(--rack-muted);
+  font-size: 0.74rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-grid svg {
+  width: 15px;
+  color: var(--rack-muted);
 }
 
 .reading-progress {
@@ -1669,6 +1809,23 @@ img {
   font-size: 0.7rem;
 }
 
+.footer-stats {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 14px;
+  margin: -10px 0 0;
+  color: var(--rack-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.68rem;
+}
+
+.footer-stats span + span::before {
+  margin-right: 14px;
+  color: var(--rack-line-strong);
+  content: "/";
+}
+
 .back-to-top {
   position: fixed;
   z-index: 80;
@@ -1878,9 +2035,14 @@ img {
   }
 
   .taxonomy-grid,
-  .tag-cloud {
+  .tag-cloud,
+  .friend-grid {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+
+  .friend-grid > li + li {
+    margin-top: 10px;
   }
 
   .footer-inner nav {
@@ -1888,6 +2050,10 @@ img {
   }
 
   .footer-inner small {
+    grid-column: 1;
+  }
+
+  .footer-stats {
     grid-column: 1;
   }
 }

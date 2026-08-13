@@ -75,15 +75,16 @@ const html = `<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rackora 视觉预览</title>
     <link rel="stylesheet" href="/assets/${cssName}" />
+    <style>[data-preview-header] { position: relative; }</style>
     <script type="module" src="/assets/${mainName}"></script>
   </head>
   <body style="--rack-accent:#08775b">
     <a class="skip-link" href="#main-content">跳到正文</a>
-    <header class="site-header site-header--compact">
+    <header class="site-header site-header--compact" data-preview-header>
       <div class="shell header-inner">
         <a class="brand" href="#" aria-label="返回首页">
           <img class="brand-mark" width="34" height="34" src="/assets/rackora-mark.svg" alt="Rackora" />
-          <span class="brand-copy"><strong>Rackora</strong><small>独立测试、透明披露、持续更新</small></span>
+          <span class="brand-copy"><strong>Rackora</strong><small>Independent publishing with clarity and care.</small></span>
         </a>
         <button class="icon-button nav-toggle" type="button" aria-label="打开导航" aria-controls="primary-nav" aria-expanded="false" data-nav-toggle><i data-lucide="menu"></i></button>
         <nav id="primary-nav" class="site-nav" aria-label="主导航" data-site-nav>
@@ -112,7 +113,7 @@ const html = `<!doctype html>
         </div>
       </div>
     </main>
-    <footer class="site-footer"><div class="shell footer-inner"><div><strong>Rackora</strong><p>独立测试、透明披露、持续更新。</p></div><nav><a href="#">归档</a><a href="#">栏目</a><a href="#">标签</a></nav><small>Powered by Halo · Rackora</small></div></footer>
+    <footer class="site-footer"><div class="shell footer-inner"><div><strong>Rackora</strong><p>Independent publishing with clarity and care.</p></div><nav><a href="#">归档</a><a href="#">栏目</a><a href="#">标签</a><a href="#">友情链接</a><a href="#">RSS</a></nav><small>Powered by Halo · Rackora · Everett Labs · Region CN</small><p class="footer-stats"><span>31 篇文章</span><span>128 条评论</span><span>运行 365 天</span></p></div></footer>
     <button class="back-to-top" type="button" aria-label="返回顶部" data-back-to-top><i data-lucide="chevron-up"></i></button>
   </body>
 </html>`;

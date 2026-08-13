@@ -47,6 +47,42 @@ spec:
               help: "填写完整的 https://、mailto: 或其他有效链接。"
               value: ""
               validation: required
+        - $formkit: text
+          name: site_language
+          label: 网站语言
+          help: 用于 HTML lang 与结构化数据，例如 zh-CN、en-US。
+          value: zh-CN
+          validation: required
+        - $formkit: text
+          name: site_region
+          label: 网站地区
+          help: ISO 3166 地区代码，例如 CN、SG、US-CA；留空则不输出地区信号。
+          value: ""
+        - $formkit: url
+          name: rss_url
+          label: RSS 地址
+          help: 安装官方 RSS 插件时通常填写站点的 /rss.xml；留空则自动使用 /rss.xml。
+          value: ""
+        - $formkit: text
+          name: footer_note
+          label: 页脚说明
+          help: 留空则显示站点副标题。
+          value: ""
+        - $formkit: switch
+          name: show_footer_stats
+          label: 页脚显示站点统计
+          help: 显示 Halo 记录的文章、评论和访问量；保持为一行轻量信息。
+          value: false
+        - $formkit: text
+          name: site_launch_date
+          label: 建站日期
+          help: 可选，格式为 YYYY-MM-DD；填写后页脚显示已运行天数。
+          value: ""
+          validation: matches:/^$|^\d{4}-\d{2}-\d{2}$/
+        - $formkit: url
+          name: studio_url
+          label: 制作团队链接
+          value: "https://everettlabs.dev/"
     - group: appearance
       label: 外观
       formSchema:
@@ -92,6 +128,31 @@ spec:
           label: 首页资料侧栏
           help: 展示站点简介、社交账号、内容数量和栏目索引。
           value: true
+        - $formkit: switch
+          name: show_post_sidebar
+          label: 正文侧栏
+          help: 展示目录与正文辅助信息；移动端自动隐藏。
+          value: true
+        - $formkit: number
+          name: post_sidebar_count
+          label: 侧栏文章数量
+          help: 正文目录下展示的最新文章数量，建议 3–8 篇。
+          value: 5
+          min: 3
+          max: 8
+          step: 1
+        - $formkit: switch
+          name: show_post_comments
+          label: 侧栏显示当前文章最新评论
+          help: 仅在当前文章存在公开评论时显示，不替代正文评论区。
+          value: false
+        - $formkit: number
+          name: post_comment_count
+          label: 侧栏评论数量
+          value: 3
+          min: 1
+          max: 5
+          step: 1
     - group: seo
       label: SEO
       formSchema:
@@ -120,6 +181,61 @@ spec:
           label: 百度站点验证码
           help: 只填写 baidu-site-verification 的 content 值；标签格式以百度后台当前提供为准。
           value: ""
+        - $formkit: text
+          name: organization_name
+          label: 站点组织名称
+          help: 用于 Organization / WebSite 结构化数据；留空则使用站点标题。
+          value: ""
+        - $formkit: attachment
+          name: organization_logo
+          label: 站点组织 Logo
+          help: 建议使用清晰的正方形图片；留空则使用站点 Logo 或主题默认图标。
+          accepts:
+            - image/*
+          value: ""
+        - $formkit: url
+          name: about_url
+          label: 关于页面地址
+          help: 可选，用于补充站点实体信息，例如 https://example.com/about。
+          value: ""
+    - group: analytics
+      label: 统计
+      formSchema:
+        - $formkit: switch
+          name: enabled
+          label: 启用主题统计代码
+          help: 默认关闭；启用后仅加载已填写且格式有效的统计服务。
+          value: false
+        - $formkit: text
+          name: ga4_id
+          label: GA4 Measurement ID
+          help: 格式为 G-XXXXXXXXXX。不要填写完整脚本代码。
+          value: ""
+          validation: matches:/^$|^G-[A-Z0-9]+$/
+        - $formkit: text
+          name: clarity_id
+          label: Microsoft Clarity Project ID
+          help: 可选，只填写项目 ID；使用前请按所在地区完成隐私与 Cookie 告知。
+          value: ""
+          validation: matches:/^$|^[A-Za-z0-9]+$/
+        - $formkit: text
+          name: baidu_analytics_id
+          label: 百度统计站点 ID
+          help: 可选，只填写 hm.js? 后的 32 位十六进制 ID。
+          value: ""
+          validation: matches:/^$|^[a-fA-F0-9]{32}$/
+    - group: integrations
+      label: 集成
+      formSchema:
+        - $formkit: switch
+          name: show_links
+          label: 显示友情链接入口
+          help: 需要 Halo 官方“链接管理”插件；主题适配其 /links 页面并控制首页、页脚入口。
+          value: true
+        - $formkit: switch
+          name: show_links_in_footer
+          label: 页脚显示友情链接入口
+          value: true
     - group: monetization
       label: 广告与联盟
       formSchema:

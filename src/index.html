@@ -7,7 +7,23 @@
         "@type": "WebSite",
         "name": /*[[${site.title}]]*/ "站点标题",
         "url": /*[[${site.url}]]*/ "https://example.com/",
-        "description": /*[[${site.seo.description}]]*/ ""
+        "description": /*[[${site.seo.description}]]*/ "",
+        "inLanguage": /*[[${theme.config.basic.site_language ?: 'zh-CN'}]]*/ "zh-CN",
+        "publisher": {
+          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization"
+        }
+      }
+    </script>
+    <script type="application/ld+json" th:inline="javascript">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization",
+        "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site",
+        "url": /*[[${site.url}]]*/ "https://example.com/",
+        "mainEntityOfPage": /*[[${theme.config.seo.about_url ?: site.url}]]*/ "https://example.com/",
+        "logo": /*[[${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)}]]*/ "",
+        "sameAs": /*[[${theme.config.basic.socials.?[not #strings.isEmpty(url)].![url]}]]*/ []
       }
     </script>
   </template>
@@ -71,7 +87,7 @@
         />
         <div>
           <h2 th:text="${site.title}">Rackora</h2>
-          <p th:text="${site.subtitle ?: '独立测试、透明披露、持续更新。'}"></p>
+          <p th:text="${site.subtitle ?: 'Independent publishing with clarity and care.'}"></p>
         </div>
         <nav
           class="profile-socials"
@@ -122,6 +138,11 @@
       <nav class="sidebar-shortcuts" aria-label="内容索引">
         <a th:href="@{${site.routes.archivesUri}}">文章归档</a>
         <a th:href="@{${site.routes.tagsUri}}">标签索引</a>
+        <a
+          th:if="${(theme.config.integrations?.show_links ?: true) and pluginFinder.available('PluginLinks')}"
+          th:href="@{/links}"
+          >友情链接</a
+        >
       </nav>
     </aside>
   </div>

@@ -16,6 +16,7 @@ const requiredPages = [
   "categories.html",
   "category.html",
   "author.html",
+  "links.html",
   "error/404.html",
 ];
 
@@ -123,8 +124,8 @@ const imageMode = contentForm?.formSchema?.find((field) => field.name === "image
 assert.equal(imageMode?.value, "none", "article covers must default to low-image mode");
 assert.deepEqual(
   settings?.spec?.forms?.map((form) => form.group),
-  ["basic", "appearance", "content", "seo", "monetization"],
-  "theme settings must separate presentation, SEO, and monetization",
+  ["basic", "appearance", "content", "seo", "analytics", "integrations", "monetization"],
+  "theme settings must separate site data, presentation, SEO, analytics, integrations, and monetization",
 );
 const seoForm = settings?.spec?.forms?.find((form) => form.group === "seo");
 assert.equal(seoForm?.formSchema?.find((field) => field.name === "noindex_tags")?.value, true);
@@ -132,6 +133,17 @@ assert.equal(seoForm?.formSchema?.find((field) => field.name === "noindex_archiv
 assert.ok(seoForm?.formSchema?.find((field) => field.name === "google_verification"));
 assert.ok(seoForm?.formSchema?.find((field) => field.name === "bing_verification"));
 assert.ok(seoForm?.formSchema?.find((field) => field.name === "baidu_verification"));
+assert.ok(seoForm?.formSchema?.find((field) => field.name === "organization_name"));
+assert.ok(seoForm?.formSchema?.find((field) => field.name === "organization_logo"));
+
+const analyticsForm = settings?.spec?.forms?.find((form) => form.group === "analytics");
+assert.equal(analyticsForm?.formSchema?.find((field) => field.name === "enabled")?.value, false);
+assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "ga4_id"));
+assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "clarity_id"));
+assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "baidu_analytics_id"));
+
+const integrationsForm = settings?.spec?.forms?.find((form) => form.group === "integrations");
+assert.ok(integrationsForm?.formSchema?.find((field) => field.name === "show_links"));
 
 const monetizationForm = settings?.spec?.forms?.find((form) => form.group === "monetization");
 assert.equal(monetizationForm?.formSchema?.find((field) => field.name === "enabled")?.value, false);
@@ -190,8 +202,35 @@ assert.match(post, /position=["']post_after["']/, "posts must expose a post-cont
 assert.match(adSlot, /theme\.config\.monetization\.ads/, "ad slots must render configured ads");
 assert.match(adSlot, /sponsored nofollow noopener noreferrer/, "ads need safe link attributes");
 assert.doesNotMatch(settingsSource, /\$formkit:\s*code[\s\S]*广告/i, "ads must not accept scripts");
+assert.match(
+  layout,
+  /PluginFeed/,
+  "layout must expose RSS discovery when the feed plugin is available",
+);
+assert.match(
+  layout,
+  /googletagmanager\.com\/gtag/,
+  "layout must support GA4 when explicitly enabled",
+);
+assert.match(layout, /hm\.baidu\.com\/hm\.js/, "layout must support Baidu Analytics when enabled");
+assert.match(layout, /everettlabs\.dev/, "footer must credit Everett Labs");
+assert.match(layout, /siteStatsFinder\.getStats\(\)/, "footer must support native Halo stats");
+assert.match(layout, /data-site-launch/, "footer must support optional site uptime");
+assert.match(layout, /site\.favicon/, "the bundled mark must be available as a favicon fallback");
+
+const linksPage = await read("src/links.html");
+assert.match(
+  linksPage,
+  /th:each="link : \$\{links\}"/,
+  "links page must use PluginLinks variables",
+);
+assert.match(linksPage, /rel="friend noopener noreferrer"/, "friend links need safe attributes");
+assert.match(post, /postFinder\.list\(/, "post sidebar must provide an article list");
+assert.match(post, /commentFinder\.list\(/, "post sidebar must support recent comments");
 
 await read("public/images/rackora-mark.svg");
+const builtThemeMark = await read("templates/assets/images/rackora-mark.svg");
+assert.match(builtThemeMark, /<svg\b/, "the built theme must contain the default mark asset");
 console.log(
   `Theme validation passed: ${requiredPages.length} routes, config, SEO, and extensions.`,
 );

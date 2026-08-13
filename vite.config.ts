@@ -3,6 +3,9 @@ import { defineConfig } from "vite-plus";
 
 export default defineConfig({
   plugins: [haloThemePlugin()],
+  build: {
+    copyPublicDir: false,
+  },
   lint: { options: { typeAware: true, typeCheck: true }, ignorePatterns: [".agents"] },
   fmt: {
     printWidth: 100,

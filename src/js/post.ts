@@ -55,9 +55,9 @@ function ensureUniqueId(base: string, usedIds: Set<string>): string {
 }
 
 function initTableOfContents(content: HTMLElement): void {
-  const container = document.querySelector<HTMLElement>("[data-toc-container]");
-  const navigation = container?.querySelector<HTMLElement>("[data-toc]");
-  if (!container || !navigation) return;
+  const section = document.querySelector<HTMLElement>("[data-toc-container]");
+  const navigation = section?.querySelector<HTMLElement>("[data-toc]");
+  if (!section || !navigation) return;
 
   const headings = Array.from(content.querySelectorAll<HTMLElement>("h2, h3"));
   if (headings.length < 2) return;
@@ -81,7 +81,7 @@ function initTableOfContents(content: HTMLElement): void {
     navigation.append(link);
   }
 
-  container.hidden = false;
+  section.hidden = false;
   const links = Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));
   const observer = new IntersectionObserver(
     (entries) => {

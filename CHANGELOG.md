@@ -3,6 +3,24 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.3.0] - 2026-08-14
+
+### 新增
+
+- 通用的 Rackora 默认 SVG 标志，并在 Halo 后台与站点 favicon 回退中使用主题内置资源。
+- 网站语言、地区、RSS 地址、页脚说明、可选站点统计/运行时间和 Everett Labs 链接设置。
+- 可选 GA4、Microsoft Clarity 与百度统计；默认关闭且只接受服务 ID，不接受任意脚本。
+- Organization 站点实体、组织名称、Logo 和关于页面设置。
+- Halo 官方链接管理插件的友情链接页面、分组导航和页脚入口。
+- 正文侧栏最新文章，以及可选的当前文章最新评论。
+- 标签触发的 GitHub Release 自动构建与版本一致性校验。
+
+### 调整
+
+- 主题介绍改为适用于独立出版、知识库和技术写作的英文通用描述。
+- 首页站点实体补充社交账号，页头补充 RSS 自动发现及地区信号。
+- 页脚增加主题项目、Everett Labs、RSS、友情链接和可选地区信息。
+
 ## [0.2.0] - 2026-08-13
 
 ### 新增
@@ -22,4 +40,12 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 - 移除三色装饰轨道，统一为单一强调色与克制的轻卡片视觉。
 - 默认不展示文章封面和首页横幅，减少图片依赖。
 
+## [0.1.0] - 2026-08-13
+
+### 新增
+
+- Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
+
+[0.3.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.3.0
 [0.2.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.2.0
+[0.1.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.1.0
