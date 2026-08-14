@@ -25,11 +25,12 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 
 ## 功能
 
-- 首页可选横幅、带可排序社交链接的站点资料侧栏、栏目索引和低图片文章流。
+- 首页可选横幅、带可排序社交链接的站点资料侧栏、原生站点统计、栏目索引和低图片文章流。
 - 主题界面默认英文，可在后台切换简体中文；站点内容与菜单保持原语言。
 - 首页按文章数展示可配置数量的高频标签，标签汇总页保留完整列表，标签名称不添加 `#`。
 - 首页、文章、独立页、归档、标签、栏目、作者、友情链接和 404 共 11 个 Halo 路由模板。
-- 响应式导航、明暗模式、返回顶部和减少动态效果适配。
+- 归档按日期、标题和主分类三列展示，移动端将分类移至标题下方。
+- 响应式导航支持长菜单滚动和 `Esc` 关闭，并适配明暗模式、返回顶部和减少动态效果。
 - 文章署名、阅读进度、预计阅读时间、自动目录、标题锚点和相邻文章导航。
 - Fuwari 启发的正文标题标记、行内代码、代码块和文末作者/许可声明。
 - Highlight.js 按需语言包、代码复制、横向表格容器和 VPS 产品表识别。
@@ -49,8 +50,9 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 
 1. 从 Release 下载主题 ZIP，或在仓库根目录执行 `pnpm install && pnpm build`。
 2. 在 Halo Console 的主题管理中上传生成的 ZIP 并安装。
-3. 启用前检查站点菜单、Logo、标题、副标题、栏目 description 和搜索/评论插件。
-4. 启用后分别验证首页、文章、独立页、归档、栏目、标签、作者和 404 页面。
+3. 更新已有安装时，在主题管理中执行“重新加载配置”，使新增设置分组生效。
+4. 启用前检查站点菜单、Logo、标题、副标题、栏目 description 和搜索/评论插件。
+5. 启用后分别验证首页、文章、独立页、归档、栏目、标签、作者和 404 页面。
 
 主题目录名和 `theme.yaml` 的 `metadata.name` 必须保持为 `theme-rackora`。
 
@@ -107,6 +109,7 @@ pnpm install
 pnpm build-only
 pnpm test
 pnpm test:budget
+pnpm build
 pnpm preview
 ```
 
@@ -115,10 +118,11 @@ pnpm preview
 - `templates/`：Vite 构建输出，Halo 实际读取的模板目录。
 - `scripts/validate-theme.mjs`：路由、H1、内容契约、配置和扩展点静态检查。
 - `scripts/check-performance-budget.mjs`：构建后 CSS/JS gzip 预算检查。
+- `scripts/check-sync-conflicts.mjs`：构建前阻止同步冲突副本进入源码与安装包。
 - `scripts/create-preview.mjs`：生成不进入主题包的本地视觉夹具，不替代 Halo 运行时测试。
 
-`pnpm dev` 持续构建 `templates/`。开发 Halo 实例建议设置
-`SPRING_THYMELEAF_CACHE=false`。
+`pnpm build` 会依次执行 TypeScript/Vite 构建、主题校验、性能预算检查和可复现 ZIP 打包。
+`pnpm dev` 持续构建 `templates/`。开发 Halo 实例建议设置 `SPRING_THYMELEAF_CACHE=false`。
 
 ## 版本与发布
 
@@ -141,7 +145,7 @@ canonical 和重定向仍必须由内容治理结果决定。下列工作不属�
 - 迁移、合并或删除历史标签引用。
 - 在 P2-03 完成前渲染或推断 Pillar / Cluster 新字段。
 
-部署前后的操作门禁和站点任务仍以 `D:\EvenFrank\Workspace\Halo\1vps.top\plan` 为准。
+部署前后仍需在目标 Halo 实例验证主题配置、插件可用性、页面响应、SEO 输出和回滚路径。
 
 ## 许可证
 
