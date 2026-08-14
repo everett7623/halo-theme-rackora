@@ -3,6 +3,28 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.4.2] - 2026-08-15
+
+### 新增
+
+- 可选择 Halo 页脚菜单，并在菜单缺失时安全回退到主题内置导航。
+- 首页资料、栏目、标签与正文目录、最新文章的独立显示开关。
+- ICP 备案号、公网安备号及各自跳转地址设置。
+- 共享 SEO head：为首页、文章、独立页、归档、栏目、标签、作者和友情链接输出唯一绝对 canonical、Open Graph 与 Twitter Card。
+- 正文页动态 `BlogPosting` JSON-LD，标题、摘要、作者、发布时间、更新时间和 URL 均来自当前文章。
+
+### 修复
+
+- 修复首次安装未保存配置时，页脚统计空值导致首页响应中断的问题。
+- 修复升级配置缺少新侧栏字段时，首页侧栏或正文辅助区行为不一致的问题。
+- 修复移动端侧栏信息先于文章列表出现，导致首篇内容需要滚动超过一屏的问题。
+- 空 GA4、Clarity 和百度统计 ID 可以保持未启用状态并正常保存。
+
+### 调整
+
+- 手机首页顺序改为标题、最新文章、资料与统计，桌面和平板右侧栏位置保持不变。
+- 更新主题截图、后台功能说明和 SEO 职责边界。
+
 ## [0.4.1] - 2026-08-14
 
 ### 调整
@@ -69,6 +91,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.4.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.2
 [0.4.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.1
 [0.4.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.0
 [0.3.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.3.0

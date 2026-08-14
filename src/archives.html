@@ -5,6 +5,14 @@
     >
       Archives
     </title>
+    <include
+      src="seo-head.html"
+      path="site.routes.archivesUri"
+      title="(theme.config.basic.ui_language == 'zh-CN' ? '全部文章' : 'Archives') + ' - ' + site.title"
+      description="site.seo.description ?: site.subtitle"
+      image="site.logo"
+      type="website"
+    ></include>
     <meta name="robots" content="noindex,follow" th:if="${theme.config.seo.noindex_archives}" />
   </template>
 

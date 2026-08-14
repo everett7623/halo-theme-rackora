@@ -26,16 +26,27 @@ async function read(relativePath) {
   return readFile(path.join(root, relativePath), "utf8");
 }
 
-const [themeSource, settingsSource, annotationSource, layout, packageSource, changelog, readme] =
-  await Promise.all([
-    read("theme.yaml"),
-    read("settings.yaml"),
-    read("annotation-setting.yaml"),
-    read("src/partials/layout.html"),
-    read("package.json"),
-    read("CHANGELOG.md"),
-    read("README.md"),
-  ]);
+const [
+  themeSource,
+  settingsSource,
+  annotationSource,
+  layout,
+  seoHead,
+  mainStyles,
+  packageSource,
+  changelog,
+  readme,
+] = await Promise.all([
+  read("theme.yaml"),
+  read("settings.yaml"),
+  read("annotation-setting.yaml"),
+  read("src/partials/layout.html"),
+  read("src/partials/seo-head.html"),
+  read("src/css/main.css"),
+  read("package.json"),
+  read("CHANGELOG.md"),
+  read("README.md"),
+]);
 const theme = YAML.parse(themeSource);
 const settings = YAML.parse(settingsSource);
 const packageManifest = JSON.parse(packageSource);
@@ -86,9 +97,16 @@ assert.match(layout, /<halo:footer\s*\/>/, "layout must expose the Halo footer e
 assert.doesNotMatch(
   layout,
   /<meta\s+name=["']description["']/i,
-  "Halo injects description metadata",
+  "Halo injects standard description metadata",
 );
-assert.doesNotMatch(layout, /<link\s+rel=["']canonical["']/i, "Halo injects canonical links");
+assert.match(seoHead, /<link\s+rel=["']canonical["']/i, "theme pages need a self canonical");
+assert.match(seoHead, /property=["']og:url["']/i, "theme pages need an Open Graph URL");
+assert.match(seoHead, /name=["']twitter:card["']/i, "theme pages need Twitter card metadata");
+assert.match(
+  seoHead,
+  /canonicalPath = \$\{\(\{\{path\}\}\)\}/,
+  "SEO props must remain valid Thymeleaf expressions after Vite expansion",
+);
 
 for (const page of requiredPages) {
   const source = await read(`src/${page}`);
@@ -99,6 +117,13 @@ for (const page of requiredPages) {
     /<include\s+src=["']layout\.html["']>/,
     `${page} must use the shared layout`,
   );
+  if (page !== "error/404.html") {
+    assert.match(
+      source,
+      /<include\s+src=["']seo-head\.html["']/,
+      `${page} must use the shared SEO head`,
+    );
+  }
 }
 
 const post = await read("src/post.html");
@@ -181,6 +206,15 @@ assert.equal(
 );
 const socials = basicForm?.formSchema?.find((field) => field.name === "socials");
 assert.equal(socials?.$formkit, "array", "socials must use Halo's sortable array input");
+assert.equal(
+  basicForm?.formSchema?.find((field) => field.name === "show_footer_menu")?.value,
+  true,
+);
+assert.equal(
+  basicForm?.formSchema?.find((field) => field.name === "footer_menu")?.$formkit,
+  "menuSelect",
+  "footer navigation must use Halo's menu selector",
+);
 
 const contentForm = settings?.spec?.forms?.find((form) => form.group === "content");
 const imageMode = contentForm?.formSchema?.find((field) => field.name === "image_mode");
@@ -190,6 +224,18 @@ assert.equal(
   true,
 );
 assert.equal(contentForm?.formSchema?.find((field) => field.name === "home_tag_count")?.value, 10);
+for (const fieldName of [
+  "show_home_profile",
+  "show_home_categories",
+  "show_post_toc",
+  "show_post_latest",
+]) {
+  assert.equal(
+    contentForm?.formSchema?.find((field) => field.name === fieldName)?.value,
+    true,
+    `${fieldName} must default to visible`,
+  );
+}
 assert.equal(
   contentForm?.formSchema?.find((field) => field.name === "show_post_license")?.value,
   true,
@@ -198,18 +244,39 @@ assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_name"
 assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_url"));
 assert.deepEqual(
   settings?.spec?.forms?.map((form) => form.group),
-  ["basic", "appearance", "content", "stats", "seo", "analytics", "integrations", "monetization"],
-  "theme settings must separate site data, presentation, stats, SEO, analytics, integrations, and monetization",
+  [
+    "basic",
+    "appearance",
+    "content",
+    "stats",
+    "compliance",
+    "seo",
+    "analytics",
+    "integrations",
+    "monetization",
+  ],
+  "theme settings must separate site data, presentation, stats, compliance, SEO, analytics, integrations, and monetization",
 );
 const statsForm = settings?.spec?.forms?.find((form) => form.group === "stats");
 assert.equal(statsForm?.label, "站点统计");
 assert.equal(statsForm?.formSchema?.find((field) => field.name === "show_home_stats")?.value, true);
+const siteLaunchDate = statsForm?.formSchema?.find((field) => field.name === "site_launch_date");
+const showFooterStats = statsForm?.formSchema?.find((field) => field.name === "show_footer_stats");
+assert.equal(showFooterStats?.value, false, "footer stats must be disabled by default");
+assert.equal(siteLaunchDate?.$formkit, "date", "site launch date must use the native date input");
 assert.equal(
-  statsForm?.formSchema?.find((field) => field.name === "show_footer_stats")?.value,
+  siteLaunchDate?.validation,
   undefined,
-  "footer stats must stay unset until legacy config has been migrated",
+  "native date input must not duplicate validation",
 );
-assert.ok(statsForm?.formSchema?.find((field) => field.name === "site_launch_date"));
+const complianceForm = settings?.spec?.forms?.find((form) => form.group === "compliance");
+assert.equal(complianceForm?.label, "备案信息");
+assert.equal(
+  complianceForm?.formSchema?.find((field) => field.name === "icp_url")?.value,
+  "https://beian.miit.gov.cn/",
+);
+assert.ok(complianceForm?.formSchema?.find((field) => field.name === "public_security_number"));
+assert.ok(complianceForm?.formSchema?.find((field) => field.name === "public_security_url"));
 const seoForm = settings?.spec?.forms?.find((form) => form.group === "seo");
 assert.equal(seoForm?.formSchema?.find((field) => field.name === "noindex_tags")?.value, true);
 assert.equal(seoForm?.formSchema?.find((field) => field.name === "noindex_archives")?.value, true);
@@ -222,9 +289,27 @@ assert.ok(seoForm?.formSchema?.find((field) => field.name === "organization_logo
 const analyticsForm = settings?.spec?.forms?.find((form) => form.group === "analytics");
 assert.equal(analyticsForm?.label, "访问分析");
 assert.equal(analyticsForm?.formSchema?.find((field) => field.name === "enabled")?.value, false);
-assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "ga4_id"));
-assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "clarity_id"));
-assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "baidu_analytics_id"));
+assert.equal(
+  analyticsForm?.formSchema?.find((field) => field.name === "ga4_id")?.validation,
+  "matches:/^G-[A-Z0-9]+$/",
+);
+assert.equal(
+  analyticsForm?.formSchema?.find((field) => field.name === "clarity_id")?.validation,
+  "matches:/^[A-Za-z0-9]+$/",
+);
+assert.equal(
+  analyticsForm?.formSchema?.find((field) => field.name === "baidu_analytics_id")?.validation,
+  "matches:/^[a-fA-F0-9]{32}$/",
+);
+for (const fieldName of ["ga4_id", "clarity_id", "baidu_analytics_id"]) {
+  const validation = analyticsForm?.formSchema?.find(
+    (field) => field.name === fieldName,
+  )?.validation;
+  assert.ok(
+    !validation?.includes("|"),
+    `${fieldName} validation must not contain FormKit rule separators`,
+  );
+}
 
 const integrationsForm = settings?.spec?.forms?.find((form) => form.group === "integrations");
 assert.ok(integrationsForm?.formSchema?.find((field) => field.name === "show_links"));
@@ -270,11 +355,6 @@ assert.doesNotMatch(
 );
 assert.doesNotMatch(
   sourceMarkup.join("\n"),
-  /<link\b[^>]*rel=["']canonical["']/i,
-  "canonical policy must remain under Halo and content governance",
-);
-assert.doesNotMatch(
-  sourceMarkup.join("\n"),
   /post\.tags[^\n]*(?:pillar|hub)|(?:pillar|hub)[^\n]*post\.tags/i,
   "the theme must not infer Pillar or Hub roles from tags",
 );
@@ -298,6 +378,22 @@ assert.match(
 );
 assert.match(layout, /hm\.baidu\.com\/hm\.js/, "layout must support Baidu Analytics when enabled");
 assert.match(layout, /everettlabs\.dev/, "footer must credit Everett Labs");
+assert.match(
+  layout,
+  /menuFinder\.getByName\(theme\.config\.basic\.footer_menu\)/,
+  "footer must render a selected Halo menu",
+);
+assert.match(layout, /footerMenu\?\.menuItems/, "missing footer menus must fall back safely");
+assert.match(layout, /footer-compliance/, "footer must expose optional filing information");
+assert.match(layout, /theme\.config\.compliance\?\.icp_number/);
+assert.match(layout, /theme\.config\.compliance\?\.public_security_number/);
+assert.match(mainStyles, /\.footer-compliance\s*\{/);
+assert.match(mainStyles, /\.article-layout--single\s*\{/);
+assert.match(
+  mainStyles,
+  /@media \(max-width: 720px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"heading"[\s\S]*?"content"[\s\S]*?"sidebar"/,
+  "mobile home layout must keep posts ahead of secondary sidebar panels",
+);
 assert.match(layout, /siteStatsFinder\.getStats\(\)/, "footer must support native Halo stats");
 assert.match(
   layout,
@@ -326,6 +422,40 @@ assert.match(
 assert.match(linksPage, /rel="friend noopener noreferrer"/, "friend links need safe attributes");
 assert.match(post, /postFinder\.list\(/, "post sidebar must provide an article list");
 assert.match(post, /commentFinder\.list\(/, "post sidebar must support recent comments");
+assert.match(
+  post,
+  /<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?["']@type["']:\s*["']BlogPosting["'][\s\S]*?post\.spec\.title[\s\S]*?<\/script>/,
+  "post pages need dynamic BlogPosting JSON-LD",
+);
+assert.match(
+  post,
+  /lastModifyTime\.isAfter\(post\.spec\.publishTime\)/,
+  "BlogPosting dateModified must not precede datePublished",
+);
+assert.match(post, /show_post_toc == null or theme\.config\.content\.show_post_toc/);
+assert.match(post, /show_post_latest == null or theme\.config\.content\.show_post_latest/);
+assert.match(post, /article-layout--single/, "an empty post sidebar must collapse to one column");
+assert.match(home, /show_home_profile == null or theme\.config\.content\.show_home_profile/);
+assert.match(
+  home,
+  /show_home_sidebar == null or theme\.config\.content\.show_home_sidebar/,
+  "missing upgraded config must keep the home sidebar visible",
+);
+assert.match(
+  post,
+  /theme\.config\.content\.show_post_comments == true/,
+  "missing upgraded config must keep recent comments disabled safely",
+);
+assert.match(
+  layout,
+  /theme\.config\.basic\.show_footer_stats != null \? theme\.config\.basic\.show_footer_stats : false/,
+  "missing legacy footer stats config must fall back to false",
+);
+assert.match(
+  home,
+  /show_home_categories == null or theme\.config\.content\.show_home_categories[\s\S]*?homeCategories = \$\{categoryFinder\.listAll\(\)\}/,
+  "home categories must only be queried when their panel is enabled",
+);
 assert.match(home, /tagFinder\.listAll\(\)/, "home must query tags through Halo Tag Finder");
 assert.match(home, /data-popular-tags/, "home must expose sortable popular tags");
 assert.match(mainScript, /function initPopularTags\(/, "home tags must be sorted by post count");

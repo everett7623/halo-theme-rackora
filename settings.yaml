@@ -78,6 +78,17 @@ spec:
           label: 页脚说明
           help: 留空则显示站点副标题。
           value: ""
+        - $formkit: switch
+          name: show_footer_menu
+          label: 显示页脚菜单
+          help: 关闭后隐藏页脚导航，备案信息和站点统计不受影响。
+          value: true
+        - $formkit: menuSelect
+          name: footer_menu
+          label: 页脚菜单
+          help: 可选；留空使用主题自带的归档、栏目、标签等链接。
+          clearable: true
+          value: ""
         - $formkit: url
           name: studio_url
           label: 制作团队链接
@@ -128,6 +139,15 @@ spec:
           help: 展示站点简介、社交账号、内容数量和栏目索引。
           value: true
         - $formkit: switch
+          name: show_home_profile
+          label: 首页显示站点资料
+          help: 显示站点 Logo、副标题和社交账号。
+          value: true
+        - $formkit: switch
+          name: show_home_categories
+          label: 首页显示文章分类
+          value: true
+        - $formkit: switch
           name: show_home_tags
           label: 首页显示高频标签
           help: 在首页侧栏按文章数展示常用标签；完整标签仍在标签汇总页显示。
@@ -144,9 +164,17 @@ spec:
           label: 正文侧栏
           help: 展示目录与正文辅助信息；移动端自动隐藏。
           value: true
+        - $formkit: switch
+          name: show_post_toc
+          label: 正文侧栏显示目录
+          value: true
+        - $formkit: switch
+          name: show_post_latest
+          label: 正文侧栏显示最新文章
+          value: true
         - $formkit: number
           name: post_sidebar_count
-          label: 侧栏文章数量
+          label: 最新文章数量
           help: 正文目录下展示的最新文章数量，建议 3–8 篇。
           value: 5
           min: 3
@@ -191,12 +219,35 @@ spec:
           name: show_footer_stats
           label: 页脚显示站点统计
           help: 在页脚显示文章、评论和访问量；适合保持为一行轻量信息。
-        - $formkit: text
+          value: false
+        - $formkit: date
           name: site_launch_date
           label: 建站日期
-          help: 可选，格式为 YYYY-MM-DD；填写后统计区域显示已运行天数。
+          help: 可选；填写后统计区域显示已运行天数。
           value: ""
-          validation: matches:/^$|^\d{4}-\d{2}-\d{2}$/
+    - group: compliance
+      label: 备案信息
+      formSchema:
+        - $formkit: text
+          name: icp_number
+          label: ICP备案号
+          help: 可选；留空时页脚不显示 ICP 备案信息。
+          value: ""
+        - $formkit: url
+          name: icp_url
+          label: ICP备案跳转链接
+          help: 默认跳转至工信部备案管理系统。
+          value: "https://beian.miit.gov.cn/"
+        - $formkit: text
+          name: public_security_number
+          label: 公网安备号
+          help: 可选；填写完整展示文案，例如“京公网安备 11000002000001号”。
+          value: ""
+        - $formkit: url
+          name: public_security_url
+          label: 公网安备跳转链接
+          help: 可选；建议填写该备案记录在公安备案系统中的详情链接。
+          value: ""
     - group: seo
       label: SEO
       formSchema:
@@ -255,19 +306,19 @@ spec:
           label: GA4 Measurement ID
           help: 格式为 G-XXXXXXXXXX。不要填写完整脚本代码。
           value: ""
-          validation: matches:/^$|^G-[A-Z0-9]+$/
+          validation: matches:/^G-[A-Z0-9]+$/
         - $formkit: text
           name: clarity_id
           label: Microsoft Clarity Project ID
           help: 可选，只填写项目 ID；使用前请按所在地区完成隐私与 Cookie 告知。
           value: ""
-          validation: matches:/^$|^[A-Za-z0-9]+$/
+          validation: matches:/^[A-Za-z0-9]+$/
         - $formkit: text
           name: baidu_analytics_id
           label: 百度统计站点 ID
           help: 可选，只填写 hm.js? 后的 32 位十六进制 ID。
           value: ""
-          validation: matches:/^$|^[a-fA-F0-9]{32}$/
+          validation: matches:/^[a-fA-F0-9]{32}$/
     - group: integrations
       label: 集成
       formSchema:

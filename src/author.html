@@ -1,6 +1,14 @@
 <include src="layout.html">
   <template name="head">
     <title th:text="|${author.spec.displayName} - ${site.title}|">Author</title>
+    <include
+      src="seo-head.html"
+      path="'/authors/' + name"
+      title="author.spec.displayName + ' - ' + site.title"
+      description="author.spec.bio ?: site.seo.description"
+      image="author.spec.avatar ?: site.logo"
+      type="profile"
+    ></include>
   </template>
 
   <header class="author-heading">

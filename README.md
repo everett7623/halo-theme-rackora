@@ -4,7 +4,7 @@ Rackora is a minimal, content-first Halo 2.x theme for independent publishing, k
 and technical writing. It combines a Fuwari-inspired information hierarchy with the low-image
 article flow, dark mode, and responsive reading experience common to modern publishing themes.
 
-Current release: `v0.4.1`.
+Current release: `v0.4.2`.
 
 ## 设计原则
 
@@ -15,10 +15,10 @@ Current release: `v0.4.1`.
 - 首页标签云不枚举全部标签，避免放大站点当前的标签结构债务。
 - 文章列表采用分隔线而非卡片墙，使用安静的技术出版风；VPS 配置表、代码、目录和核验
   信息优先。
-- SEO 元数据由 Halo 注入，主题不重复输出 canonical、description、Open Graph 或
-  Twitter Card。
+- Halo 注入标准 description；主题按路由输出唯一自指 canonical、Open Graph 和
+  Twitter Card，并在正文页输出动态 `BlogPosting` JSON-LD。
 - 栏目是一级内容类型导航，标签只做受控的二级筛选；主题不根据标签猜测 Pillar。
-- 合并、`noindex`、canonical 和重定向由内容治理决定，不由页面模板硬编码。
+- 合并、`noindex`、自定义 canonical 和重定向由内容治理决定；主题只输出当前路由的自指 canonical。
 
 Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码，仅将布局与交互模式
 重新实现为 Halo Thymeleaf 模板。
@@ -36,6 +36,7 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 - Highlight.js 按需语言包、代码复制、横向表格容器和 VPS 产品表识别。
 - 评论插件、搜索组件和 Halo 页脚扩展点。
 - Halo 官方友情链接插件、RSS 自动发现，以及可选 GA4、Microsoft Clarity 和百度统计。
+- 可选择 Halo 菜单作为页脚导航，并支持可选 ICP 与公网安备信息。
 - 栏目页唯一 H1，并复用 Halo 栏目 description。
 - Affiliate 披露样式和已有 `rel="sponsored"` 链接标记，不自动误判普通资料外链。
 - 浅色、深色、打印和移动端样式。
@@ -58,26 +59,30 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 
 ## 主题设置
 
-主题后台按职责分为 8 组：
+主题后台按职责分为 9 组：
 
-| 分组       | 设置                                                         |
-| ---------- | ------------------------------------------------------------ |
-| 资料       | 界面语言、社交账号、网站语言/地区、RSS、页脚和制作团队链接   |
-| 外观       | 默认配色、强调色、可选首页横幅                               |
-| 内容       | 文章封面、首页侧栏/高频标签、正文侧栏、评论和文末许可声明    |
-| 站点统计   | 首页统计面板、页脚统计开关和建站日期                         |
-| SEO        | 标签/归档索引策略、站点验证、Organization 实体               |
-| 访问分析   | 可选 GA4、Microsoft Clarity 和百度统计，默认关闭             |
-| 集成       | Halo 官方友情链接页面和页脚入口                              |
-| 广告与联盟 | 总开关、统一披露文案、可排序广告位、位置、图片和推广跳转地址 |
+| 分组       | 设置                                                           |
+| ---------- | -------------------------------------------------------------- |
+| 资料       | 界面语言、社交账号、网站语言/地区、RSS、页脚菜单和制作团队链接 |
+| 外观       | 默认配色、强调色、可选首页横幅                                 |
+| 内容       | 文章封面、首页侧栏模块、正文目录/最新文章、评论和文末许可声明  |
+| 站点统计   | 首页统计面板、页脚统计开关和建站日期                           |
+| 备案信息   | 可选 ICP 备案号、公网安备号及其跳转链接                        |
+| SEO        | 标签/归档索引策略、站点验证、Organization 实体                 |
+| 访问分析   | 可选 GA4、Microsoft Clarity 和百度统计，默认关闭               |
+| 集成       | Halo 官方友情链接页面和页脚入口                                |
+| 广告与联盟 | 总开关、统一披露文案、可排序广告位、位置、图片和推广跳转地址   |
 
 首页横幅留空、文章封面选择“不显示”即为默认少图方案。目录、阅读时间和代码复制按内容
-自动启用。站点标题、Logo、副标题、全站 description、canonical、Open Graph 和 Twitter
-Card 直接复用 Halo 系统资料，避免主题设置产生两套互相冲突的数据。
+自动启用。站点标题、Logo、副标题和全站 description 直接复用 Halo 系统资料；主题基于
+实际路由生成 canonical、Open Graph 和 Twitter Card，避免后台再维护一套重复 SEO 数据。
 
 首页站点统计默认开启，展示 Halo 原生的访问、点赞、评论、文章和分类累计数据。页脚统计默认关闭，
 开启后以一行轻量信息显示文章、评论和访问量。建站日期使用 `YYYY-MM-DD` 即可在统计区域显示运行天数，
 不调用外部统计接口。
+
+页脚菜单留空时使用主题自带的归档、栏目、标签等链接，也可以选择 Halo 中已有的菜单。备案号为空时
+不会生成备案区域；公网安备链接建议填写对应备案记录的官方详情地址。
 
 访问分析设置只接受 GA4 Measurement ID、Clarity Project ID 或百度统计站点 ID，不接受任意脚本。启用访问分析前请根据
 访问者所在地完成隐私政策、Cookie 告知和同意管理。RSS 依赖 Halo 官方 RSS 插件，友情链接
@@ -135,8 +140,9 @@ Rackora 使用语义化版本：修复递增补丁号，向后兼容的新功能
 
 主题已覆盖 Joe3 `1.5.1-seo.3` 补丁中的唯一 H1、栏目简介与临时标签
 `noindex,follow` 策略，并在正文中输出作者、摘要、发布时间、更新时间、内容核验日期、可见
-面包屑、`BlogPosting` 和 `BreadcrumbList`。标签可以逐项覆盖全局索引策略。索引、合并、
-canonical 和重定向仍必须由内容治理结果决定。下列工作不属于主题单独可完成的范围：
+面包屑、动态 `BlogPosting` JSON-LD、唯一自指 canonical 和社交分享元数据。标签可以逐项覆盖
+全局索引策略。自定义 canonical、内容合并和重定向仍必须由内容治理结果决定。下列工作不属于
+主题单独可完成的范围：
 
 - 从 Halo sitemap 移除低价值标签 URL。
 - 为保留标签和栏目撰写独立简介、精选内容与真实 meta description。

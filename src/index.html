@@ -1,6 +1,14 @@
 <include src="layout.html">
   <template name="head">
     <title th:text="${site.title}">首页</title>
+    <include
+      src="seo-head.html"
+      path="posts.page > 1 ? '/page/' + posts.page : '/'"
+      title="site.title"
+      description="site.seo.description ?: site.subtitle"
+      image="site.logo"
+      type="website"
+    ></include>
     <script type="application/ld+json" th:inline="javascript">
       {
         "@context": "https://schema.org",
@@ -98,10 +106,13 @@
     <aside
       class="home-sidebar"
       th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '站点信息' : 'Site information'}"
-      th:if="${theme.config.content.show_home_sidebar}"
-      th:with="homeCategories = ${categoryFinder.listAll()},showHomeStats = ${theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats},siteLaunchDate = ${theme.config.stats?.site_launch_date ?: theme.config.basic.site_launch_date}"
+      th:if="${theme.config.content.show_home_sidebar == null or theme.config.content.show_home_sidebar}"
+      th:with="showHomeStats = ${theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats},siteLaunchDate = ${theme.config.stats?.site_launch_date ?: theme.config.basic.site_launch_date}"
     >
-      <section class="profile-panel">
+      <section
+        class="profile-panel"
+        th:if="${theme.config.content.show_home_profile == null or theme.config.content.show_home_profile}"
+      >
         <img
           class="profile-panel__mark"
           width="64"
@@ -183,26 +194,34 @@
         </section>
       </th:block>
 
-      <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
-        <header>
-          <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '内容栏目' : 'Categories'}">
-            Categories
-          </h2>
-          <a
-            th:href="@{${site.routes.categoriesUri}}"
-            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
-            >All</a
-          >
-        </header>
-        <ul>
-          <li th:each="category : ${homeCategories}">
-            <a th:href="@{${category.status.permalink}}">
-              <span th:text="${category.spec.displayName}">栏目</span>
-              <small th:text="${category.postCount}">0</small>
-            </a>
-          </li>
-        </ul>
-      </section>
+      <th:block
+        th:if="${theme.config.content.show_home_categories == null or theme.config.content.show_home_categories}"
+      >
+        <th:block th:with="homeCategories = ${categoryFinder.listAll()}">
+          <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
+            <header>
+              <h2
+                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '内容栏目' : 'Categories'}"
+              >
+                Categories
+              </h2>
+              <a
+                th:href="@{${site.routes.categoriesUri}}"
+                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
+                >All</a
+              >
+            </header>
+            <ul>
+              <li th:each="category : ${homeCategories}">
+                <a th:href="@{${category.status.permalink}}">
+                  <span th:text="${category.spec.displayName}">栏目</span>
+                  <small th:text="${category.postCount}">0</small>
+                </a>
+              </li>
+            </ul>
+          </section>
+        </th:block>
+      </th:block>
 
       <th:block
         th:if="${theme.config.content.show_home_tags == null or theme.config.content.show_home_tags}"

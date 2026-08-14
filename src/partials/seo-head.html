@@ -1,0 +1,34 @@
+<th:block
+  th:with="canonicalBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},canonicalPath = ${({{path}})},canonicalUrl = ${canonicalBase + (#strings.startsWith(canonicalPath, '/') ? canonicalPath : '/' + canonicalPath)},shareTitle = ${({{title}})},shareDescription = ${({{description}})},shareImage = ${({{image}})},shareImageUrl = ${#strings.isEmpty(shareImage) ? null : ((#strings.startsWith(shareImage, 'https://') or #strings.startsWith(shareImage, 'http://')) ? shareImage : canonicalBase + (#strings.startsWith(shareImage, '/') ? shareImage : '/' + shareImage))}"
+>
+  <link rel="canonical" th:href="${canonicalUrl}" />
+  <meta property="og:type" content="{{type}}" />
+  <meta property="og:site_name" th:content="${site.title}" />
+  <meta property="og:title" th:content="${shareTitle}" />
+  <meta property="og:url" th:content="${canonicalUrl}" />
+  <meta
+    property="og:description"
+    th:if="${not #strings.isEmpty(shareDescription)}"
+    th:content="${shareDescription}"
+  />
+  <meta
+    property="og:image"
+    th:if="${not #strings.isEmpty(shareImageUrl)}"
+    th:content="${shareImageUrl}"
+  />
+  <meta
+    name="twitter:card"
+    th:content="${#strings.isEmpty(shareImageUrl) ? 'summary' : 'summary_large_image'}"
+  />
+  <meta name="twitter:title" th:content="${shareTitle}" />
+  <meta
+    name="twitter:description"
+    th:if="${not #strings.isEmpty(shareDescription)}"
+    th:content="${shareDescription}"
+  />
+  <meta
+    name="twitter:image"
+    th:if="${not #strings.isEmpty(shareImageUrl)}"
+    th:content="${shareImageUrl}"
+  />
+</th:block>

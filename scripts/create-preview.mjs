@@ -84,7 +84,7 @@ const header = `
   </header>`;
 
 const footer = `
-  <footer class="site-footer"><div class="shell footer-inner"><div><strong>Rackora</strong><p>Independent publishing with clarity and care.</p></div><nav><a href="#">Archives</a><a href="#">Categories</a><a href="#">Tags</a><a href="#">Links</a><a href="#">RSS</a></nav><small>Powered by Halo · Rackora · Everett Labs · Region SG</small><p class="footer-stats"><span>31 posts</span><span>128 comments</span><span>Online for 365 days</span></p></div></footer>
+  <footer class="site-footer"><div class="shell footer-inner"><div><strong>Rackora</strong><p>Independent publishing with clarity and care.</p></div><nav><a href="#">Archives</a><a href="#">Categories</a><a href="#">Tags</a><a href="#">Links</a><a href="#">RSS</a></nav><small>Powered by Halo · Rackora · Everett Labs · Region SG</small><p class="footer-compliance"><a href="#">Example ICP 00000000</a><a href="#">Public security 00000000000000</a></p><p class="footer-stats"><span>31 posts</span><span>128 comments</span><span>Online for 365 days</span></p></div></footer>
   <button class="back-to-top" type="button" aria-label="Back to top" data-back-to-top><i data-lucide="chevron-up"></i></button>`;
 
 function page(title, body, scripts = "") {
@@ -143,7 +143,7 @@ const article = `
         <p>Headings now use a quiet accent marker inspired by Fuwari's clarity while keeping Rackora's technical publishing tone.</p>
         <blockquote><p>Good interface hierarchy remains visible even when images are removed.</p></blockquote>
         <h3>Keep the system small</h3>
-        <p>The theme relies on Halo for content, comments, search, feeds, and canonical metadata. Theme settings stay focused on presentation.</p>
+        <p>The theme relies on Halo for content, comments, search, and feeds, while Rackora emits route-aware canonical and social metadata.</p>
         <pre><code class="language-yaml">theme:
   uiLanguage: en
   imageMode: none

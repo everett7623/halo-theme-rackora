@@ -5,6 +5,14 @@
     >
       Categories
     </title>
+    <include
+      src="seo-head.html"
+      path="site.routes.categoriesUri"
+      title="(theme.config.basic.ui_language == 'zh-CN' ? '全部栏目' : 'Categories') + ' - ' + site.title"
+      description="site.seo.description ?: site.subtitle"
+      image="site.logo"
+      type="website"
+    ></include>
   </template>
 
   <header class="archive-heading">

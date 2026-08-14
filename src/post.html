@@ -1,11 +1,49 @@
 <include src="layout.html">
   <template name="head">
     <title th:text="|${post.spec.title} - ${site.title}|">文章标题</title>
+    <include
+      src="seo-head.html"
+      path="post.status.permalink"
+      title="post.spec.title"
+      description="post.status.excerpt"
+      image="post.spec.cover ?: site.logo"
+      type="article"
+    ></include>
+    <script type="application/ld+json" th:inline="javascript">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "@id": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.status.permalink}]]*/ "https://example.com/post",
+        "url": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.status.permalink}]]*/ "https://example.com/post",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.status.permalink}]]*/ "https://example.com/post"
+        },
+        "headline": /*[[${post.spec.title}]]*/ "Post title",
+        "description": /*[[${post.status.excerpt ?: ''}]]*/ "",
+        "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
+        "datePublished": /*[[${post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+        "dateModified": /*[[${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+        "author": {
+          "@type": "Person",
+          "name": /*[[${post.owner.displayName}]]*/ "Author",
+          "url": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.owner.permalink}]]*/ "https://example.com/authors/author"
+        },
+        "publisher": {
+          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization"
+        },
+        "image": /*[[${post.spec.cover ?: (theme.config.seo.organization_logo ?: site.logo)}]]*/ ""
+      }
+    </script>
     <script type="module" src="./js/post.ts"></script>
   </template>
 
   <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
-  <div class="article-layout">
+  <div
+    class="article-layout"
+    th:with="showPostSidebar = ${(theme.config.content.show_post_sidebar == null or theme.config.content.show_post_sidebar) and ((theme.config.content.show_post_toc == null or theme.config.content.show_post_toc) or (theme.config.content.show_post_latest == null or theme.config.content.show_post_latest) or theme.config.content.show_post_comments == true)}"
+    th:classappend="${showPostSidebar} ? '' : ' article-layout--single'"
+  >
     <article
       class="article"
       data-article
@@ -249,9 +287,14 @@
     <aside
       class="article-sidebar"
       th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文章辅助导航' : 'Post navigation'}"
-      th:if="${theme.config.content.show_post_sidebar == null or theme.config.content.show_post_sidebar}"
+      th:if="${showPostSidebar}"
     >
-      <section class="article-sidebar__section" data-toc-container hidden>
+      <section
+        class="article-sidebar__section"
+        data-toc-container
+        th:if="${theme.config.content.show_post_toc == null or theme.config.content.show_post_toc}"
+        hidden
+      >
         <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
           On this page
         </h2>
@@ -260,6 +303,7 @@
 
       <section
         class="article-sidebar__section"
+        th:if="${theme.config.content.show_post_latest == null or theme.config.content.show_post_latest}"
         th:with="sidebarPosts = ${postFinder.list({page: 1, size: theme.config.content.post_sidebar_count ?: 5, sort: {'spec.publishTime,desc'}})}"
       >
         <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新文章' : 'Latest posts'}">

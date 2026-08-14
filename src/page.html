@@ -1,6 +1,14 @@
 <include src="layout.html">
   <template name="head">
     <title th:text="|${singlePage.spec.title} - ${site.title}|">Page title</title>
+    <include
+      src="seo-head.html"
+      path="singlePage.status.permalink"
+      title="singlePage.spec.title"
+      description="singlePage.status.excerpt"
+      image="singlePage.spec.cover ?: site.logo"
+      type="article"
+    ></include>
     <script type="module" src="./js/post.ts"></script>
   </template>
 

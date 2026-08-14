@@ -1,6 +1,14 @@
 <include src="layout.html">
   <template name="head">
     <title th:text="|${tag.spec.displayName} - ${site.title}|">Tag</title>
+    <include
+      src="seo-head.html"
+      path="tag.status.permalink"
+      title="tag.spec.displayName + ' - ' + site.title"
+      description="#annotations.get(tag, 'rackora_description') ?: site.seo.description"
+      image="tag.spec.cover ?: site.logo"
+      type="website"
+    ></include>
     <meta
       name="robots"
       content="noindex,follow"
