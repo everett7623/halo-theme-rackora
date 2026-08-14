@@ -191,28 +191,6 @@
       </section>
 
       <include src="ad-slot.html" position="home_sidebar"></include>
-
-      <nav
-        class="sidebar-shortcuts"
-        th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '内容索引' : 'Content indexes'}"
-      >
-        <a
-          th:href="@{${site.routes.archivesUri}}"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '文章归档' : 'Archives'}"
-          >Archives</a
-        >
-        <a
-          th:href="@{${site.routes.tagsUri}}"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '标签索引' : 'Tags'}"
-          >Tags</a
-        >
-        <a
-          th:if="${(theme.config.integrations?.show_links ?: true) and pluginFinder.available('PluginLinks')}"
-          th:href="@{/links}"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '友情链接' : 'Links'}"
-          >Links</a
-        >
-      </nav>
     </aside>
   </div>
 </include>

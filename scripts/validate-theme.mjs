@@ -122,6 +122,11 @@ assert.doesNotMatch(
   "data-lucide on a button makes Lucide replace the interactive element",
 );
 assert.match(home, /theme\.config\.basic\.socials/, "home profile must render configured socials");
+assert.doesNotMatch(
+  home,
+  /sidebar-shortcuts/,
+  "home must not duplicate footer navigation in the sidebar",
+);
 assert.match(mainScript, /\bGithub\b/, "social icons must be registered with Lucide");
 
 const basicForm = settings?.spec?.forms?.find((form) => form.group === "basic");

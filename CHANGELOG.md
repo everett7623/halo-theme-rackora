@@ -3,6 +3,12 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.4.1] - 2026-08-14
+
+### 调整
+
+- 移除首页侧栏中与热门标签和页脚导航重复的归档、标签、友情链接快捷区，让侧栏在热门标签后自然结束，减少空白边框和重复入口。
+
 ## [0.4.0] - 2026-08-14
 
 ### 新增
@@ -63,6 +69,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.4.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.1
 [0.4.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.0
 [0.3.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.3.0
 [0.2.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.2.0
