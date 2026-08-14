@@ -101,8 +101,14 @@ function initNavigation(): void {
     if ((event.target as Element).closest("a")) close();
   });
 
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !navigation.classList.contains("is-open")) return;
+    close();
+    toggle.focus();
+  });
+
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 960) close();
+    if (window.innerWidth > 960 && navigation.classList.contains("is-open")) close();
   });
 }
 
@@ -154,18 +160,30 @@ function initBackToTop(): void {
 }
 
 function initSiteUptime(): void {
-  const target = document.querySelector<HTMLElement>("[data-site-launch]");
-  if (!target) return;
+  const targets = document.querySelectorAll<HTMLElement>("[data-site-launch]");
+  for (const target of targets) {
+    const launchValue = target.dataset.siteLaunch;
+    if (!launchValue) {
+      target.remove();
+      continue;
+    }
 
-  const launchDate = new Date(`${target.dataset.siteLaunch}T00:00:00`);
-  const elapsed = Date.now() - launchDate.getTime();
-  if (!Number.isFinite(elapsed) || elapsed < 0) {
-    target.remove();
-    return;
+    const launchDate = new Date(`${launchValue}T00:00:00`);
+    const elapsed = Date.now() - launchDate.getTime();
+    if (!Number.isFinite(elapsed) || elapsed < 0) {
+      target.remove();
+      continue;
+    }
+
+    const days = Math.floor(elapsed / 86_400_000) + 1;
+    target.textContent = target.hasAttribute("data-site-launch-compact")
+      ? isChineseUi()
+        ? `${days} 天`
+        : `${days} days`
+      : isChineseUi()
+        ? `运行 ${days} 天`
+        : `Online for ${days} days`;
   }
-
-  const days = Math.floor(elapsed / 86_400_000) + 1;
-  target.textContent = isChineseUi() ? `运行 ${days} 天` : `Online for ${days} days`;
 }
 
 function initPopularTags(): void {

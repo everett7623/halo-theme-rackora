@@ -51,10 +51,12 @@ function slugify(value: string): string {
   );
 }
 
-function ensureUniqueId(base: string, usedIds: Set<string>): string {
+function ensureUniqueId(base: string, usedIds: Set<string>, element: HTMLElement): string {
   let id = base;
   let counter = 2;
-  while (usedIds.has(id) || document.getElementById(id)) {
+  while (true) {
+    const existing = document.getElementById(id);
+    if (!usedIds.has(id) && (!existing || existing === element)) break;
     id = `${base}-${counter}`;
     counter += 1;
   }
@@ -73,7 +75,7 @@ function initTableOfContents(content: HTMLElement): void {
   const usedIds = new Set<string>();
   for (const heading of headings) {
     const label = heading.textContent?.trim() || uiText("Section", "章节");
-    heading.id = ensureUniqueId(heading.id || slugify(label), usedIds);
+    heading.id = ensureUniqueId(heading.id || slugify(label), usedIds, heading);
 
     const anchor = document.createElement("a");
     anchor.className = "heading-anchor";

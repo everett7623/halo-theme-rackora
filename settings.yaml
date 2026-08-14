@@ -78,17 +78,6 @@ spec:
           label: 页脚说明
           help: 留空则显示站点副标题。
           value: ""
-        - $formkit: switch
-          name: show_footer_stats
-          label: 页脚显示站点统计
-          help: 显示 Halo 记录的文章、评论和访问量；保持为一行轻量信息。
-          value: false
-        - $formkit: text
-          name: site_launch_date
-          label: 建站日期
-          help: 可选，格式为 YYYY-MM-DD；填写后页脚显示已运行天数。
-          value: ""
-          validation: matches:/^$|^\d{4}-\d{2}-\d{2}$/
         - $formkit: url
           name: studio_url
           label: 制作团队链接
@@ -190,6 +179,24 @@ spec:
           label: 内容许可地址
           help: 可选；使用 Creative Commons 等公开许可时填写对应说明地址。
           value: ""
+    - group: stats
+      label: 站点统计
+      formSchema:
+        - $formkit: switch
+          name: show_home_stats
+          label: 首页显示站点统计
+          help: 展示访问、点赞、评论、文章和分类等 Halo 原生累计数据。
+          value: true
+        - $formkit: switch
+          name: show_footer_stats
+          label: 页脚显示站点统计
+          help: 在页脚显示文章、评论和访问量；适合保持为一行轻量信息。
+        - $formkit: text
+          name: site_launch_date
+          label: 建站日期
+          help: 可选，格式为 YYYY-MM-DD；填写后统计区域显示已运行天数。
+          value: ""
+          validation: matches:/^$|^\d{4}-\d{2}-\d{2}$/
     - group: seo
       label: SEO
       formSchema:
@@ -236,12 +243,12 @@ spec:
           help: 可选，用于补充站点实体信息，例如 https://example.com/about。
           value: ""
     - group: analytics
-      label: 统计
+      label: 访问分析
       formSchema:
         - $formkit: switch
           name: enabled
-          label: 启用主题统计代码
-          help: 默认关闭；启用后仅加载已填写且格式有效的统计服务。
+          label: 启用第三方访问分析
+          help: 默认关闭；启用后仅加载已填写且格式有效的分析服务。
           value: false
         - $formkit: text
           name: ga4_id

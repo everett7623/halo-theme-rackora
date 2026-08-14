@@ -99,7 +99,7 @@
       class="home-sidebar"
       th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '站点信息' : 'Site information'}"
       th:if="${theme.config.content.show_home_sidebar}"
-      th:with="homeCategories = ${categoryFinder.listAll()},homeTags = ${tagFinder.listAll()}"
+      th:with="homeCategories = ${categoryFinder.listAll()},showHomeStats = ${theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats},siteLaunchDate = ${theme.config.stats?.site_launch_date ?: theme.config.basic.site_launch_date}"
     >
       <section class="profile-panel">
         <img
@@ -130,19 +130,58 @@
             <i th:attr="data-lucide=${social.icon ?: 'globe'}" aria-hidden="true"></i>
           </a>
         </nav>
-        <dl class="profile-stats">
-          <div>
-            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '文章' : 'Posts'}">Posts</dt>
-            <dd th:text="${posts.total}">0</dd>
-          </div>
-          <div>
-            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '栏目' : 'Categories'}">
-              Categories
-            </dt>
-            <dd th:text="${#lists.size(homeCategories)}">0</dd>
-          </div>
-        </dl>
       </section>
+
+      <th:block th:if="${showHomeStats}">
+        <section
+          class="sidebar-panel site-stats-panel"
+          th:with="siteStats = ${siteStatsFinder.getStats()}"
+        >
+          <header>
+            <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '站点统计' : 'Site stats'}">
+              Site stats
+            </h2>
+          </header>
+          <dl class="site-stats-grid">
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '访问' : 'Visits'}">
+                Visits
+              </dt>
+              <dd th:text="${siteStats.visit ?: 0}">0</dd>
+            </div>
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '文章' : 'Posts'}">
+                Posts
+              </dt>
+              <dd th:text="${siteStats.post ?: 0}">0</dd>
+            </div>
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '评论' : 'Comments'}">
+                Comments
+              </dt>
+              <dd th:text="${siteStats.comment ?: 0}">0</dd>
+            </div>
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '点赞' : 'Upvotes'}">
+                Upvotes
+              </dt>
+              <dd th:text="${siteStats.upvote ?: 0}">0</dd>
+            </div>
+            <div>
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '分类' : 'Categories'}">
+                Categories
+              </dt>
+              <dd th:text="${siteStats.category ?: 0}">0</dd>
+            </div>
+            <div th:if="${not #strings.isEmpty(siteLaunchDate)}">
+              <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '运行' : 'Uptime'}">
+                Uptime
+              </dt>
+              <dd data-site-launch-compact th:attr="data-site-launch=${siteLaunchDate}">--</dd>
+            </div>
+          </dl>
+        </section>
+      </th:block>
 
       <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
         <header>
@@ -165,30 +204,34 @@
         </ul>
       </section>
 
-      <section
-        class="sidebar-panel sidebar-panel--tags"
-        th:if="${(theme.config.content.show_home_tags == null or theme.config.content.show_home_tags) and not #lists.isEmpty(homeTags)}"
+      <th:block
+        th:if="${theme.config.content.show_home_tags == null or theme.config.content.show_home_tags}"
       >
-        <header>
-          <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '常用标签' : 'Popular tags'}">
-            Popular tags
-          </h2>
-          <a
-            th:href="@{${site.routes.tagsUri}}"
-            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
-            >All</a
+        <th:block th:with="homeTags = ${tagFinder.listAll()}">
+          <section
+            class="sidebar-panel sidebar-panel--tags"
+            th:if="${not #lists.isEmpty(homeTags)}"
           >
-        </header>
-        <ul
-          class="sidebar-tag-list"
-          data-popular-tags
-          th:attr="data-tag-limit=${theme.config.content.home_tag_count ?: 10}"
-        >
-          <li th:each="tag : ${homeTags}" th:attr="data-tag-count=${tag.postCount}">
-            <a th:href="@{${tag.status.permalink}}" th:text="${tag.spec.displayName}">Tag</a>
-          </li>
-        </ul>
-      </section>
+            <header>
+              <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '标签' : 'Tags'}">Tags</h2>
+              <a
+                th:href="@{${site.routes.tagsUri}}"
+                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
+                >All</a
+              >
+            </header>
+            <ul
+              class="sidebar-tag-list"
+              data-popular-tags
+              th:attr="data-tag-limit=${theme.config.content.home_tag_count ?: 10}"
+            >
+              <li th:each="tag : ${homeTags}" th:attr="data-tag-count=${tag.postCount}">
+                <a th:href="@{${tag.status.permalink}}" th:text="${tag.spec.displayName}">Tag</a>
+              </li>
+            </ul>
+          </section>
+        </th:block>
+      </th:block>
 
       <include src="ad-slot.html" position="home_sidebar"></include>
     </aside>

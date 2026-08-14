@@ -29,12 +29,29 @@
           Month 1
         </h3>
         <ol>
-          <li th:each="post : ${month.posts}">
+          <li class="timeline-entry" th:each="post : ${month.posts}">
             <time
+              class="timeline-entry__date"
               th:datetime="${post.spec.publishTime}"
               th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"
             ></time>
-            <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
+            <a
+              class="timeline-entry__title"
+              th:href="@{${post.status.permalink}}"
+              th:text="${post.spec.title}"
+            ></a>
+            <a
+              class="timeline-entry__category"
+              th:if="${not #lists.isEmpty(post.categories)}"
+              th:href="@{${post.categories[0].status.permalink}}"
+              th:text="${post.categories[0].spec.displayName}"
+            ></a>
+            <span
+              class="timeline-entry__category timeline-entry__category--empty"
+              th:if="${#lists.isEmpty(post.categories)}"
+              th:text="${theme.config.basic.ui_language == 'zh-CN' ? '未分类' : 'Uncategorized'}"
+              >Uncategorized</span
+            >
           </li>
         </ol>
       </div>

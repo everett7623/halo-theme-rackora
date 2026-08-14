@@ -5,9 +5,11 @@
   "description": "A minimal, content-first Halo theme for independent publishing and technical writing.",
   "type": "module",
   "scripts": {
-    "build": "tsc && vp build && theme-package && node scripts/normalize-theme-package.mjs",
+    "build": "pnpm build-only && pnpm test && pnpm test:budget && theme-package && node scripts/normalize-theme-package.mjs",
     "build-only": "tsc && vp build",
     "dev": "vp build --watch",
+    "prebuild-only": "node scripts/check-sync-conflicts.mjs",
+    "predev": "node scripts/check-sync-conflicts.mjs",
     "preview": "node scripts/create-preview.mjs && vite .preview --host 127.0.0.1 --port 4173",
     "check": "vp check --fix",
     "test": "node scripts/validate-theme.mjs",

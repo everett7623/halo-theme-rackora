@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,9 +17,6 @@ if (!cssName || !mainName || !postName) {
 await rm(output, { recursive: true, force: true });
 await mkdir(path.join(output, "assets"), { recursive: true });
 await cp(builtAssets, path.join(output, "assets"), { recursive: true });
-
-const mark = await readFile(path.join(root, "public", "images", "rackora-mark.svg"), "utf8");
-await writeFile(path.join(output, "assets", "rackora-mark.svg"), mark);
 
 const posts = [
   {
@@ -75,7 +72,7 @@ const header = `
   <header class="site-header site-header--compact" data-preview-header>
     <div class="shell header-inner">
       <a class="brand" href="/" aria-label="Back to home">
-        <img class="brand-mark" width="34" height="34" src="/assets/rackora-mark.svg" alt="Rackora" />
+        <img class="brand-mark" width="34" height="34" src="/assets/images/rackora-mark.svg" alt="Rackora" />
         <span class="brand-copy"><strong>Rackora</strong><small>Independent publishing with clarity and care.</small></span>
       </a>
       <button class="icon-button nav-toggle" type="button" aria-label="Open navigation" aria-controls="primary-nav" aria-expanded="false" data-nav-toggle><i data-lucide="menu"></i></button>
@@ -123,9 +120,10 @@ const home = `
       <nav class="pagination" aria-label="Pagination"><span class="pagination__status">1 / 4</span><a class="pagination__link" href="#"><span>Next</span><i data-lucide="arrow-right"></i></a></nav>
     </section>
     <aside class="home-sidebar" aria-label="Site information">
-      <section class="profile-panel"><img class="profile-panel__mark" width="64" height="64" src="/assets/rackora-mark.svg" alt="Rackora" /><div><h2>Rackora</h2><p>Independent publishing with clarity, useful context, and fewer distractions.</p></div><nav class="profile-socials" aria-label="Social profiles"><a href="#" title="GitHub" aria-label="GitHub"><i data-lucide="github" aria-hidden="true"></i></a><a href="#" title="Telegram" aria-label="Telegram"><i data-lucide="send" aria-hidden="true"></i></a><a href="#" title="RSS" aria-label="RSS"><i data-lucide="rss" aria-hidden="true"></i></a><a href="#" title="Website" aria-label="Website"><i data-lucide="globe" aria-hidden="true"></i></a></nav><dl class="profile-stats"><div><dt>Posts</dt><dd>31</dd></div><div><dt>Categories</dt><dd>6</dd></div></dl></section>
+      <section class="profile-panel"><img class="profile-panel__mark" width="64" height="64" src="/assets/images/rackora-mark.svg" alt="Rackora" /><div><h2>Rackora</h2><p>Independent publishing with clarity, useful context, and fewer distractions.</p></div><nav class="profile-socials" aria-label="Social profiles"><a href="#" title="GitHub" aria-label="GitHub"><i data-lucide="github" aria-hidden="true"></i></a><a href="#" title="Telegram" aria-label="Telegram"><i data-lucide="send" aria-hidden="true"></i></a><a href="#" title="RSS" aria-label="RSS"><i data-lucide="rss" aria-hidden="true"></i></a><a href="#" title="Website" aria-label="Website"><i data-lucide="globe" aria-hidden="true"></i></a></nav></section>
+      <section class="sidebar-panel site-stats-panel"><header><h2>Site stats</h2></header><dl class="site-stats-grid"><div><dt>Visits</dt><dd>128</dd></div><div><dt>Posts</dt><dd>31</dd></div><div><dt>Comments</dt><dd>42</dd></div><div><dt>Upvotes</dt><dd>17</dd></div><div><dt>Categories</dt><dd>6</dd></div><div><dt>Uptime</dt><dd data-site-launch="2026-03-01" data-site-launch-compact>--</dd></div></dl></section>
       <section class="sidebar-panel"><header><h2>Categories</h2><a href="#">All</a></header><ul><li><a href="#"><span>Infrastructure</span><small>16</small></a></li><li><a href="#"><span>Reviews</span><small>9</small></a></li><li><a href="#"><span>Guides</span><small>3</small></a></li><li><a href="#"><span>Notes</span><small>3</small></a></li></ul></section>
-      <section class="sidebar-panel sidebar-panel--tags"><header><h2>Popular tags</h2><a href="#">All</a></header><ul class="sidebar-tag-list" data-popular-tags data-tag-limit="8"><li data-tag-count="4"><a href="#">Halo</a></li><li data-tag-count="13"><a href="#">Performance</a></li><li data-tag-count="8"><a href="#">Linux</a></li><li data-tag-count="17"><a href="#">Infrastructure</a></li><li data-tag-count="6"><a href="#">Security</a></li><li data-tag-count="11"><a href="#">Networking</a></li><li data-tag-count="3"><a href="#">Writing</a></li><li data-tag-count="9"><a href="#">Automation</a></li><li data-tag-count="2"><a href="#">Design</a></li></ul></section>
+      <section class="sidebar-panel sidebar-panel--tags"><header><h2>Tags</h2><a href="#">All</a></header><ul class="sidebar-tag-list" data-popular-tags data-tag-limit="8"><li data-tag-count="4"><a href="#">Halo</a></li><li data-tag-count="13"><a href="#">Performance</a></li><li data-tag-count="8"><a href="#">Linux</a></li><li data-tag-count="17"><a href="#">Infrastructure</a></li><li data-tag-count="6"><a href="#">Security</a></li><li data-tag-count="11"><a href="#">Networking</a></li><li data-tag-count="3"><a href="#">Writing</a></li><li data-tag-count="9"><a href="#">Automation</a></li><li data-tag-count="2"><a href="#">Design</a></li></ul></section>
     </aside>
   </div>`;
 
@@ -141,7 +139,7 @@ const article = `
       </header>
       <div id="article-content" class="article-content" data-article-content>
         <p>A minimal theme should help the reader understand structure without turning every section into a decorative object. Rackora uses a single accent color, restrained surfaces, and <code>semantic HTML</code>.</p>
-        <h2>Content hierarchy</h2>
+        <h2 id="content-hierarchy">Content hierarchy</h2>
         <p>Headings now use a quiet accent marker inspired by Fuwari's clarity while keeping Rackora's technical publishing tone.</p>
         <blockquote><p>Good interface hierarchy remains visible even when images are removed.</p></blockquote>
         <h3>Keep the system small</h3>
@@ -168,7 +166,34 @@ const article = `
     </aside>
   </div>`;
 
+const archiveRows = posts
+  .map(
+    (post) => `
+      <li class="timeline-entry">
+        <time class="timeline-entry__date" datetime="${post.date}">${post.date.slice(5)}</time>
+        <a class="timeline-entry__title" href="/post.html">${post.title}</a>
+        <a class="timeline-entry__category" href="#">${post.category}</a>
+      </li>`,
+  )
+  .join("");
+
+const archives = `
+  <header class="archive-heading">
+    <h1>Archives</h1>
+    <p>31 public posts, organized by publish date.</p>
+  </header>
+  <div class="timeline">
+    <section class="timeline-year">
+      <h2>2026</h2>
+      <div class="timeline-month">
+        <h3>Recent posts</h3>
+        <ol>${archiveRows}</ol>
+      </div>
+    </section>
+  </div>`;
+
 await writeFile(path.join(output, "index.html"), page("Rackora preview", home));
+await writeFile(path.join(output, "archives.html"), page("Archives - Rackora", archives));
 await writeFile(
   path.join(output, "post.html"),
   page(

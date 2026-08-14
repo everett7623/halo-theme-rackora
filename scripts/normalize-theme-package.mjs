@@ -1,5 +1,5 @@
 import { createWriteStream } from "node:fs";
-import { copyFile, mkdir, readFile, readdir, stat } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,12 +23,6 @@ const requiredFiles = [
   "LICENSE",
   "screenshot.png",
   "docs/plugin-compatibility.md",
-];
-const staticFiles = [
-  {
-    source: "public/images/rackora-mark.svg",
-    target: "templates/assets/images/rackora-mark.svg",
-  },
 ];
 const textExtensions = new Set([
   ".css",
@@ -57,11 +51,6 @@ for (const relativePath of requiredFiles) {
 }
 if (!(await stat(path.join(root, "templates"))).isDirectory()) {
   throw new Error("templates must be built before packaging");
-}
-for (const staticFile of staticFiles) {
-  const targetPath = path.join(root, staticFile.target);
-  await mkdir(path.dirname(targetPath), { recursive: true });
-  await copyFile(path.join(root, staticFile.source), targetPath);
 }
 
 await mkdir(path.dirname(outputPath), { recursive: true });

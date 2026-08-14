@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 
 import YAML from "yaml";
 
+import "./check-sync-conflicts.mjs";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const requiredPages = [
   "index.html",
@@ -53,6 +55,16 @@ assert.equal(
   "theme.yaml and package.json versions must stay in sync",
 );
 assert.match(
+  packageManifest?.scripts?.build ?? "",
+  /pnpm test && pnpm test:budget && theme-package/,
+  "release builds must validate before packaging",
+);
+assert.equal(
+  packageManifest?.scripts?.["prebuild-only"],
+  "node scripts/check-sync-conflicts.mjs",
+  "source conflicts must be rejected before Vite builds",
+);
+assert.match(
   changelog,
   new RegExp(`^## \\[${packageManifest.version.replaceAll(".", "\\.")}\\]`, "m"),
   "CHANGELOG.md must contain the current release version",
@@ -65,6 +77,11 @@ assert.match(
 
 assert.match(layout, /<html\b[^>]*xmlns:th=/, "layout must declare the Thymeleaf namespace");
 assert.match(layout, /menuFinder\.getPrimary\(\)/, "layout must render the primary Halo menu");
+assert.match(
+  layout,
+  /th:rel="\$\{item\.spec\.target\?\.value == '_blank' \? 'noopener noreferrer' : null\}"/,
+  "new-window menu links must prevent opener access",
+);
 assert.match(layout, /<halo:footer\s*\/>/, "layout must expose the Halo footer extension point");
 assert.doesNotMatch(
   layout,
@@ -87,6 +104,7 @@ for (const page of requiredPages) {
 const post = await read("src/post.html");
 const singlePage = await read("src/page.html");
 const home = await read("src/index.html");
+const archives = await read("src/archives.html");
 const tags = await read("src/tags.html");
 const tagPage = await read("src/tag.html");
 const adSlot = await read("src/partials/ad-slot.html");
@@ -122,12 +140,33 @@ assert.doesNotMatch(
   "data-lucide on a button makes Lucide replace the interactive element",
 );
 assert.match(home, /theme\.config\.basic\.socials/, "home profile must render configured socials");
+assert.match(home, /siteStatsFinder\.getStats\(\)/, "home must render native site stats");
+assert.match(home, /site-stats-grid/, "home must expose a structured stats grid");
+assert.match(
+  home,
+  /<th:block\s+th:if="\$\{showHomeStats\}"\s*>[\s\S]*?siteStatsFinder\.getStats\(\)/,
+  "home must query stats only inside the stats panel condition",
+);
+assert.match(home, /\? '标签' : 'Tags'/, "home sidebar must use the concise tag heading");
+assert.doesNotMatch(home, /常用标签|Popular tags/, "home must not use the old tag heading");
+assert.match(
+  home,
+  /<th:block\s+th:if="\$\{theme\.config\.content\.show_home_tags == null or theme\.config\.content\.show_home_tags\}"\s*>\s*<th:block th:with="homeTags = \$\{tagFinder\.listAll\(\)\}">/,
+  "home must not query tags when sidebar tags are disabled",
+);
+assert.match(
+  archives,
+  /post\.categories\[0\]\.status\.permalink/,
+  "archives must link each post's primary category",
+);
 assert.doesNotMatch(
   home,
   /sidebar-shortcuts/,
   "home must not duplicate footer navigation in the sidebar",
 );
 assert.match(mainScript, /\bGithub\b/, "social icons must be registered with Lucide");
+assert.match(mainScript, /querySelectorAll<HTMLElement>\("\[data-site-launch\]"\)/);
+assert.match(mainScript, /data-site-launch-compact/);
 
 const basicForm = settings?.spec?.forms?.find((form) => form.group === "basic");
 assert.equal(
@@ -159,9 +198,18 @@ assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_name"
 assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_url"));
 assert.deepEqual(
   settings?.spec?.forms?.map((form) => form.group),
-  ["basic", "appearance", "content", "seo", "analytics", "integrations", "monetization"],
-  "theme settings must separate site data, presentation, SEO, analytics, integrations, and monetization",
+  ["basic", "appearance", "content", "stats", "seo", "analytics", "integrations", "monetization"],
+  "theme settings must separate site data, presentation, stats, SEO, analytics, integrations, and monetization",
 );
+const statsForm = settings?.spec?.forms?.find((form) => form.group === "stats");
+assert.equal(statsForm?.label, "站点统计");
+assert.equal(statsForm?.formSchema?.find((field) => field.name === "show_home_stats")?.value, true);
+assert.equal(
+  statsForm?.formSchema?.find((field) => field.name === "show_footer_stats")?.value,
+  undefined,
+  "footer stats must stay unset until legacy config has been migrated",
+);
+assert.ok(statsForm?.formSchema?.find((field) => field.name === "site_launch_date"));
 const seoForm = settings?.spec?.forms?.find((form) => form.group === "seo");
 assert.equal(seoForm?.formSchema?.find((field) => field.name === "noindex_tags")?.value, true);
 assert.equal(seoForm?.formSchema?.find((field) => field.name === "noindex_archives")?.value, true);
@@ -172,6 +220,7 @@ assert.ok(seoForm?.formSchema?.find((field) => field.name === "organization_name
 assert.ok(seoForm?.formSchema?.find((field) => field.name === "organization_logo"));
 
 const analyticsForm = settings?.spec?.forms?.find((form) => form.group === "analytics");
+assert.equal(analyticsForm?.label, "访问分析");
 assert.equal(analyticsForm?.formSchema?.find((field) => field.name === "enabled")?.value, false);
 assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "ga4_id"));
 assert.ok(analyticsForm?.formSchema?.find((field) => field.name === "clarity_id"));
@@ -250,6 +299,21 @@ assert.match(
 assert.match(layout, /hm\.baidu\.com\/hm\.js/, "layout must support Baidu Analytics when enabled");
 assert.match(layout, /everettlabs\.dev/, "footer must credit Everett Labs");
 assert.match(layout, /siteStatsFinder\.getStats\(\)/, "footer must support native Halo stats");
+assert.match(
+  layout,
+  /<th:block\s+th:if="\$\{showFooterStats\}"\s+th:with="stats = \$\{siteStatsFinder\.getStats\(\)\}"\s*>/,
+  "footer must not query site stats when only uptime is enabled",
+);
+assert.match(
+  layout,
+  /theme\.config\.basic\.show_footer_stats/,
+  "footer must keep legacy stats config compatibility",
+);
+assert.match(
+  layout,
+  /theme\.config\.basic\.site_launch_date/,
+  "footer must keep legacy launch date compatibility",
+);
 assert.match(layout, /data-site-launch/, "footer must support optional site uptime");
 assert.match(layout, /site\.favicon/, "the bundled mark must be available as a favicon fallback");
 
@@ -287,7 +351,7 @@ assert.doesNotMatch(
   "post tags must not prefix labels with #",
 );
 
-await read("public/images/rackora-mark.svg");
+await read("public/assets/images/rackora-mark.svg");
 const builtThemeMark = await read("templates/assets/images/rackora-mark.svg");
 assert.match(builtThemeMark, /<svg\b/, "the built theme must contain the default mark asset");
 console.log(

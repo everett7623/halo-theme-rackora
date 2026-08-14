@@ -17,20 +17,20 @@
     </p>
   </header>
 
-  <aside
-    class="featured-entry"
-    th:if="${not #strings.isEmpty(#annotations.get(category, 'rackora_featured_post'))}"
-    th:with="featuredPost = ${postFinder.getByName(#annotations.get(category, 'rackora_featured_post'))}"
-  >
-    <small th:text="${theme.config.basic.ui_language == 'zh-CN' ? '精选内容' : 'Featured'}"
-      >Featured</small
-    >
-    <a
-      th:if="${featuredPost != null}"
-      th:href="@{${featuredPost.status.permalink}}"
-      th:text="${featuredPost.spec.title}"
-    ></a>
-  </aside>
+  <th:block th:with="featuredPostName = ${#annotations.get(category, 'rackora_featured_post')}">
+    <th:block th:if="${not #strings.isEmpty(featuredPostName)}">
+      <aside
+        class="featured-entry"
+        th:with="featuredPost = ${postFinder.getByName(featuredPostName)}"
+        th:if="${featuredPost != null}"
+      >
+        <small th:text="${theme.config.basic.ui_language == 'zh-CN' ? '精选内容' : 'Featured'}"
+          >Featured</small
+        >
+        <a th:href="@{${featuredPost.status.permalink}}" th:text="${featuredPost.spec.title}"></a>
+      </aside>
+    </th:block>
+  </th:block>
 
   <ul class="post-list" th:if="${not #lists.isEmpty(posts.items)}">
     <include src="post-card.html"></include>
