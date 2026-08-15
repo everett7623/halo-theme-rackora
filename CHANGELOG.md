@@ -3,6 +3,20 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.6] - 2026-08-16
+
+### 修复
+
+- 归档时间线去掉 `word-break: break-word`，避免长标题再次被压成单字竖排。
+- 作者页 canonical / og:url 改为使用 `author.status.permalink`，不再手拼 `/authors/` 路径。
+- 首页与文章 JSON-LD 的 logo / image 统一绝对化，并回退到主题标记图，避免空字符串或相对路径。
+- 文章系列改为 `postFinder.listAll()` 全站匹配，不再只扫最早 100 篇。
+
+### 调整
+
+- 主题设置页签「首页」更名为「侧边栏」，字段文案改为启用首页侧栏 / 资料卡 / 侧栏标签数量。
+- 同步 README 与页脚说明帮助文案，去掉已移除的页脚统计与「点赞」表述。
+
 ## [0.6.5] - 2026-08-16
 
 ### 调整
@@ -180,6 +194,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.6
 [0.6.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.5
 [0.6.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.4
 [0.6.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.3

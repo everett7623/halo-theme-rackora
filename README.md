@@ -4,7 +4,7 @@ Rackora is a minimal, content-first Halo 2.x theme for independent publishing, k
 and technical writing. It combines a Fuwari-inspired information hierarchy with the low-image
 article flow, dark mode, and responsive reading experience common to modern publishing themes.
 
-Current release: `v0.6.5`.
+Current release: `v0.6.6`.
 
 ## 设计原则
 
@@ -66,7 +66,7 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 | -------- | -------------------------------------------------------------- |
 | 基础     | 界面/网站语言、地区、社交、RSS、页脚、署名、站点统计与建站日期 |
 | 样式     | 配色、强调色、封面、横幅、正文宽度与字号                       |
-| 首页     | 资料侧栏、资料卡、分类、高频标签及数量                         |
+| 侧边栏   | 首页侧栏总开关、资料卡、分类、高频标签及数量                   |
 | 文章     | 侧栏、分享平台、灯箱、相关文章、系列、许可声明                 |
 | 备案     | 可选 ICP 与公网安备号及跳转链接                                |
 | SEO      | 标签/归档索引策略、站点验证、Organization 实体                 |
@@ -74,14 +74,13 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 | 插件     | Halo 官方友情链接页面和页脚入口                                |
 | 广告     | 总开关、统一披露文案、可排序广告位                             |
 
-命名对齐 Earth / Stack / Hao 等常见主题（基础、样式、文章、备案、插件），同时保留 Rackora 的首页/文章拆分与 SEO 能力。从旧版升级后请“重新加载配置”；旧 `content.*` / `stats.*` 仍会回退读取。
+命名对齐 Earth / Stack / Hao 等常见主题（基础、样式、文章、备案、插件），首页侧栏独立为「侧边栏」页签，并保留 SEO 能力。从旧版升级后请“重新加载配置”；旧 `content.*` / `stats.*` 仍会回退读取。
 
 首页横幅留空、文章封面选择“不显示”即为默认少图方案。目录、阅读时间和代码复制按内容
 自动启用。站点标题、Logo、副标题和全站 description 直接复用 Halo 系统资料；主题基于
 实际路由生成 canonical、Open Graph 和 Twitter Card，避免后台再维护一套重复 SEO 数据。
 
-首页站点统计默认开启，展示 Halo 原生的访问、点赞、评论、文章和分类累计数据。页脚统计默认关闭，
-开启后以一行轻量信息显示文章、评论和访问量。建站日期使用 `YYYY-MM-DD` 即可在统计区域显示运行天数，
+首页站点统计默认开启，在首页侧栏以轻量指标展示访问、文章、评论和分类累计数据；页脚不再重复统计。建站日期使用 `YYYY-MM-DD` 即可在统计区域显示运行天数，
 不调用外部统计接口。
 
 页脚菜单留空时使用主题自带的归档、栏目、标签等链接，也可以选择 Halo 中已有的菜单。备案号为空时

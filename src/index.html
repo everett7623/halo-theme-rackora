@@ -9,34 +9,38 @@
       image="site.logo"
       type="website"
     ></include>
-    <script type="application/ld+json" th:inline="javascript">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": /*[[${site.title}]]*/ "站点标题",
-        "url": /*[[${site.url}]]*/ "https://example.com/",
-        "description": /*[[${site.seo.description}]]*/ "",
-        "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
-        "publisher": {
-          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization"
+    <th:block
+      th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},logoRaw = ${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)},logoAbs = ${(#strings.startsWith(logoRaw, 'https://') or #strings.startsWith(logoRaw, 'http://')) ? logoRaw : siteBase + (#strings.startsWith(logoRaw, '/') ? logoRaw : '/' + logoRaw)},orgId = ${siteBase + '#organization'}"
+    >
+      <script type="application/ld+json" th:inline="javascript">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": /*[[${site.title}]]*/ "站点标题",
+          "url": /*[[${siteBase + '/'}]]*/ "https://example.com/",
+          "description": /*[[${site.seo.description}]]*/ "",
+          "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
+          "publisher": {
+            "@id": /*[[${orgId}]]*/ "https://example.com#organization"
+          }
         }
-      }
-    </script>
-    <script type="application/ld+json" th:inline="javascript">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization",
-        "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site",
-        "url": /*[[${site.url}]]*/ "https://example.com/",
-        "mainEntityOfPage": /*[[${theme.config.seo.about_url ?: site.url}]]*/ "https://example.com/",
-        "logo": {
-          "@type": "ImageObject",
-          "url": /*[[${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)}]]*/ ""
-        },
-        "sameAs": /*[[${theme.config.basic.socials.?[not #strings.isEmpty(url)].![url]}]]*/ []
-      }
-    </script>
+      </script>
+      <script type="application/ld+json" th:inline="javascript">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "@id": /*[[${orgId}]]*/ "https://example.com#organization",
+          "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site",
+          "url": /*[[${siteBase + '/'}]]*/ "https://example.com/",
+          "mainEntityOfPage": /*[[${theme.config.seo.about_url ?: (siteBase + '/')}]]*/ "https://example.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": /*[[${logoAbs}]]*/ "https://example.com/logo.svg"
+          },
+          "sameAs": /*[[${theme.config.basic.socials.?[not #strings.isEmpty(url)].![url]}]]*/ []
+        }
+      </script>
+    </th:block>
   </template>
 
   <figure class="home-banner" th:if="${not #strings.isEmpty(theme.config.appearance.banner_image)}">

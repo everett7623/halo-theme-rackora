@@ -94,13 +94,13 @@ spec:
           name: footer_note
           id: footer_note
           label: 页脚说明
-          help: 留空则显示站点副标题。
+          help: 留空则不显示说明。
           value: ""
         - $formkit: switch
           name: show_footer_menu
           id: show_footer_menu
           label: 显示页脚菜单
-          help: 关闭后隐藏页脚导航，备案信息和站点统计不受影响。
+          help: 关闭后隐藏页脚导航；备案信息不受影响。
           value: true
         - $formkit: menuSelect
           name: footer_menu
@@ -204,20 +204,20 @@ spec:
             - label: 偏大
               value: lg
     - group: home
-      label: 首页
+      label: 侧边栏
       formSchema:
         - $formkit: switch
           name: show_home_sidebar
           id: show_home_sidebar
-          label: 首页资料侧栏
-          help: 展示站点简介、社交账号、内容数量和栏目索引。
+          label: 启用首页侧栏
+          help: 控制首页右侧资料卡、分类与标签区域；关闭后首页为单栏布局。
           value: true
         - $formkit: switch
           name: show_home_profile
           id: show_home_profile
           key: show_home_profile
           label: 显示站点资料卡
-          help: 在首页侧栏显示 Logo、站点名、副标题和社交账号。
+          help: 显示 Logo、站点名、副标题、社交账号；开启站点统计时一并显示轻量指标。
           value: true
           if: "$get(show_home_sidebar).value === true"
         - $formkit: switch
@@ -239,7 +239,7 @@ spec:
           name: home_tag_count
           id: home_tag_count
           key: home_tag_count
-          label: 首页标签数量
+          label: 侧栏标签数量
           value: 10
           min: 6
           max: 16
@@ -355,13 +355,14 @@ spec:
           name: show_series
           id: show_series
           label: 显示文章系列
-          help: 需在文章元数据中填写系列名称；同系列文章会出现在正文底部。
+          help: 需在文章元数据中填写系列名称；主题从全站已发布文章中匹配同系列，再按下方数量截断显示。
           value: true
         - $formkit: number
           name: series_post_count
           id: series_post_count
           key: series_post_count
           label: 系列文章数量
+          help: 正文底部最多展示的同系列篇数；排序优先元数据顺序号。
           value: 6
           min: 3
           max: 10

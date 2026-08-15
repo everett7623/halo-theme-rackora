@@ -14,39 +14,43 @@
       property="article:modified_time"
       th:content="${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}"
     />
-    <script type="application/ld+json" th:inline="javascript">
-      {
-        "@context": "https://schema.org",
-        "@type": "TechArticle",
-        "@id": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.status.permalink}]]*/ "https://example.com/post",
-        "url": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.status.permalink}]]*/ "https://example.com/post",
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.status.permalink}]]*/ "https://example.com/post"
-        },
-        "headline": /*[[${post.spec.title}]]*/ "Post title",
-        "description": /*[[${post.status.excerpt ?: ''}]]*/ "",
-        "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
-        "datePublished": /*[[${post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
-        "dateModified": /*[[${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
-        "author": {
-          "@type": "Person",
-          "name": /*[[${post.owner.displayName}]]*/ "Author",
-          "url": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.owner.permalink}]]*/ "https://example.com/authors/author"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization",
-          "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site",
-          "url": /*[[${site.url}]]*/ "https://example.com/",
-          "logo": {
-            "@type": "ImageObject",
-            "url": /*[[${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)}]]*/ ""
-          }
-        },
-        "image": /*[[${post.spec.cover ?: (theme.config.seo.organization_logo ?: site.logo)}]]*/ ""
-      }
-    </script>
+    <th:block
+      th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},logoRaw = ${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)},logoAbs = ${(#strings.startsWith(logoRaw, 'https://') or #strings.startsWith(logoRaw, 'http://')) ? logoRaw : siteBase + (#strings.startsWith(logoRaw, '/') ? logoRaw : '/' + logoRaw)},imageRaw = ${not #strings.isEmpty(post.spec.cover) ? post.spec.cover : logoRaw},imageAbs = ${(#strings.startsWith(imageRaw, 'https://') or #strings.startsWith(imageRaw, 'http://')) ? imageRaw : siteBase + (#strings.startsWith(imageRaw, '/') ? imageRaw : '/' + imageRaw)},orgId = ${siteBase + '#organization'}"
+    >
+      <script type="application/ld+json" th:inline="javascript">
+        {
+          "@context": "https://schema.org",
+          "@type": "TechArticle",
+          "@id": /*[[${siteBase + post.status.permalink}]]*/ "https://example.com/post",
+          "url": /*[[${siteBase + post.status.permalink}]]*/ "https://example.com/post",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": /*[[${siteBase + post.status.permalink}]]*/ "https://example.com/post"
+          },
+          "headline": /*[[${post.spec.title}]]*/ "Post title",
+          "description": /*[[${post.status.excerpt ?: ''}]]*/ "",
+          "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
+          "datePublished": /*[[${post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+          "dateModified": /*[[${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+          "author": {
+            "@type": "Person",
+            "name": /*[[${post.owner.displayName}]]*/ "Author",
+            "url": /*[[${siteBase + post.owner.permalink}]]*/ "https://example.com/authors/author"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "@id": /*[[${orgId}]]*/ "https://example.com#organization",
+            "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site",
+            "url": /*[[${siteBase + '/'}]]*/ "https://example.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": /*[[${logoAbs}]]*/ "https://example.com/logo.svg"
+            }
+          },
+          "image": /*[[${imageAbs}]]*/ "https://example.com/logo.svg"
+        }
+      </script>
+    </th:block>
     <script type="module" src="./js/post.ts"></script>
   </template>
 

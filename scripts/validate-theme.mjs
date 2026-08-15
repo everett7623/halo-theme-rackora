@@ -85,6 +85,16 @@ assert.match(
   new RegExp("Current release: `v" + packageManifest.version.replaceAll(".", "\\.") + "`"),
   "README.md must identify the current release version",
 );
+assert.doesNotMatch(
+  readme,
+  /页脚统计默认关闭|访问、点赞、评论/,
+  "README must not document removed footer stats or likes in home stats",
+);
+assert.match(
+  settingsSource,
+  /name: footer_note[\s\S]*?help: 留空则不显示说明/,
+  "footer note help must match layout behavior",
+);
 assert.match(
   await read(".github/workflows/release.yml"),
   /extract-changelog\.mjs/,
@@ -177,8 +187,8 @@ for (const [label, source] of [
   );
   assert.match(
     source,
-    /["']logo["']\s*:\s*\{[\s\S]*?["']@type["']\s*:\s*["']ImageObject["'][\s\S]*?theme\.config\.seo\.organization_logo/,
-    `${label} JSON-LD must embed the publisher logo`,
+    /["']logo["']\s*:\s*\{[\s\S]*?["']@type["']\s*:\s*["']ImageObject["'][\s\S]*?logoAbs/,
+    `${label} JSON-LD must embed an absolutized publisher logo`,
   );
   assert.match(
     source,
@@ -236,6 +246,11 @@ assert.doesNotMatch(
   mainStyles,
   /\.timeline-entry__title\s*\{[^}]*overflow-wrap:\s*anywhere/,
   "overflow-wrap:anywhere shrinks archive title columns to one character",
+);
+assert.doesNotMatch(
+  mainStyles,
+  /\.timeline-entry__title\s*\{[^}]*word-break:\s*break-word/,
+  "word-break:break-word behaves like anywhere for min-content and can collapse title columns",
 );
 assert.match(
   mainStyles,
@@ -364,7 +379,7 @@ assert.deepEqual(
 );
 assert.equal(basicForm?.label, "基础");
 assert.equal(appearanceForm?.label, "样式");
-assert.equal(homeForm?.label, "首页");
+assert.equal(homeForm?.label, "侧边栏");
 assert.equal(postForm?.label, "文章");
 assert.equal(settings?.spec?.forms?.find((form) => form.group === "compliance")?.label, "备案");
 assert.equal(settings?.spec?.forms?.find((form) => form.group === "integrations")?.label, "插件");
@@ -602,6 +617,26 @@ assert.match(
 assert.match(post, /share-bar\.html/, "posts must include the share bar partial");
 assert.match(post, /related-posts/, "posts must expose related articles by category");
 assert.match(post, /series-posts|rackora_series/, "posts must support series grouping");
+assert.match(
+  post,
+  /postFinder\.listAll\(\)/,
+  "series discovery must scan all published posts, not only the earliest page",
+);
+assert.match(
+  await read("src/author.html"),
+  /path="author\.status\.permalink"/,
+  "author SEO must use the Halo permalink, not a reconstructed /authors/ path",
+);
+assert.match(post, /\bimageAbs\b/, "BlogPosting JSON-LD must compute an absolutized image URL");
+assert.ok(
+  post.includes('"image": /*[[${imageAbs}]]*/'),
+  "BlogPosting JSON-LD image must use the absolutized URL",
+);
+assert.match(home, /\blogoAbs\b/, "Organization JSON-LD must compute an absolutized logo URL");
+assert.ok(
+  home.includes('"url": /*[[${logoAbs}]]*/'),
+  "Organization JSON-LD logo must use the absolutized URL",
+);
 assert.match(postScript, /function initShareBar\(/, "share targets must be wired in post script");
 assert.match(postScript, /function initSeriesList\(/, "series lists must be sorted client-side");
 assert.match(
