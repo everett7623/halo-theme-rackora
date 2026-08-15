@@ -20,3 +20,10 @@ pnpm build-only
 pnpm test
 pnpm test:budget
 ```
+
+## 发布
+
+1. 同步更新 `package.json`、`theme.yaml`、`CHANGELOG.md`（为该版本写完整条目，不要只写一句摘要）。
+2. 提交后打 `vX.Y.Z` 标签并推送；CI 会打包 ZIP，并把 `CHANGELOG.md` 对应章节写入 GitHub Release 正文。
+3. 不要跳过中间次版本标签：有 `0.5.0` 提交就要打 `v0.5.0`，否则 Release 列表会看起来像版本号跳号。
+4. Release 正文由 `scripts/extract-changelog.mjs` 从 CHANGELOG 生成，不要依赖 `--generate-notes` 的提交对比链接。

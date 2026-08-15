@@ -42,8 +42,18 @@ jobs:
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        shell: bash
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          gh release create "v${VERSION}" "dist/theme-rackora-${VERSION}.zip" \
-            --title "Rackora v${VERSION}" \
-            --generate-notes
+          NOTES_FILE="$(mktemp)"
+          node scripts/extract-changelog.mjs "${VERSION}" > "${NOTES_FILE}"
+          ASSET="dist/theme-rackora-${VERSION}.zip"
+          if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            gh release edit "v${VERSION}" --title "Rackora v${VERSION}" --notes-file "${NOTES_FILE}"
+            gh release upload "v${VERSION}" "${ASSET}" --clobber
+          else
+            gh release create "v${VERSION}" "${ASSET}" \
+              --title "Rackora v${VERSION}" \
+              --notes-file "${NOTES_FILE}"
+          fi

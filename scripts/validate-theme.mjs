@@ -86,6 +86,16 @@ assert.match(
   "README.md must identify the current release version",
 );
 assert.match(
+  await read(".github/workflows/release.yml"),
+  /extract-changelog\.mjs/,
+  "GitHub releases must publish CHANGELOG notes instead of bare generate-notes",
+);
+assert.doesNotMatch(
+  await read(".github/workflows/release.yml"),
+  /--generate-notes/,
+  "do not ship releases with only auto-generated commit compare notes",
+);
+assert.match(
   await read("docs/plugin-compatibility.md"),
   /Site leftovers|plugin-time-factor/,
   "plugin docs must treat Time Factor as a site leftover, not a theme dependency",
