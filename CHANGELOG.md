@@ -3,6 +3,13 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.4] - 2026-08-16
+
+### 修复
+
+- 恢复首页 Hero（站点标题、副标题与内容摘要），不再留下空白占位。
+- 恢复侧栏资料卡 Logo、站点名与副标题；社交图标与轻量统计仍保留在同一卡片内。
+
 ## [0.6.3] - 2026-08-15
 
 ### 修复
@@ -166,6 +173,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.4
 [0.6.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.3
 [0.6.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.2
 [0.6.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.1

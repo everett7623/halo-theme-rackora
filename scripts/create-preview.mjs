@@ -110,14 +110,21 @@ function page(title, body, scripts = "") {
 
 const home = `
   <div class="home-grid">
+    <section class="home-heading" aria-labelledby="home-title">
+      <p class="home-heading__brand">Independent publishing</p>
+      <h1 id="home-title">Rackora</h1>
+      <p>A quiet, content-first theme for independent publishing.</p>
+      <div class="home-heading__meta"><span>31 posts</span><span>Written for clarity and longevity</span></div>
+    </section>
     <section class="content-section" aria-labelledby="latest-title">
-      <header class="section-heading"><h1 id="latest-title">Latest posts</h1><a class="text-link" href="#">View archives</a></header>
+      <header class="section-heading"><h2 id="latest-title">Latest posts</h2><a class="text-link" href="#">View archives</a></header>
       <ul class="post-list post-list--cards">${postMarkup}</ul>
       <nav class="pagination" aria-label="Pagination"><span class="pagination__status">1 / 4</span><a class="pagination__link" href="#"><span>Next</span><i data-lucide="arrow-right"></i></a></nav>
     </section>
     <aside class="home-sidebar" aria-label="Site information">
       <section class="profile-panel profile-panel--split">
-        <p class="profile-panel__label">Connect</p>
+        <img class="profile-panel__mark" width="64" height="64" src="/assets/images/rackora-mark.svg" alt="Rackora" />
+        <div class="profile-panel__copy"><h2>Rackora</h2><p>Independent publishing with clarity and care.</p></div>
         <nav class="profile-socials" aria-label="Social profiles"><a href="#" title="GitHub" aria-label="GitHub"><i data-lucide="github" aria-hidden="true"></i></a><a href="#" title="Telegram" aria-label="Telegram"><i data-lucide="send" aria-hidden="true"></i></a><a href="#" title="RSS" aria-label="RSS"><i data-lucide="rss" aria-hidden="true"></i></a><a href="#" title="Website" aria-label="Website"><i data-lucide="globe" aria-hidden="true"></i></a></nav>
         <dl class="profile-stats"><div><dt>Visits</dt><dd>128</dd></div><div><dt>Posts</dt><dd>31</dd></div><div><dt>Comments</dt><dd>42</dd></div><div><dt>Categories</dt><dd>6</dd></div><div><dt>Days</dt><dd data-site-launch="2026-03-01" data-site-launch-compact>--</dd></div></dl>
       </section>

@@ -488,12 +488,12 @@ assert.match(mainStyles, /\.footer-compliance\s*\{/);
 assert.match(mainStyles, /\.article-layout--single\s*\{/);
 assert.match(
   mainStyles,
-  /@media \(max-width: 960px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"content"[\s\S]*?"sidebar"/,
+  /@media \(max-width: 960px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"heading"[\s\S]*?"content"[\s\S]*?"sidebar"/,
   "tablet home layout must keep posts ahead of secondary sidebar panels",
 );
 assert.match(
   mainStyles,
-  /@media \(max-width: 720px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"content"[\s\S]*?"sidebar"/,
+  /@media \(max-width: 720px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"heading"[\s\S]*?"content"[\s\S]*?"sidebar"/,
   "mobile home layout must keep posts ahead of secondary sidebar panels",
 );
 assert.doesNotMatch(
@@ -560,17 +560,11 @@ assert.match(
   /showHomeCategories[\s\S]*?homeCategories = \$\{categoryFinder\.listAll\(\)\}/,
   "home categories must only be queried when their panel is enabled",
 );
-assert.doesNotMatch(
-  home,
-  /home-heading|独立出版|Independent publishing/,
-  "home must not repeat the header brand as a hero",
-);
+assert.match(home, /class=["']home-heading["']/, "home must keep the brand hero section");
+assert.match(home, /id=["']home-title["']/, "home hero must expose the site title as H1");
+assert.match(home, /profile-panel__mark/, "home sidebar must keep the site logo");
+assert.match(home, /profile-panel__copy/, "home sidebar must keep the site title and subtitle");
 assert.match(home, /profile-stats/, "home stats belong in the compact sidebar profile");
-assert.match(
-  home,
-  /profile-panel__label/,
-  "home profile must focus on social connect, not brand copy",
-);
 assert.match(home, /siteStatsFinder\.getStats\(\)/, "home sidebar must use native Halo stats");
 assert.match(home, /tagFinder\.listAll\(\)/, "home must query tags through Halo Tag Finder");
 assert.match(home, /data-popular-tags/, "home must expose sortable popular tags");

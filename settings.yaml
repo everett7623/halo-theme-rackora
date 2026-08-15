@@ -216,8 +216,8 @@ spec:
           name: show_home_profile
           id: show_home_profile
           key: show_home_profile
-          label: 显示社交关注入口
-          help: 仅显示已配置的社交图标，不再重复站点 Logo、标题和副标题（顶栏已有品牌）。
+          label: 显示站点资料卡
+          help: 在首页侧栏显示 Logo、站点名、副标题和社交账号。
           value: true
           if: "$get(show_home_sidebar).value === true"
         - $formkit: switch
