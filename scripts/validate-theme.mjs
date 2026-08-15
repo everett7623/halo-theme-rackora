@@ -208,14 +208,15 @@ assert.doesNotMatch(
 );
 assert.match(home, /theme\.config\.basic\.socials/, "home profile must render configured socials");
 assert.match(home, /siteStatsFinder\.getStats\(\)/, "home must render native site stats");
-assert.match(home, /site-stats-grid/, "home must expose a structured stats grid");
+assert.match(home, /profile-stats/, "home must expose compact profile stats");
 assert.match(
   home,
-  /<th:block\s+th:if="\$\{showHomeStats\}"\s*>[\s\S]*?siteStatsFinder\.getStats\(\)/,
-  "home must query stats only inside the stats panel condition",
+  /th:if="\$\{showHomeStats\}"[\s\S]*?siteStatsFinder\.getStats\(\)/,
+  "home must query stats only when the sidebar stats block is enabled",
 );
 assert.match(home, /\? '标签' : 'Tags'/, "home sidebar must use the concise tag heading");
 assert.doesNotMatch(home, /常用标签|Popular tags/, "home must not use the old tag heading");
+assert.doesNotMatch(home, /site-stats-grid|站点统计/, "home must not keep the old stats card");
 assert.match(
   home,
   /<th:block\s+th:if="\$\{showHomeTags\}"\s*>\s*<th:block th:with="homeTags = \$\{tagFinder\.listAll\(\)\}">/,
@@ -330,8 +331,11 @@ assert.equal(settings?.spec?.forms?.find((form) => form.group === "integrations"
 assert.equal(settings?.spec?.forms?.find((form) => form.group === "monetization")?.label, "广告");
 assert.equal(basicForm?.formSchema?.find((field) => field.name === "show_home_stats")?.value, true);
 const siteLaunchDate = basicForm?.formSchema?.find((field) => field.name === "site_launch_date");
-const showFooterStats = basicForm?.formSchema?.find((field) => field.name === "show_footer_stats");
-assert.equal(showFooterStats?.value, false, "footer stats must be disabled by default");
+assert.equal(
+  basicForm?.formSchema?.find((field) => field.name === "show_footer_stats"),
+  undefined,
+  "footer stats must be removed to avoid duplicating the home sidebar",
+);
 assert.equal(siteLaunchDate?.$formkit, "date", "site launch date must use the native date input");
 assert.equal(
   siteLaunchDate?.validation,
@@ -459,19 +463,18 @@ assert.match(mainStyles, /\.footer-compliance\s*\{/);
 assert.match(mainStyles, /\.article-layout--single\s*\{/);
 assert.match(
   mainStyles,
-  /@media \(max-width: 960px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"heading"[\s\S]*?"content"[\s\S]*?"sidebar"/,
+  /@media \(max-width: 960px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"content"[\s\S]*?"sidebar"/,
   "tablet home layout must keep posts ahead of secondary sidebar panels",
 );
 assert.match(
   mainStyles,
-  /@media \(max-width: 720px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"heading"[\s\S]*?"content"[\s\S]*?"sidebar"/,
+  /@media \(max-width: 720px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"content"[\s\S]*?"sidebar"/,
   "mobile home layout must keep posts ahead of secondary sidebar panels",
 );
-assert.match(layout, /siteStatsFinder\.getStats\(\)/, "footer must support native Halo stats");
-assert.match(
+assert.doesNotMatch(
   layout,
-  /<th:block\s+th:if="\$\{showFooterStats\}"\s+th:with="stats = \$\{siteStatsFinder\.getStats\(\)\}"\s*>/,
-  "footer must not query site stats when only uptime is enabled",
+  /footer-stats|show_footer_stats|siteStatsFinder\.getStats\(\)/,
+  "footer must not repeat site stats",
 );
 assert.match(layout, /item\.children/, "primary navigation must support nested menus");
 assert.match(post, /data-image-lightbox/, "posts must expose lightbox opt-in");
@@ -480,17 +483,8 @@ assert.match(postScript, /function initLightbox\(/, "posts need a lightweight im
 assert.match(themeSource, /customTemplates:/, "theme must declare custom templates");
 assert.match(themeSource, /page_about\.html/, "theme must provide an About page template");
 assert.match(themeSource, /post_docs\.html/, "theme must provide a Documentation post template");
-assert.match(
-  layout,
-  /theme\.config\.basic\.show_footer_stats/,
-  "footer must keep legacy stats config compatibility",
-);
-assert.match(
-  layout,
-  /theme\.config\.basic\.site_launch_date/,
-  "footer must keep legacy launch date compatibility",
-);
-assert.match(layout, /data-site-launch/, "footer must support optional site uptime");
+assert.match(home, /site_launch_date/, "home sidebar stats must keep launch date compatibility");
+assert.match(home, /data-site-launch-compact/, "home sidebar must support optional site uptime");
 assert.match(layout, /site\.favicon/, "the bundled mark must be available as a favicon fallback");
 
 const linksPage = await read("src/links.html");
@@ -537,15 +531,22 @@ assert.match(
   "missing upgraded config must keep recent comments disabled safely",
 );
 assert.match(
-  layout,
-  /theme\.config\.basic\.show_footer_stats != null \? theme\.config\.basic\.show_footer_stats : \(theme\.config\.stats\?\.show_footer_stats != null \? theme\.config\.stats\.show_footer_stats : false\)/,
-  "missing legacy footer stats config must fall back to false",
-);
-assert.match(
   home,
   /showHomeCategories[\s\S]*?homeCategories = \$\{categoryFinder\.listAll\(\)\}/,
   "home categories must only be queried when their panel is enabled",
 );
+assert.doesNotMatch(
+  home,
+  /home-heading|独立出版|Independent publishing/,
+  "home must not repeat the header brand as a hero",
+);
+assert.match(home, /profile-stats/, "home stats belong in the compact sidebar profile");
+assert.match(
+  home,
+  /profile-panel__label/,
+  "home profile must focus on social connect, not brand copy",
+);
+assert.match(home, /siteStatsFinder\.getStats\(\)/, "home sidebar must use native Halo stats");
 assert.match(home, /tagFinder\.listAll\(\)/, "home must query tags through Halo Tag Finder");
 assert.match(home, /data-popular-tags/, "home must expose sortable popular tags");
 assert.match(mainScript, /function initPopularTags\(/, "home tags must be sorted by post count");

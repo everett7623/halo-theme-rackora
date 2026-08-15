@@ -244,7 +244,8 @@
         <div>
           <strong th:text="${site.title}">Rackora</strong>
           <p
-            th:text="${theme.config.basic.footer_note ?: (site.subtitle ?: 'Independent publishing with clarity and care.')}"
+            th:if="${not #strings.isEmpty(theme.config.basic.footer_note)}"
+            th:text="${theme.config.basic.footer_note}"
           ></p>
         </div>
         <nav
@@ -345,33 +346,6 @@
             th:text="${theme.config.compliance.public_security_number}"
           ></span>
         </p>
-        <th:block
-          th:with="showFooterStats = ${theme.config.basic.show_footer_stats != null ? theme.config.basic.show_footer_stats : (theme.config.stats?.show_footer_stats != null ? theme.config.stats.show_footer_stats : false)},siteLaunchDate = ${theme.config.basic.site_launch_date ?: theme.config.stats?.site_launch_date}"
-        >
-          <p
-            class="footer-stats"
-            th:if="${showFooterStats or not #strings.isEmpty(siteLaunchDate)}"
-          >
-            <th:block th:if="${showFooterStats}" th:with="stats = ${siteStatsFinder.getStats()}">
-              <span
-                th:text="${theme.config.basic.ui_language == 'zh-CN' ? stats.post + ' 篇文章' : stats.post + ' posts'}"
-                >Posts</span
-              >
-              <span
-                th:text="${theme.config.basic.ui_language == 'zh-CN' ? stats.comment + ' 条评论' : stats.comment + ' comments'}"
-                >Comments</span
-              >
-              <span
-                th:text="${theme.config.basic.ui_language == 'zh-CN' ? stats.visit + ' 次访问' : stats.visit + ' visits'}"
-                >Visits</span
-              >
-            </th:block>
-            <span
-              th:if="${not #strings.isEmpty(siteLaunchDate)}"
-              th:attr="data-site-launch=${siteLaunchDate}"
-            ></span>
-          </p>
-        </th:block>
       </div>
       <halo:footer />
     </footer>

@@ -3,6 +3,15 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.2] - 2026-08-15
+
+### 调整
+
+- 去掉首页重复的品牌 Hero（标题/副标题与顶栏重复），首页直接以「最新文章」为主内容。
+- 侧栏资料卡不再重复 Logo 与站点名，仅保留「关注」社交入口。
+- 站点统计并入侧栏轻量指标，去掉页脚统计与刺眼的绿色数字块；移除「页脚显示站点统计」开关。
+- 页脚不再默认回退输出站点副标题，仅在填写页脚说明时显示。
+
 ## [0.6.1] - 2026-08-15
 
 ### 修复
@@ -147,6 +156,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.2
 [0.6.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.1
 [0.6.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.0
 [0.5.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.5.0

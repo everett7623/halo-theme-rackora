@@ -127,20 +127,14 @@ spec:
         - $formkit: switch
           name: show_home_stats
           id: show_home_stats
-          label: 首页显示站点统计
-          help: 展示访问、点赞、评论、文章和分类等 Halo 原生累计数据。
+          label: 首页侧栏显示站点统计
+          help: 在首页侧栏以轻量指标展示访问、文章、评论和分类；不再在页脚重复。
           value: true
-        - $formkit: switch
-          name: show_footer_stats
-          id: show_footer_stats
-          label: 页脚显示站点统计
-          help: 在页脚显示文章、评论和访问量；适合保持为一行轻量信息。
-          value: false
         - $formkit: date
           name: site_launch_date
           id: site_launch_date
           label: 建站日期
-          help: 可选；填写后统计区域显示已运行天数。
+          help: 可选；填写后侧栏统计显示已运行天数。
           value: ""
     - group: appearance
       label: 样式
@@ -222,8 +216,8 @@ spec:
           name: show_home_profile
           id: show_home_profile
           key: show_home_profile
-          label: 显示站点资料卡
-          help: 显示站点 Logo、副标题和社交账号。
+          label: 显示社交关注入口
+          help: 仅显示已配置的社交图标，不再重复站点 Logo、标题和副标题（顶栏已有品牌）。
           value: true
           if: "$get(show_home_sidebar).value === true"
         - $formkit: switch
