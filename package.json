@@ -1,6 +1,6 @@
 {
   "name": "halo-theme-rackora",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "private": true,
   "description": "A minimal, content-first Halo theme for independent publishing and technical writing.",
   "type": "module",

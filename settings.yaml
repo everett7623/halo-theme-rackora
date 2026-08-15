@@ -5,10 +5,11 @@ metadata:
 spec:
   forms:
     - group: basic
-      label: 资料
+      label: 基础
       formSchema:
         - $formkit: select
           name: ui_language
+          id: ui_language
           label: 主题界面语言
           help: 只切换主题自带文案；文章、菜单和站点资料保持原内容。
           value: en
@@ -17,12 +18,26 @@ spec:
               value: en
             - label: 简体中文
               value: zh-CN
+        - $formkit: text
+          name: site_language
+          id: site_language
+          label: 网站语言
+          help: 用于 HTML lang 与结构化数据，例如 zh-CN、en-US。
+          value: en-US
+          validation: required
+        - $formkit: text
+          name: site_region
+          id: site_region
+          label: 网站地区
+          help: ISO 3166 地区代码，例如 CN、SG、US-CA；留空则不输出地区信号。
+          value: ""
         - $formkit: array
           name: socials
+          id: socials
           label: 社交账号
-          help: 显示在首页资料卡中，可拖动调整顺序，最多 6 个。
+          help: 显示在首页资料卡中，可拖动调整顺序，最多 8 个。
           value: []
-          max: 6
+          max: 8
           addLabel: 添加账号
           emptyText: 暂未添加社交账号
           itemLabels:
@@ -38,8 +53,20 @@ spec:
                   value: github
                 - label: X / Twitter
                   value: twitter
+                - label: LinkedIn
+                  value: linkedin
+                - label: YouTube
+                  value: youtube
+                - label: Bilibili
+                  value: bilibili
+                - label: Discord
+                  value: discord
+                - label: Mastodon
+                  value: mastodon
                 - label: Telegram
                   value: send
+                - label: 微信 / 即时通讯
+                  value: message-circle
                 - label: 邮箱
                   value: mail
                 - label: RSS
@@ -57,47 +84,70 @@ spec:
               help: "填写完整的 https://、mailto: 或其他有效链接。"
               value: ""
               validation: required
-        - $formkit: text
-          name: site_language
-          label: 网站语言
-          help: 用于 HTML lang 与结构化数据，例如 zh-CN、en-US。
-          value: en-US
-          validation: required
-        - $formkit: text
-          name: site_region
-          label: 网站地区
-          help: ISO 3166 地区代码，例如 CN、SG、US-CA；留空则不输出地区信号。
-          value: ""
         - $formkit: url
           name: rss_url
+          id: rss_url
           label: RSS 地址
           help: 安装官方 RSS 插件时通常填写站点的 /rss.xml；留空则自动使用 /rss.xml。
           value: ""
         - $formkit: text
           name: footer_note
+          id: footer_note
           label: 页脚说明
           help: 留空则显示站点副标题。
           value: ""
         - $formkit: switch
           name: show_footer_menu
+          id: show_footer_menu
           label: 显示页脚菜单
           help: 关闭后隐藏页脚导航，备案信息和站点统计不受影响。
           value: true
         - $formkit: menuSelect
           name: footer_menu
+          id: footer_menu
+          key: footer_menu
           label: 页脚菜单
           help: 可选；留空使用主题自带的归档、栏目、标签等链接。
           clearable: true
           value: ""
+          if: "$get(show_footer_menu).value === true"
+        - $formkit: switch
+          name: show_theme_credit
+          id: show_theme_credit
+          label: 页脚显示主题与制作团队署名
+          help: 关闭后隐藏 Rackora / Everett Labs 链接，保留 Powered by Halo。
+          value: true
         - $formkit: url
           name: studio_url
+          id: studio_url
+          key: studio_url
           label: 制作团队链接
           value: "https://everettlabs.dev/"
+          if: "$get(show_theme_credit).value === true"
+        - $formkit: switch
+          name: show_home_stats
+          id: show_home_stats
+          label: 首页显示站点统计
+          help: 展示访问、点赞、评论、文章和分类等 Halo 原生累计数据。
+          value: true
+        - $formkit: switch
+          name: show_footer_stats
+          id: show_footer_stats
+          label: 页脚显示站点统计
+          help: 在页脚显示文章、评论和访问量；适合保持为一行轻量信息。
+          value: false
+        - $formkit: date
+          name: site_launch_date
+          id: site_launch_date
+          label: 建站日期
+          help: 可选；填写后统计区域显示已运行天数。
+          value: ""
     - group: appearance
-      label: 外观
+      label: 样式
       formSchema:
         - $formkit: radio
           name: color_scheme
+          id: color_scheme
           label: 默认配色
           value: auto
           options:
@@ -109,18 +159,13 @@ spec:
               value: dark
         - $formkit: color
           name: accent_color
+          id: accent_color
           label: 强调色
+          help: 浅色模式直接使用；深色模式会自动提高亮度以保持可读性。
           value: "#08775b"
-        - $formkit: attachment
-          name: banner_image
-          label: 首页横幅（可选）
-          help: 留空即为极简无图首页；建议使用 1600×480 或更宽的图片。
-          value: ""
-    - group: content
-      label: 内容
-      formSchema:
         - $formkit: select
           name: image_mode
+          id: image_mode
           label: 文章封面
           help: 默认为无图模式；文章封面仍可供 Halo 生成分享卡片。
           value: none
@@ -133,118 +178,180 @@ spec:
               value: article
             - label: 列表与正文
               value: all
+        - $formkit: attachment
+          name: banner_image
+          id: banner_image
+          label: 首页横幅（可选）
+          help: 留空即为极简无图首页；建议使用 1600×480 或更宽的图片。
+          value: ""
+    - group: home
+      label: 首页
+      formSchema:
         - $formkit: switch
           name: show_home_sidebar
+          id: show_home_sidebar
           label: 首页资料侧栏
           help: 展示站点简介、社交账号、内容数量和栏目索引。
           value: true
         - $formkit: switch
           name: show_home_profile
-          label: 首页显示站点资料
+          id: show_home_profile
+          key: show_home_profile
+          label: 显示站点资料卡
           help: 显示站点 Logo、副标题和社交账号。
           value: true
+          if: "$get(show_home_sidebar).value === true"
         - $formkit: switch
           name: show_home_categories
-          label: 首页显示文章分类
+          id: show_home_categories
+          key: show_home_categories
+          label: 显示文章分类
           value: true
+          if: "$get(show_home_sidebar).value === true"
         - $formkit: switch
           name: show_home_tags
-          label: 首页显示高频标签
-          help: 在首页侧栏按文章数展示常用标签；完整标签仍在标签汇总页显示。
+          id: show_home_tags
+          key: show_home_tags
+          label: 显示高频标签
+          help: 按文章数展示常用标签；完整标签仍在标签汇总页显示。
           value: true
+          if: "$get(show_home_sidebar).value === true"
         - $formkit: number
           name: home_tag_count
+          id: home_tag_count
+          key: home_tag_count
           label: 首页标签数量
           value: 10
           min: 6
           max: 16
           step: 1
+          if: "$get(show_home_sidebar).value === true && $get(show_home_tags).value === true"
+    - group: post
+      label: 文章
+      formSchema:
         - $formkit: switch
           name: show_post_sidebar
-          label: 正文侧栏
-          help: 展示目录与正文辅助信息；移动端自动隐藏。
+          id: show_post_sidebar
+          label: 文章侧栏
+          help: 展示目录与辅助信息；桌面端固定侧栏，移动端改为目录抽屉。
           value: true
         - $formkit: switch
           name: show_post_toc
-          label: 正文侧栏显示目录
+          id: show_post_toc
+          key: show_post_toc
+          label: 显示文章目录
           value: true
+          if: "$get(show_post_sidebar).value === true"
         - $formkit: switch
           name: show_post_latest
-          label: 正文侧栏显示最新文章
+          id: show_post_latest
+          key: show_post_latest
+          label: 侧栏显示最新文章
           value: true
+          if: "$get(show_post_sidebar).value === true"
         - $formkit: number
           name: post_sidebar_count
+          id: post_sidebar_count
+          key: post_sidebar_count
           label: 最新文章数量
           help: 正文目录下展示的最新文章数量，建议 3–8 篇。
           value: 5
           min: 3
           max: 8
           step: 1
+          if: "$get(show_post_sidebar).value === true && $get(show_post_latest).value === true"
         - $formkit: switch
           name: show_post_comments
+          id: show_post_comments
+          key: show_post_comments
           label: 侧栏显示当前文章最新评论
           help: 仅在当前文章存在公开评论时显示，不替代正文评论区。
           value: false
+          if: "$get(show_post_sidebar).value === true"
         - $formkit: number
           name: post_comment_count
+          id: post_comment_count
+          key: post_comment_count
           label: 侧栏评论数量
           value: 3
           min: 1
           max: 5
           step: 1
+          if: "$get(show_post_sidebar).value === true && $get(show_post_comments).value === true"
+        - $formkit: switch
+          name: show_share_link
+          id: show_share_link
+          label: 显示复制链接
+          help: 在标签区旁提供一键复制当前文章地址。
+          value: true
+        - $formkit: switch
+          name: show_image_lightbox
+          id: show_image_lightbox
+          label: 点击放大正文图片
+          help: 点击正文图片时以轻量灯箱查看，不加载第三方脚本。
+          value: true
+        - $formkit: switch
+          name: show_related_posts
+          id: show_related_posts
+          label: 显示相关文章
+          help: 优先按主分类推荐；无分类时回退到首个标签。
+          value: true
+        - $formkit: number
+          name: related_post_count
+          id: related_post_count
+          key: related_post_count
+          label: 相关文章数量
+          value: 4
+          min: 2
+          max: 6
+          step: 1
+          if: "$get(show_related_posts).value === true"
         - $formkit: switch
           name: show_post_license
-          label: 正文底部显示作者声明
+          id: show_post_license
+          label: 底部显示作者声明
           help: 展示文章标题、原文地址、作者、发布日期和许可方式。
           value: true
         - $formkit: text
           name: license_name
+          id: license_name
+          key: license_name
           label: 内容许可名称
           help: 例如 All rights reserved 或 CC BY-NC-SA 4.0。
           value: All rights reserved
+          if: "$get(show_post_license).value === true"
         - $formkit: url
           name: license_url
+          id: license_url
+          key: license_url
           label: 内容许可地址
           help: 可选；使用 Creative Commons 等公开许可时填写对应说明地址。
           value: ""
-    - group: stats
-      label: 站点统计
-      formSchema:
-        - $formkit: switch
-          name: show_home_stats
-          label: 首页显示站点统计
-          help: 展示访问、点赞、评论、文章和分类等 Halo 原生累计数据。
-          value: true
-        - $formkit: switch
-          name: show_footer_stats
-          label: 页脚显示站点统计
-          help: 在页脚显示文章、评论和访问量；适合保持为一行轻量信息。
-          value: false
-        - $formkit: date
-          name: site_launch_date
-          label: 建站日期
-          help: 可选；填写后统计区域显示已运行天数。
-          value: ""
+          if: "$get(show_post_license).value === true"
     - group: compliance
-      label: 备案信息
+      label: 备案
       formSchema:
         - $formkit: text
           name: icp_number
+          id: icp_number
           label: ICP备案号
           help: 可选；留空时页脚不显示 ICP 备案信息。
           value: ""
         - $formkit: url
           name: icp_url
+          id: icp_url
           label: ICP备案跳转链接
           help: 默认跳转至工信部备案管理系统。
           value: "https://beian.miit.gov.cn/"
         - $formkit: text
           name: public_security_number
+          id: public_security_number
           label: 公网安备号
           help: 可选；填写完整展示文案，例如“京公网安备 11000002000001号”。
           value: ""
         - $formkit: url
           name: public_security_url
+          id: public_security_url
           label: 公网安备跳转链接
           help: 可选；建议填写该备案记录在公安备案系统中的详情链接。
           value: ""
@@ -253,36 +360,43 @@ spec:
       formSchema:
         - $formkit: switch
           name: noindex_tags
+          id: noindex_tags
           label: 暂不索引标签页
           help: 标签治理完成前建议开启；标签总览和详情页输出 noindex,follow。不会修改 sitemap。
           value: true
         - $formkit: switch
           name: noindex_archives
+          id: noindex_archives
           label: 暂不索引归档页
           help: 归档页主要用于浏览时建议开启；文章和栏目页面不受影响。
           value: true
         - $formkit: text
           name: google_verification
+          id: google_verification
           label: Google 站点验证码
           help: 只填写 google-site-verification 的 content 值，不要粘贴完整 meta 标签。
           value: ""
         - $formkit: text
           name: bing_verification
+          id: bing_verification
           label: Bing 站点验证码
           help: 只填写 msvalidate.01 的 content 值。
           value: ""
         - $formkit: text
           name: baidu_verification
+          id: baidu_verification
           label: 百度站点验证码
           help: 只填写 baidu-site-verification 的 content 值；标签格式以百度后台当前提供为准。
           value: ""
         - $formkit: text
           name: organization_name
+          id: organization_name
           label: 站点组织名称
           help: 用于 Organization / WebSite 结构化数据；留空则使用站点标题。
           value: ""
         - $formkit: attachment
           name: organization_logo
+          id: organization_logo
           label: 站点组织 Logo
           help: 建议使用清晰的正方形图片；留空则使用站点 Logo 或主题默认图标。
           accepts:
@@ -290,6 +404,7 @@ spec:
           value: ""
         - $formkit: url
           name: about_url
+          id: about_url
           label: 关于页面地址
           help: 可选，用于补充站点实体信息，例如 https://example.com/about。
           value: ""
@@ -298,61 +413,82 @@ spec:
       formSchema:
         - $formkit: switch
           name: enabled
+          id: analytics_enabled
           label: 启用第三方访问分析
           help: 默认关闭；启用后仅加载已填写且格式有效的分析服务。
           value: false
         - $formkit: text
           name: ga4_id
+          id: ga4_id
+          key: ga4_id
           label: GA4 Measurement ID
           help: 格式为 G-XXXXXXXXXX。不要填写完整脚本代码。
           value: ""
           validation: matches:/^G-[A-Z0-9]+$/
+          if: "$get(analytics_enabled).value === true"
         - $formkit: text
           name: clarity_id
+          id: clarity_id
+          key: clarity_id
           label: Microsoft Clarity Project ID
           help: 可选，只填写项目 ID；使用前请按所在地区完成隐私与 Cookie 告知。
           value: ""
           validation: matches:/^[A-Za-z0-9]+$/
+          if: "$get(analytics_enabled).value === true"
         - $formkit: text
           name: baidu_analytics_id
+          id: baidu_analytics_id
+          key: baidu_analytics_id
           label: 百度统计站点 ID
           help: 可选，只填写 hm.js? 后的 32 位十六进制 ID。
           value: ""
           validation: matches:/^[a-fA-F0-9]{32}$/
+          if: "$get(analytics_enabled).value === true"
     - group: integrations
-      label: 集成
+      label: 插件
       formSchema:
         - $formkit: switch
           name: show_links
+          id: show_links
           label: 显示友情链接入口
           help: 需要 Halo 官方“链接管理”插件；主题适配其 /links 页面并控制首页、页脚入口。
           value: true
         - $formkit: switch
           name: show_links_in_footer
+          id: show_links_in_footer
+          key: show_links_in_footer
           label: 页脚显示友情链接入口
           value: true
+          if: "$get(show_links).value === true"
     - group: monetization
-      label: 广告与联盟
+      label: 广告
       formSchema:
         - $formkit: switch
           name: enabled
+          id: monetization_enabled
           label: 启用主题广告位
           help: 关闭后所有主题广告位不渲染；正文中手动添加的链接不受影响。
           value: false
         - $formkit: textarea
           name: disclosure_text
+          id: disclosure_text
+          key: disclosure_text
           label: 推广披露文案
           help: 仅在实际显示主题广告时出现，保持简短、真实。
           rows: 2
           value: ""
+          if: "$get(monetization_enabled).value === true"
         - $formkit: array
           name: ads
+          id: ads
+          key: ads
           label: 广告位
           help: 静态文字或图片广告，可拖动排序，最多 8 个；不支持任意脚本以保护性能和安全。
           value: []
           max: 8
           addLabel: 添加广告
           emptyText: 暂未添加广告
+          if: "$get(monetization_enabled).value === true"
           itemLabels:
             - type: text
               label: $value.name

@@ -41,7 +41,7 @@
   <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
   <div
     class="article-layout"
-    th:with="showPostSidebar = ${(theme.config.content.show_post_sidebar == null or theme.config.content.show_post_sidebar) and ((theme.config.content.show_post_toc == null or theme.config.content.show_post_toc) or (theme.config.content.show_post_latest == null or theme.config.content.show_post_latest) or theme.config.content.show_post_comments == true)}"
+    th:with="showPostToc = ${theme.config.post?.show_post_toc != null ? theme.config.post.show_post_toc : (theme.config.content?.show_post_toc == null or theme.config.content.show_post_toc)},showPostLatest = ${theme.config.post?.show_post_latest != null ? theme.config.post.show_post_latest : (theme.config.content?.show_post_latest == null or theme.config.content.show_post_latest)},showPostComments = ${theme.config.post?.show_post_comments != null ? theme.config.post.show_post_comments : (theme.config.content?.show_post_comments == true)},showPostSidebar = ${(theme.config.post?.show_post_sidebar != null ? theme.config.post.show_post_sidebar : (theme.config.content?.show_post_sidebar == null or theme.config.content.show_post_sidebar)) and (showPostToc or showPostLatest or showPostComments)},showPostLicense = ${theme.config.post?.show_post_license != null ? theme.config.post.show_post_license : (theme.config.content?.show_post_license == null or theme.config.content.show_post_license)},showShareLink = ${theme.config.post?.show_share_link == null or theme.config.post.show_share_link},showImageLightbox = ${theme.config.post?.show_image_lightbox == null or theme.config.post.show_image_lightbox},showRelatedPosts = ${theme.config.post?.show_related_posts == null or theme.config.post.show_related_posts},postSidebarCount = ${theme.config.post?.post_sidebar_count ?: theme.config.content?.post_sidebar_count ?: 5},postCommentCount = ${theme.config.post?.post_comment_count ?: theme.config.content?.post_comment_count ?: 3},relatedPostCount = ${theme.config.post?.related_post_count ?: 4},imageMode = ${theme.config.appearance.image_mode ?: theme.config.content?.image_mode ?: 'none'},licenseName = ${theme.config.post?.license_name ?: theme.config.content?.license_name ?: 'All rights reserved'},licenseUrl = ${theme.config.post?.license_url ?: theme.config.content?.license_url}"
     th:classappend="${showPostSidebar} ? '' : ' article-layout--single'"
   >
     <article
@@ -171,7 +171,7 @@
 
       <figure
         class="article-cover"
-        th:if="${(theme.config.content.image_mode == 'article' or theme.config.content.image_mode == 'all') and not #strings.isEmpty(post.spec.cover)}"
+        th:if="${(imageMode == 'article' or imageMode == 'all') and not #strings.isEmpty(post.spec.cover)}"
       >
         <img
           th:src="${post.spec.cover}"
@@ -192,27 +192,85 @@
         itemprop="articleBody"
         th:utext="${post.content.content}"
         data-article-content
+        th:attr="data-image-lightbox=${showImageLightbox}"
       ></div>
 
       <include src="ad-slot.html" position="post_after"></include>
 
       <footer class="article-footer">
-        <div
-          class="article-tags"
-          th:if="${not #lists.isEmpty(post.tags)}"
-          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文章标签' : 'Post tags'}"
-        >
-          <a
-            th:each="tag : ${post.tags}"
-            th:href="@{${tag.status.permalink}}"
-            th:text="${tag.spec.displayName}"
-          ></a>
+        <div class="article-footer__meta">
+          <div
+            class="article-tags"
+            th:if="${not #lists.isEmpty(post.tags)}"
+            th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文章标签' : 'Post tags'}"
+          >
+            <a
+              th:each="tag : ${post.tags}"
+              th:href="@{${tag.status.permalink}}"
+              th:text="${tag.spec.displayName}"
+            ></a>
+          </div>
+          <button
+            class="share-link"
+            type="button"
+            th:if="${showShareLink}"
+            data-share-link
+            th:attr="data-share-url=@{${post.status.permalink}},aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'}"
+          >
+            <i data-lucide="copy" aria-hidden="true"></i>
+            <span th:text="${theme.config.basic.ui_language == 'zh-CN' ? '复制链接' : 'Copy link'}"
+              >Copy link</span
+            >
+          </button>
         </div>
 
         <aside
+          class="related-posts"
+          th:if="${showRelatedPosts and not #lists.isEmpty(post.categories)}"
+          th:with="relatedPosts = ${postFinder.list({page: 1, size: relatedPostCount + 1, categoryName: post.categories[0].metadata.name, sort: {'spec.publishTime,desc'}})}"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '相关文章' : 'Related posts'}"
+        >
+          <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '相关文章' : 'Related posts'}">
+            Related posts
+          </h2>
+          <ol>
+            <li
+              th:each="relatedPost : ${relatedPosts.items}"
+              th:if="${relatedPost.metadata.name != post.metadata.name}"
+            >
+              <a
+                th:href="@{${relatedPost.status.permalink}}"
+                th:text="${relatedPost.spec.title}"
+              ></a>
+            </li>
+          </ol>
+        </aside>
+
+        <aside
+          class="related-posts"
+          th:if="${showRelatedPosts and #lists.isEmpty(post.categories) and not #lists.isEmpty(post.tags)}"
+          th:with="relatedPosts = ${postFinder.list({page: 1, size: relatedPostCount + 1, tagName: post.tags[0].metadata.name, sort: {'spec.publishTime,desc'}})}"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '相关文章' : 'Related posts'}"
+        >
+          <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '相关文章' : 'Related posts'}">
+            Related posts
+          </h2>
+          <ol>
+            <li
+              th:each="relatedPost : ${relatedPosts.items}"
+              th:if="${relatedPost.metadata.name != post.metadata.name}"
+            >
+              <a
+                th:href="@{${relatedPost.status.permalink}}"
+                th:text="${relatedPost.spec.title}"
+              ></a>
+            </li>
+          </ol>
+        </aside>
+
+        <aside
           class="article-license"
-          th:if="${theme.config.content.show_post_license == null or theme.config.content.show_post_license}"
-          th:with="licenseName = ${theme.config.content.license_name ?: 'All rights reserved'},licenseUrl = ${theme.config.content.license_url}"
+          th:if="${showPostLicense}"
           th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '作者与版权声明' : 'Author and copyright notice'}"
         >
           <div class="article-license__lead">
@@ -289,12 +347,7 @@
       th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文章辅助导航' : 'Post navigation'}"
       th:if="${showPostSidebar}"
     >
-      <section
-        class="article-sidebar__section"
-        data-toc-container
-        th:if="${theme.config.content.show_post_toc == null or theme.config.content.show_post_toc}"
-        hidden
-      >
+      <section class="article-sidebar__section" data-toc-container th:if="${showPostToc}" hidden>
         <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
           On this page
         </h2>
@@ -303,8 +356,8 @@
 
       <section
         class="article-sidebar__section"
-        th:if="${theme.config.content.show_post_latest == null or theme.config.content.show_post_latest}"
-        th:with="sidebarPosts = ${postFinder.list({page: 1, size: theme.config.content.post_sidebar_count ?: 5, sort: {'spec.publishTime,desc'}})}"
+        th:if="${showPostLatest}"
+        th:with="sidebarPosts = ${postFinder.list({page: 1, size: postSidebarCount, sort: {'spec.publishTime,desc'}})}"
       >
         <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新文章' : 'Latest posts'}">
           Latest posts
@@ -318,8 +371,8 @@
 
       <section
         class="article-sidebar__section"
-        th:if="${theme.config.content.show_post_comments}"
-        th:with="sidebarComments = ${commentFinder.list({group: 'content.halo.run', version: 'v1alpha1', kind: 'Post', name: post.metadata.name}, 1, theme.config.content.post_comment_count ?: 3)}"
+        th:if="${showPostComments}"
+        th:with="sidebarComments = ${commentFinder.list({group: 'content.halo.run', version: 'v1alpha1', kind: 'Post', name: post.metadata.name}, 1, postCommentCount)}"
       >
         <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新评论' : 'Recent comments'}">
           Recent comments

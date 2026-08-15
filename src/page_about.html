@@ -1,0 +1,80 @@
+<include src="layout.html">
+  <template name="head">
+    <title th:text="|${singlePage.spec.title} - ${site.title}|">About</title>
+    <include
+      src="seo-head.html"
+      path="singlePage.status.permalink"
+      title="singlePage.spec.title"
+      description="singlePage.status.excerpt"
+      image="singlePage.spec.cover ?: site.logo"
+      type="profile"
+    ></include>
+    <script type="module" src="./js/post.ts"></script>
+  </template>
+
+  <article class="article article--page article--about" data-article>
+    <header class="about-heading">
+      <img
+        class="about-heading__mark"
+        width="88"
+        height="88"
+        th:src="${#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo}"
+        th:alt="${site.title}"
+      />
+      <div>
+        <h1 class="article-title" th:text="${singlePage.spec.title}">About</h1>
+        <p
+          class="article-deck"
+          th:if="${not #strings.isEmpty(singlePage.status.excerpt)}"
+          th:text="${singlePage.status.excerpt}"
+        ></p>
+        <p
+          class="article-deck"
+          th:if="${#strings.isEmpty(singlePage.status.excerpt) and not #strings.isEmpty(site.subtitle)}"
+          th:text="${site.subtitle}"
+        ></p>
+      </div>
+      <nav
+        class="profile-socials"
+        th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '社交账号' : 'Social profiles'}"
+        th:if="${not #lists.isEmpty(theme.config.basic.socials)}"
+      >
+        <a
+          th:each="social : ${theme.config.basic.socials}"
+          th:if="${not #strings.isEmpty(social.name) and not #strings.isEmpty(social.url)}"
+          th:href="@{${social.url}}"
+          th:title="${social.name}"
+          th:attr="aria-label=${social.name}"
+          target="_blank"
+          rel="me noopener noreferrer"
+        >
+          <i th:attr="data-lucide=${social.icon ?: 'globe'}" aria-hidden="true"></i>
+        </a>
+      </nav>
+    </header>
+    <div
+      class="article-content"
+      th:utext="${singlePage.content.content}"
+      data-article-content
+      data-image-lightbox="true"
+    ></div>
+  </article>
+
+  <section
+    class="comments comments--page"
+    th:if="${haloCommentEnabled}"
+    aria-labelledby="comments-title"
+  >
+    <h2
+      id="comments-title"
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '留言' : 'Messages'}"
+    >
+      Messages
+    </h2>
+    <halo:comment
+      group="content.halo.run"
+      kind="SinglePage"
+      th:attr="name=${singlePage.metadata.name}"
+    />
+  </section>
+</include>

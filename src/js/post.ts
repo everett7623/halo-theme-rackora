@@ -1,11 +1,17 @@
 import hljs from "highlight.js/lib/core";
 import bash from "highlight.js/lib/languages/bash";
+import css from "highlight.js/lib/languages/css";
 import dockerfile from "highlight.js/lib/languages/dockerfile";
+import go from "highlight.js/lib/languages/go";
 import ini from "highlight.js/lib/languages/ini";
+import java from "highlight.js/lib/languages/java";
 import javascript from "highlight.js/lib/languages/javascript";
 import json from "highlight.js/lib/languages/json";
 import nginx from "highlight.js/lib/languages/nginx";
 import plaintext from "highlight.js/lib/languages/plaintext";
+import python from "highlight.js/lib/languages/python";
+import rust from "highlight.js/lib/languages/rust";
+import sql from "highlight.js/lib/languages/sql";
 import typescript from "highlight.js/lib/languages/typescript";
 import xml from "highlight.js/lib/languages/xml";
 import yaml from "highlight.js/lib/languages/yaml";
@@ -18,15 +24,24 @@ const languageAliases: Record<string, string> = {
   js: "javascript",
   html: "xml",
   text: "plaintext",
+  py: "python",
+  golang: "go",
+  rs: "rust",
 };
 
 hljs.registerLanguage("bash", bash);
+hljs.registerLanguage("css", css);
 hljs.registerLanguage("dockerfile", dockerfile);
+hljs.registerLanguage("go", go);
 hljs.registerLanguage("ini", ini);
+hljs.registerLanguage("java", java);
 hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("json", json);
 hljs.registerLanguage("nginx", nginx);
 hljs.registerLanguage("plaintext", plaintext);
+hljs.registerLanguage("python", python);
+hljs.registerLanguage("rust", rust);
+hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("typescript", typescript);
 hljs.registerLanguage("xml", xml);
 hljs.registerLanguage("yaml", yaml);
@@ -95,7 +110,9 @@ function initTableOfContents(content: HTMLElement): void {
   const links = Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));
   const observer = new IntersectionObserver(
     (entries) => {
-      const visible = entries.find((entry) => entry.isIntersecting);
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top)[0];
       if (!visible) return;
       for (const link of links) {
         link.classList.toggle("is-active", link.hash === `#${visible.target.id}`);
@@ -104,6 +121,54 @@ function initTableOfContents(content: HTMLElement): void {
     { rootMargin: "-20% 0px -72%", threshold: 0 },
   );
   headings.forEach((heading) => observer.observe(heading));
+  initMobileToc(section, navigation);
+}
+
+function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
+  if (document.querySelector("[data-mobile-toc]")) return;
+
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "mobile-toc-toggle";
+  toggle.dataset.mobileToc = "toggle";
+  toggle.setAttribute("aria-expanded", "false");
+  toggle.setAttribute("aria-controls", "mobile-toc-panel");
+  toggle.innerHTML = `<i data-lucide="list" aria-hidden="true"></i><span>${uiText("Contents", "目录")}</span>`;
+
+  const panel = document.createElement("div");
+  panel.id = "mobile-toc-panel";
+  panel.className = "mobile-toc-panel";
+  panel.hidden = true;
+  panel.dataset.mobileToc = "panel";
+  panel.innerHTML = `<div class="mobile-toc-panel__sheet"><header><strong>${uiText("On this page", "本页目录")}</strong><button type="button" class="icon-button" data-mobile-toc-close aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button></header><nav></nav></div>`;
+  panel
+    .querySelector("nav")!
+    .append(...Array.from(navigation.children).map((node) => node.cloneNode(true)));
+
+  const close = (): void => {
+    panel.hidden = true;
+    document.body.classList.remove("toc-open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle.addEventListener("click", () => {
+    const open = Boolean(panel.hidden);
+    panel.hidden = !open;
+    document.body.classList.toggle("toc-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+  panel.querySelector("[data-mobile-toc-close]")?.addEventListener("click", close);
+  panel.addEventListener("click", (event) => {
+    if (event.target === panel) close();
+    if ((event.target as Element).closest("a")) close();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.hidden) close();
+  });
+
+  section.after(toggle);
+  document.body.append(panel);
+  document.dispatchEvent(new CustomEvent("rackora:icons"));
 }
 
 function languageName(code: HTMLElement): string {
@@ -241,6 +306,59 @@ function initAffiliateMarkup(content: HTMLElement): void {
   }
 }
 
+function initShareLink(): void {
+  const button = document.querySelector<HTMLButtonElement>("[data-share-link]");
+  if (!button) return;
+
+  const label = button.querySelector("span");
+  const idle = label?.textContent || uiText("Copy link", "复制链接");
+  button.addEventListener("click", async () => {
+    const shareUrl =
+      button.dataset.shareUrl ||
+      (button.getAttribute("data-share-url") ?? "") ||
+      window.location.href;
+    const absolute = new URL(shareUrl, window.location.origin).href;
+    try {
+      await copyText(absolute);
+      if (label) label.textContent = uiText("Copied", "已复制");
+      button.classList.add("is-copied");
+      window.setTimeout(() => {
+        if (label) label.textContent = idle;
+        button.classList.remove("is-copied");
+      }, 1600);
+    } catch {
+      if (label) label.textContent = uiText("Copy failed", "复制失败");
+    }
+    document.dispatchEvent(new CustomEvent("rackora:icons"));
+  });
+}
+
+function initLightbox(content: HTMLElement): void {
+  if (content.dataset.imageLightbox !== "true") return;
+
+  const dialog = document.createElement("dialog");
+  dialog.className = "image-lightbox";
+  dialog.innerHTML = `<button type="button" class="image-lightbox__close" aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button><img alt="" />`;
+  const image = dialog.querySelector("img")!;
+  const close = (): void => dialog.close();
+  dialog.querySelector("button")?.addEventListener("click", close);
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) close();
+  });
+  document.body.append(dialog);
+  document.dispatchEvent(new CustomEvent("rackora:icons"));
+
+  for (const img of content.querySelectorAll<HTMLImageElement>("img")) {
+    if (img.closest("a")) continue;
+    img.classList.add("is-zoomable");
+    img.addEventListener("click", () => {
+      image.src = img.currentSrc || img.src;
+      image.alt = img.alt || "";
+      dialog.showModal();
+    });
+  }
+}
+
 function initReadingMetrics(content: HTMLElement): void {
   const target = document.querySelector<HTMLElement>("[data-reading-time]");
   if (target) {
@@ -268,4 +386,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initTables(content);
   initAffiliateMarkup(content);
   initReadingMetrics(content);
+  initShareLink();
+  initLightbox(content);
 });

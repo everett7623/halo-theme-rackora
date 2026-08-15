@@ -1,14 +1,20 @@
 import {
   ArrowLeft,
   ArrowRight,
+  AtSign,
   Check,
   ChevronUp,
+  Clapperboard,
   Copy,
   ExternalLink,
   Github,
   Globe,
+  Linkedin,
+  List,
   Mail,
   Menu,
+  MessageCircle,
+  MessageSquare,
   Moon,
   Rss,
   Search,
@@ -16,6 +22,7 @@ import {
   Sun,
   Twitter,
   X,
+  Youtube,
   createIcons,
 } from "lucide";
 
@@ -24,14 +31,20 @@ import "../css/main.css";
 const icons = {
   ArrowLeft,
   ArrowRight,
+  AtSign,
   Check,
   ChevronUp,
+  Clapperboard,
   Copy,
   ExternalLink,
   Github,
   Globe,
+  Linkedin,
+  List,
   Mail,
   Menu,
+  MessageCircle,
+  MessageSquare,
   Moon,
   Rss,
   Search,
@@ -39,6 +52,14 @@ const icons = {
   Sun,
   Twitter,
   X,
+  Youtube,
+};
+
+const socialIconAliases: Record<string, string> = {
+  bilibili: "clapperboard",
+  discord: "message-square",
+  mastodon: "at-sign",
+  wechat: "message-circle",
 };
 
 function isChineseUi(): boolean {
@@ -50,6 +71,10 @@ function uiText(english: string, chinese: string): string {
 }
 
 function renderIcons(): void {
+  for (const icon of document.querySelectorAll<HTMLElement>("i[data-lucide]")) {
+    const alias = socialIconAliases[icon.dataset.lucide || ""];
+    if (alias) icon.dataset.lucide = alias;
+  }
   createIcons({ icons });
 }
 
@@ -110,6 +135,27 @@ function initNavigation(): void {
   window.addEventListener("resize", () => {
     if (window.innerWidth > 960 && navigation.classList.contains("is-open")) close();
   });
+}
+
+function normalizePath(pathname: string): string {
+  const trimmed = pathname.replace(/\/+$/, "");
+  return trimmed || "/";
+}
+
+function initActiveNavigation(): void {
+  const current = normalizePath(window.location.pathname);
+  for (const link of document.querySelectorAll<HTMLAnchorElement>("[data-site-nav] a[href]")) {
+    let path: string;
+    try {
+      path = normalizePath(new URL(link.href, window.location.origin).pathname);
+    } catch {
+      continue;
+    }
+    const active = path === current || (path !== "/" && current.startsWith(`${path}/`));
+    link.classList.toggle("is-active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
 }
 
 function currentScheme(): "light" | "dark" {
@@ -208,6 +254,7 @@ function initPopularTags(): void {
 document.addEventListener("DOMContentLoaded", () => {
   renderIcons();
   initNavigation();
+  initActiveNavigation();
   initThemeToggle();
   initBackToTop();
   initSiteUptime();

@@ -5,7 +5,7 @@
 >
   <a
     class="post-cover"
-    th:if="${(theme.config.content.image_mode == 'list' or theme.config.content.image_mode == 'all') and not #strings.isEmpty(post.spec.cover)}"
+    th:if="${((theme.config.appearance.image_mode ?: theme.config.content?.image_mode ?: 'none') == 'list' or (theme.config.appearance.image_mode ?: theme.config.content?.image_mode ?: 'none') == 'all') and not #strings.isEmpty(post.spec.cover)}"
     th:href="@{${post.status.permalink}}"
     tabindex="-1"
     aria-hidden="true"

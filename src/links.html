@@ -12,7 +12,12 @@
   </template>
 
   <header class="page-heading">
-    <p class="eyebrow">Connections</p>
+    <p
+      class="eyebrow"
+      th:text="${theme.config.basic.ui_language == 'zh-CN' ? '站点连接' : 'Connections'}"
+    >
+      Connections
+    </p>
     <h1 th:text="${linksTitle}">Links</h1>
     <p
       th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发现值得长期阅读的独立网站与创作者。' : 'Independent sites and creators worth following.'}"

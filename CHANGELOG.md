@@ -3,6 +3,32 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.5.0] - 2026-08-15
+
+### 新增
+
+- About 与 Documentation 自定义模板，可在 Halo 后台为页面/文章单独选用。
+- 主导航二级子菜单，桌面悬停展开，移动端内联展开。
+- 移动端文章目录抽屉，桌面侧栏隐藏后仍可浏览章节。
+- 正文图片轻量灯箱，可在主题设置中关闭。
+- 文章复制链接、同栏目相关文章；无分类时回退到首个标签推荐。
+- 社交图标扩展 LinkedIn、YouTube、Bilibili、Discord、Mastodon、微信等。
+- Highlight.js 增加 Python、Go、Rust、Java、SQL、CSS 等常用语言。
+- 页脚主题署名开关，以及导航当前页高亮。
+
+### 修复
+
+- 平板宽度下首页侧栏不再压在文章列表之前。
+- 自定义强调色在深色模式下自动提亮，避免可读性下降。
+- 友情链接页眉、页脚地区文案随界面语言切换。
+- 404 页面输出 `noindex,follow`；作者页在有简介时仍显示文章数。
+
+### 调整
+
+- 后台分组对齐主流 Halo 主题：基础、样式、首页、文章、备案、SEO、访问分析、插件、广告。
+- 站点统计并入「基础」；封面显示模式移入「样式」；旧 `content.*` / `stats.*` 配置继续回退兼容。
+- 依赖字段增加条件显示；字体栈改为系统无衬线，不再引用未加载的 Inter。
+
 ## [0.4.2] - 2026-08-15
 
 ### 新增
@@ -91,6 +117,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.5.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.5.0
 [0.4.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.2
 [0.4.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.1
 [0.4.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.0

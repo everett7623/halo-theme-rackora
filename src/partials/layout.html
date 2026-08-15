@@ -112,7 +112,7 @@
       })();
     </script>
   </head>
-  <body th:style="|--rack-accent: ${theme.config.appearance.accent_color ?: '#08775b'}|">
+  <body th:style="|--rack-accent-user: ${theme.config.appearance.accent_color ?: '#08775b'}|">
     <a
       class="skip-link"
       href="#main-content"
@@ -162,13 +162,26 @@
           data-site-nav
         >
           <ul th:if="${menu != null and not #lists.isEmpty(menu.menuItems)}">
-            <li th:each="item : ${menu.menuItems}">
+            <li
+              th:each="item : ${menu.menuItems}"
+              th:classappend="${not #lists.isEmpty(item.children)} ? ' has-children'"
+            >
               <a
                 th:href="@{${item.status.href}}"
                 th:text="${item.status.displayName}"
                 th:target="${item.spec.target?.value}"
                 th:rel="${item.spec.target?.value == '_blank' ? 'noopener noreferrer' : null}"
               ></a>
+              <ul class="submenu" th:if="${not #lists.isEmpty(item.children)}">
+                <li th:each="child : ${item.children}">
+                  <a
+                    th:href="@{${child.status.href}}"
+                    th:text="${child.status.displayName}"
+                    th:target="${child.spec.target?.value}"
+                    th:rel="${child.spec.target?.value == '_blank' ? 'noopener noreferrer' : null}"
+                  ></a>
+                </li>
+              </ul>
             </li>
           </ul>
           <ul class="fallback-nav" th:if="${menu == null or #lists.isEmpty(menu.menuItems)}">
@@ -279,20 +292,30 @@
         </nav>
         <small>
           <span>Powered by Halo</span>
-          <span aria-hidden="true"> · </span>
-          <a href="https://github.com/everett7623/halo-theme-rackora" rel="noopener" target="_blank"
-            >Rackora</a
+          <th:block
+            th:if="${theme.config.basic.show_theme_credit == null or theme.config.basic.show_theme_credit}"
           >
-          <span aria-hidden="true"> · </span>
-          <a
-            th:href="@{${theme.config.basic.studio_url ?: 'https://everettlabs.dev/'}}"
-            rel="noopener"
-            target="_blank"
-            >Everett Labs</a
-          >
+            <span aria-hidden="true"> · </span>
+            <a
+              href="https://github.com/everett7623/halo-theme-rackora"
+              rel="noopener"
+              target="_blank"
+              >Rackora</a
+            >
+            <span aria-hidden="true"> · </span>
+            <a
+              th:href="@{${theme.config.basic.studio_url ?: 'https://everettlabs.dev/'}}"
+              rel="noopener"
+              target="_blank"
+              >Everett Labs</a
+            >
+          </th:block>
           <span th:if="${not #strings.isEmpty(theme.config.basic.site_region)}">
             <span aria-hidden="true"> · </span>
-            <span th:text="|Region ${theme.config.basic.site_region}|">Region</span>
+            <span
+              th:text="${theme.config.basic.ui_language == 'zh-CN' ? '地区 ' + theme.config.basic.site_region : 'Region ' + theme.config.basic.site_region}"
+              >Region</span
+            >
           </span>
         </small>
         <p
@@ -323,7 +346,7 @@
           ></span>
         </p>
         <th:block
-          th:with="showFooterStats = ${theme.config.stats?.show_footer_stats != null ? theme.config.stats.show_footer_stats : (theme.config.basic.show_footer_stats != null ? theme.config.basic.show_footer_stats : false)},siteLaunchDate = ${theme.config.stats?.site_launch_date ?: theme.config.basic.site_launch_date}"
+          th:with="showFooterStats = ${theme.config.basic.show_footer_stats != null ? theme.config.basic.show_footer_stats : (theme.config.stats?.show_footer_stats != null ? theme.config.stats.show_footer_stats : false)},siteLaunchDate = ${theme.config.basic.site_launch_date ?: theme.config.stats?.site_launch_date}"
         >
           <p
             class="footer-stats"

@@ -176,7 +176,7 @@ assert.match(home, /\? '标签' : 'Tags'/, "home sidebar must use the concise ta
 assert.doesNotMatch(home, /常用标签|Popular tags/, "home must not use the old tag heading");
 assert.match(
   home,
-  /<th:block\s+th:if="\$\{theme\.config\.content\.show_home_tags == null or theme\.config\.content\.show_home_tags\}"\s*>\s*<th:block th:with="homeTags = \$\{tagFinder\.listAll\(\)\}">/,
+  /<th:block\s+th:if="\$\{showHomeTags\}"\s*>\s*<th:block th:with="homeTags = \$\{tagFinder\.listAll\(\)\}">/,
   "home must not query tags when sidebar tags are disabled",
 );
 assert.match(
@@ -216,52 +216,67 @@ assert.equal(
   "footer navigation must use Halo's menu selector",
 );
 
-const contentForm = settings?.spec?.forms?.find((form) => form.group === "content");
-const imageMode = contentForm?.formSchema?.find((field) => field.name === "image_mode");
+const appearanceForm = settings?.spec?.forms?.find((form) => form.group === "appearance");
+const homeForm = settings?.spec?.forms?.find((form) => form.group === "home");
+const postForm = settings?.spec?.forms?.find((form) => form.group === "post");
+const imageMode = appearanceForm?.formSchema?.find((field) => field.name === "image_mode");
 assert.equal(imageMode?.value, "none", "article covers must default to low-image mode");
-assert.equal(
-  contentForm?.formSchema?.find((field) => field.name === "show_home_tags")?.value,
-  true,
-);
-assert.equal(contentForm?.formSchema?.find((field) => field.name === "home_tag_count")?.value, 10);
+assert.equal(homeForm?.formSchema?.find((field) => field.name === "show_home_tags")?.value, true);
+assert.equal(homeForm?.formSchema?.find((field) => field.name === "home_tag_count")?.value, 10);
+for (const fieldName of ["show_home_profile", "show_home_categories"]) {
+  assert.equal(
+    homeForm?.formSchema?.find((field) => field.name === fieldName)?.value,
+    true,
+    `${fieldName} must default to visible`,
+  );
+}
 for (const fieldName of [
-  "show_home_profile",
-  "show_home_categories",
   "show_post_toc",
   "show_post_latest",
+  "show_share_link",
+  "show_related_posts",
 ]) {
   assert.equal(
-    contentForm?.formSchema?.find((field) => field.name === fieldName)?.value,
+    postForm?.formSchema?.find((field) => field.name === fieldName)?.value,
     true,
     `${fieldName} must default to visible`,
   );
 }
 assert.equal(
-  contentForm?.formSchema?.find((field) => field.name === "show_post_license")?.value,
+  postForm?.formSchema?.find((field) => field.name === "show_post_license")?.value,
   true,
 );
-assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_name"));
-assert.ok(contentForm?.formSchema?.find((field) => field.name === "license_url"));
+assert.equal(
+  postForm?.formSchema?.find((field) => field.name === "show_image_lightbox")?.value,
+  true,
+);
+assert.ok(postForm?.formSchema?.find((field) => field.name === "license_name"));
+assert.ok(postForm?.formSchema?.find((field) => field.name === "license_url"));
 assert.deepEqual(
   settings?.spec?.forms?.map((form) => form.group),
   [
     "basic",
     "appearance",
-    "content",
-    "stats",
+    "home",
+    "post",
     "compliance",
     "seo",
     "analytics",
     "integrations",
     "monetization",
   ],
-  "theme settings must separate site data, presentation, stats, compliance, SEO, analytics, integrations, and monetization",
+  "theme settings must follow mainstream Halo grouping with home/post split",
 );
-const statsForm = settings?.spec?.forms?.find((form) => form.group === "stats");
-assert.equal(statsForm?.label, "站点统计");
-assert.equal(statsForm?.formSchema?.find((field) => field.name === "show_home_stats")?.value, true);
-const siteLaunchDate = statsForm?.formSchema?.find((field) => field.name === "site_launch_date");
-const showFooterStats = statsForm?.formSchema?.find((field) => field.name === "show_footer_stats");
+assert.equal(basicForm?.label, "基础");
+assert.equal(appearanceForm?.label, "样式");
+assert.equal(homeForm?.label, "首页");
+assert.equal(postForm?.label, "文章");
+assert.equal(settings?.spec?.forms?.find((form) => form.group === "compliance")?.label, "备案");
+assert.equal(settings?.spec?.forms?.find((form) => form.group === "integrations")?.label, "插件");
+assert.equal(settings?.spec?.forms?.find((form) => form.group === "monetization")?.label, "广告");
+assert.equal(basicForm?.formSchema?.find((field) => field.name === "show_home_stats")?.value, true);
+const siteLaunchDate = basicForm?.formSchema?.find((field) => field.name === "site_launch_date");
+const showFooterStats = basicForm?.formSchema?.find((field) => field.name === "show_footer_stats");
 assert.equal(showFooterStats?.value, false, "footer stats must be disabled by default");
 assert.equal(siteLaunchDate?.$formkit, "date", "site launch date must use the native date input");
 assert.equal(
@@ -270,7 +285,6 @@ assert.equal(
   "native date input must not duplicate validation",
 );
 const complianceForm = settings?.spec?.forms?.find((form) => form.group === "compliance");
-assert.equal(complianceForm?.label, "备案信息");
 assert.equal(
   complianceForm?.formSchema?.find((field) => field.name === "icp_url")?.value,
   "https://beian.miit.gov.cn/",
@@ -391,6 +405,11 @@ assert.match(mainStyles, /\.footer-compliance\s*\{/);
 assert.match(mainStyles, /\.article-layout--single\s*\{/);
 assert.match(
   mainStyles,
+  /@media \(max-width: 960px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"heading"[\s\S]*?"content"[\s\S]*?"sidebar"/,
+  "tablet home layout must keep posts ahead of secondary sidebar panels",
+);
+assert.match(
+  mainStyles,
   /@media \(max-width: 720px\)[\s\S]*?\.home-grid\s*\{[\s\S]*?"heading"[\s\S]*?"content"[\s\S]*?"sidebar"/,
   "mobile home layout must keep posts ahead of secondary sidebar panels",
 );
@@ -400,6 +419,13 @@ assert.match(
   /<th:block\s+th:if="\$\{showFooterStats\}"\s+th:with="stats = \$\{siteStatsFinder\.getStats\(\)\}"\s*>/,
   "footer must not query site stats when only uptime is enabled",
 );
+assert.match(layout, /item\.children/, "primary navigation must support nested menus");
+assert.match(post, /data-image-lightbox/, "posts must expose lightbox opt-in");
+assert.match(postScript, /function initMobileToc\(/, "posts need a mobile table of contents");
+assert.match(postScript, /function initLightbox\(/, "posts need a lightweight image lightbox");
+assert.match(themeSource, /customTemplates:/, "theme must declare custom templates");
+assert.match(themeSource, /page_about\.html/, "theme must provide an About page template");
+assert.match(themeSource, /post_docs\.html/, "theme must provide a Documentation post template");
 assert.match(
   layout,
   /theme\.config\.basic\.show_footer_stats/,
@@ -432,33 +458,40 @@ assert.match(
   /lastModifyTime\.isAfter\(post\.spec\.publishTime\)/,
   "BlogPosting dateModified must not precede datePublished",
 );
-assert.match(post, /show_post_toc == null or theme\.config\.content\.show_post_toc/);
-assert.match(post, /show_post_latest == null or theme\.config\.content\.show_post_latest/);
+assert.match(post, /show_post_toc != null \? theme\.config\.post\.show_post_toc/);
+assert.match(post, /show_post_latest != null \? theme\.config\.post\.show_post_latest/);
 assert.match(post, /article-layout--single/, "an empty post sidebar must collapse to one column");
-assert.match(home, /show_home_profile == null or theme\.config\.content\.show_home_profile/);
+assert.match(home, /show_home_profile != null \? theme\.config\.home\.show_home_profile/);
 assert.match(
   home,
-  /show_home_sidebar == null or theme\.config\.content\.show_home_sidebar/,
+  /show_home_sidebar != null \? theme\.config\.home\.show_home_sidebar/,
   "missing upgraded config must keep the home sidebar visible",
 );
 assert.match(
   post,
-  /theme\.config\.content\.show_post_comments == true/,
+  /theme\.config\.content\?\.show_post_comments == true/,
   "missing upgraded config must keep recent comments disabled safely",
 );
 assert.match(
   layout,
-  /theme\.config\.basic\.show_footer_stats != null \? theme\.config\.basic\.show_footer_stats : false/,
+  /theme\.config\.basic\.show_footer_stats != null \? theme\.config\.basic\.show_footer_stats : \(theme\.config\.stats\?\.show_footer_stats != null \? theme\.config\.stats\.show_footer_stats : false\)/,
   "missing legacy footer stats config must fall back to false",
 );
 assert.match(
   home,
-  /show_home_categories == null or theme\.config\.content\.show_home_categories[\s\S]*?homeCategories = \$\{categoryFinder\.listAll\(\)\}/,
+  /showHomeCategories[\s\S]*?homeCategories = \$\{categoryFinder\.listAll\(\)\}/,
   "home categories must only be queried when their panel is enabled",
 );
 assert.match(home, /tagFinder\.listAll\(\)/, "home must query tags through Halo Tag Finder");
 assert.match(home, /data-popular-tags/, "home must expose sortable popular tags");
 assert.match(mainScript, /function initPopularTags\(/, "home tags must be sorted by post count");
+assert.match(
+  mainScript,
+  /function initActiveNavigation\(/,
+  "primary navigation must mark the current page",
+);
+assert.match(post, /data-share-link/, "posts must expose a copy-link control");
+assert.match(post, /related-posts/, "posts must expose related articles by category");
 assert.match(
   post,
   /class=["']article-license["']/,

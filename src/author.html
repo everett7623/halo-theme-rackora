@@ -23,7 +23,7 @@
       <h1 th:text="${author.spec.displayName}">Author</h1>
       <p th:if="${not #strings.isEmpty(author.spec.bio)}" th:text="${author.spec.bio}"></p>
       <p
-        th:if="${#strings.isEmpty(author.spec.bio)}"
+        class="author-heading__count"
         th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布了 ' + posts.total + ' 篇公开内容' : posts.total + ' public posts'}"
       >
         Public posts

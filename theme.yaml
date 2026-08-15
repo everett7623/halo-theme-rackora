@@ -14,7 +14,16 @@ spec:
   issues: https://github.com/everett7623/halo-theme-rackora/issues
   settingName: "theme-rackora-setting"
   configMapName: "theme-rackora-configMap"
-  version: 0.4.2
+  customTemplates:
+    page:
+      - name: About
+        description: Profile-focused about page with social links
+        file: page_about.html
+    post:
+      - name: Documentation
+        description: Documentation layout with persistent table of contents
+        file: post_docs.html
+  version: 0.5.0
   requires: ">=2.20.0"
   license:
     - name: "GPL-3.0"

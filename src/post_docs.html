@@ -1,0 +1,111 @@
+<include src="layout.html">
+  <template name="head">
+    <title th:text="|${post.spec.title} - ${site.title}|">Documentation</title>
+    <include
+      src="seo-head.html"
+      path="post.status.permalink"
+      title="post.spec.title"
+      description="post.status.excerpt"
+      image="post.spec.cover ?: site.logo"
+      type="article"
+    ></include>
+    <script type="application/ld+json" th:inline="javascript">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": /*[[${post.spec.title}]]*/ "Post title",
+        "description": /*[[${post.status.excerpt ?: ''}]]*/ "",
+        "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
+        "datePublished": /*[[${post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+        "dateModified": /*[[${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+        "author": {
+          "@type": "Person",
+          "name": /*[[${post.owner.displayName}]]*/ "Author"
+        }
+      }
+    </script>
+    <script type="module" src="./js/post.ts"></script>
+  </template>
+
+  <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+  <div class="article-layout article-layout--docs">
+    <article class="article article--docs" data-article>
+      <header class="article-header">
+        <p
+          class="eyebrow"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '文档' : 'Documentation'}"
+        >
+          Documentation
+        </p>
+        <h1 class="article-title" th:text="${post.spec.title}">Documentation</h1>
+        <p
+          class="article-deck"
+          th:if="${not #strings.isEmpty(post.status.excerpt)}"
+          th:text="${post.status.excerpt}"
+        ></p>
+        <div class="article-meta">
+          <time
+            th:datetime="${post.spec.publishTime}"
+            th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"
+          ></time>
+          <span
+            data-reading-time
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '计算阅读时间' : 'Calculating reading time'}"
+            >Calculating reading time</span
+          >
+        </div>
+      </header>
+
+      <div
+        id="article-content"
+        class="article-content"
+        th:utext="${post.content.content}"
+        data-article-content
+        data-image-lightbox="true"
+      ></div>
+
+      <footer class="article-footer">
+        <nav
+          class="post-navigation"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '相邻文章' : 'Adjacent posts'}"
+          th:with="cursor = ${postFinder.cursor(post.metadata.name)}"
+        >
+          <a th:if="${cursor.hasPrevious()}" th:href="@{${cursor.previous.status.permalink}}">
+            <span th:text="${theme.config.basic.ui_language == 'zh-CN' ? '上一篇' : 'Previous'}"
+              >Previous</span
+            >
+            <strong th:text="${cursor.previous.spec.title}"></strong>
+          </a>
+          <a th:if="${cursor.hasNext()}" th:href="@{${cursor.next.status.permalink}}">
+            <span th:text="${theme.config.basic.ui_language == 'zh-CN' ? '下一篇' : 'Next'}"
+              >Next</span
+            >
+            <strong th:text="${cursor.next.spec.title}"></strong>
+          </a>
+        </nav>
+      </footer>
+
+      <section class="comments" th:if="${haloCommentEnabled}" aria-labelledby="comments-title">
+        <h2
+          id="comments-title"
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '评论' : 'Comments'}"
+        >
+          Comments
+        </h2>
+        <halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />
+      </section>
+    </article>
+
+    <aside
+      class="article-sidebar"
+      th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文档目录' : 'Documentation outline'}"
+    >
+      <section class="article-sidebar__section" data-toc-container hidden>
+        <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
+          On this page
+        </h2>
+        <nav data-toc></nav>
+      </section>
+    </aside>
+  </div>
+</include>

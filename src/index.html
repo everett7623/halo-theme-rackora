@@ -49,7 +49,8 @@
 
   <div
     class="home-grid"
-    th:classappend="${theme.config.content.show_home_sidebar} ? '' : ' home-grid--single'"
+    th:with="showHomeSidebar = ${theme.config.home?.show_home_sidebar != null ? theme.config.home.show_home_sidebar : (theme.config.content?.show_home_sidebar == null or theme.config.content.show_home_sidebar)}"
+    th:classappend="${showHomeSidebar} ? '' : ' home-grid--single'"
   >
     <section class="home-heading" aria-labelledby="home-title">
       <h1 id="home-title" th:text="${site.title}">站点标题</h1>
@@ -106,13 +107,10 @@
     <aside
       class="home-sidebar"
       th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '站点信息' : 'Site information'}"
-      th:if="${theme.config.content.show_home_sidebar == null or theme.config.content.show_home_sidebar}"
-      th:with="showHomeStats = ${theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats},siteLaunchDate = ${theme.config.stats?.site_launch_date ?: theme.config.basic.site_launch_date}"
+      th:if="${showHomeSidebar}"
+      th:with="showHomeStats = ${theme.config.basic.show_home_stats != null ? theme.config.basic.show_home_stats : (theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats)},siteLaunchDate = ${theme.config.basic.site_launch_date ?: theme.config.stats?.site_launch_date},showHomeProfile = ${theme.config.home?.show_home_profile != null ? theme.config.home.show_home_profile : (theme.config.content?.show_home_profile == null or theme.config.content.show_home_profile)},showHomeCategories = ${theme.config.home?.show_home_categories != null ? theme.config.home.show_home_categories : (theme.config.content?.show_home_categories == null or theme.config.content.show_home_categories)},showHomeTags = ${theme.config.home?.show_home_tags != null ? theme.config.home.show_home_tags : (theme.config.content?.show_home_tags == null or theme.config.content.show_home_tags)},homeTagCount = ${theme.config.home?.home_tag_count ?: theme.config.content?.home_tag_count ?: 10}"
     >
-      <section
-        class="profile-panel"
-        th:if="${theme.config.content.show_home_profile == null or theme.config.content.show_home_profile}"
-      >
+      <section class="profile-panel" th:if="${showHomeProfile}">
         <img
           class="profile-panel__mark"
           width="64"
@@ -194,9 +192,7 @@
         </section>
       </th:block>
 
-      <th:block
-        th:if="${theme.config.content.show_home_categories == null or theme.config.content.show_home_categories}"
-      >
+      <th:block th:if="${showHomeCategories}">
         <th:block th:with="homeCategories = ${categoryFinder.listAll()}">
           <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
             <header>
@@ -223,9 +219,7 @@
         </th:block>
       </th:block>
 
-      <th:block
-        th:if="${theme.config.content.show_home_tags == null or theme.config.content.show_home_tags}"
-      >
+      <th:block th:if="${showHomeTags}">
         <th:block th:with="homeTags = ${tagFinder.listAll()}">
           <section
             class="sidebar-panel sidebar-panel--tags"
@@ -239,11 +233,7 @@
                 >All</a
               >
             </header>
-            <ul
-              class="sidebar-tag-list"
-              data-popular-tags
-              th:attr="data-tag-limit=${theme.config.content.home_tag_count ?: 10}"
-            >
+            <ul class="sidebar-tag-list" data-popular-tags th:attr="data-tag-limit=${homeTagCount}">
               <li th:each="tag : ${homeTags}" th:attr="data-tag-count=${tag.postCount}">
                 <a th:href="@{${tag.status.permalink}}" th:text="${tag.spec.displayName}">Tag</a>
               </li>
