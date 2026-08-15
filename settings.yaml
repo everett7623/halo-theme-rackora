@@ -181,8 +181,8 @@ spec:
         - $formkit: select
           name: content_width
           id: content_width
-          label: 正文内容宽度
-          help: 影响文章与独立页主栏最大宽度。
+          label: 全站内容宽度
+          help: 统一控制全站主区域最大宽度（首页、归档、友链、关于、文章等一致）。
           value: comfortable
           options:
             - label: 紧凑

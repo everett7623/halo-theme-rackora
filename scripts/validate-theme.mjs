@@ -239,18 +239,33 @@ assert.doesNotMatch(
 );
 assert.match(
   mainStyles,
-  /\.timeline\s*\{[\s\S]*?max-width:\s*var\(--rack-content\)/,
-  "archives must share the same content measure as other single-column pages",
+  /\.shell\s*\{[\s\S]*?var\(--rack-wide\)/,
+  "all pages share the same shell canvas width",
 );
 assert.match(
   mainStyles,
-  /\.page-heading\s*\{[\s\S]*?max-width:\s*var\(--rack-content\)/,
-  "links page heading must use the shared content measure",
+  /html\.content-width-narrow\s*\{[\s\S]*?--rack-wide:/,
+  "content width setting must scale the whole-site canvas",
 );
 assert.match(
   mainStyles,
-  /\.article--page[\s\S]*?max-width:\s*var\(--rack-content\)/,
-  "about and page templates must use the shared content measure",
+  /\.article-layout\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)\s+240px/,
+  "article pages must use the full shell width like the home grid",
+);
+assert.doesNotMatch(
+  mainStyles,
+  /\.timeline\s*\{[^}]*max-width:\s*var\(--rack-content\)/,
+  "archives must not shrink below the shared shell width",
+);
+assert.doesNotMatch(
+  mainStyles,
+  /\.page-heading\s*\{[^}]*max-width:\s*var\(--rack-content\)/,
+  "links heading must not shrink below the shared shell width",
+);
+assert.doesNotMatch(
+  mainStyles,
+  /\.article--page[^}]*max-width:\s*var\(--rack-content\)/,
+  "about/page templates must not shrink below the shared shell width",
 );
 assert.doesNotMatch(
   home,
