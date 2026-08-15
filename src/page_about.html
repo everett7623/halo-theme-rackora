@@ -9,6 +9,27 @@
       image="singlePage.spec.cover ?: site.logo"
       type="profile"
     ></include>
+    <script type="application/ld+json" th:inline="javascript">
+      {
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        "@id": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + singlePage.status.permalink}]]*/ "https://example.com/about",
+        "url": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + singlePage.status.permalink}]]*/ "https://example.com/about",
+        "name": /*[[${singlePage.spec.title}]]*/ "About",
+        "description": /*[[${singlePage.status.excerpt ?: site.subtitle ?: ''}]]*/ "",
+        "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": /*[[${site.title}]]*/ "Site",
+          "url": /*[[${site.url}]]*/ "https://example.com/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization",
+          "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site"
+        }
+      }
+    </script>
     <script type="module" src="./js/post.ts"></script>
   </template>
 

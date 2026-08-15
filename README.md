@@ -4,7 +4,7 @@ Rackora is a minimal, content-first Halo 2.x theme for independent publishing, k
 and technical writing. It combines a Fuwari-inspired information hierarchy with the low-image
 article flow, dark mode, and responsive reading experience common to modern publishing themes.
 
-Current release: `v0.6.0`.
+Current release: `v0.6.1`.
 
 ## 设计原则
 
@@ -95,6 +95,10 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 [`docs/plugin-compatibility.md`](docs/plugin-compatibility.md)。Rackora 内置代码高亮、目录、
 标签展示、返回顶部和前端统计接入，但不替代 Sitemap、搜索、RSS、评论、缓存、备份与数据存储。
 
+从旧主题或其他内容栈迁过来的站点，后台常残留「时间因子 SEO」等与主题无关的插件。它们不是
+Rackora 依赖，也不应植入主题；与 Rackora 同开会重复 canonical / Open Graph / 文章 JSON-LD。
+停用后清页面静态缓存，再抽查文章、栏目和标签页的 `<head>`。
+
 广告位支持首页文章区顶部、首页右侧栏、正文前和正文后。主题只接受结构化文字/图片广告，
 不会执行广告脚本；推广地址自动增加 `sponsored nofollow noopener noreferrer`，广告总开关
 默认关闭。
@@ -141,20 +145,21 @@ Rackora 使用语义化版本：修复递增补丁号，向后兼容的新功能
 
 ## SEO 边界
 
-主题已覆盖 Joe3 `1.5.1-seo.3` 补丁中的唯一 H1、栏目简介与临时标签
-`noindex,follow` 策略，并在正文中输出作者、摘要、发布时间、更新时间、内容核验日期、可见
-面包屑、动态 `BlogPosting` JSON-LD、唯一自指 canonical 和社交分享元数据。标签可以逐项覆盖
-全局索引策略。自定义 canonical、内容合并和重定向仍必须由内容治理结果决定。下列工作不属于
-主题单独可完成的范围：
+Rackora 自行输出：唯一 H1、绝对自指 canonical、Open Graph / Twitter Card（含文章
+`article:published_time` / `article:modified_time`）、可见面包屑、作者与日期语义、
+`WebSite` / `Organization` / 动态 `BlogPosting`（文档模板为 `TechArticle`）JSON-LD。
+标签可逐项覆盖全局 `noindex` 策略；主关键词与 Pillar 字段仅供编辑审核，不输出无效的
+`meta keywords`，也不根据标签自动推断结构。
 
-- 从 Halo sitemap 移除低价值标签 URL。
-- 为保留标签和栏目撰写独立简介、精选内容与真实 meta description。
-- 修复反向代理或 Halo 路由层的 HEAD 404。
-- 在线验证 BlogPosting、Breadcrumb、canonical 和 Rich Results。
-- 迁移、合并或删除历史标签引用。
-- 在 P2-03 完成前渲染或推断 Pillar / Cluster 新字段。
+自定义 canonical、内容合并、重定向，以及百度 / 字节等平台专用注入，不属于主题范围。下列工作
+仍须在站点侧完成：
 
-部署前后仍需在目标 Halo 实例验证主题配置、插件可用性、页面响应、SEO 输出和回滚路径。
+- 停用与主题冲突的旧 SEO 插件（见插件兼容文档），并清理页面缓存。
+- 用官方 Sitemap 管理 URL 收录；主题的 `noindex` 不会改 sitemap。
+- 为保留标签和栏目撰写真实简介与精选内容。
+- 修复反向代理或路由层的 HEAD 404，并在线验证 Rich Results。
+
+部署前后请在目标 Halo 实例验证主题配置、插件列表、页面响应和 SEO 输出。
 
 ## 许可证
 

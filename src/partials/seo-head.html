@@ -4,6 +4,10 @@
   <link rel="canonical" th:href="${canonicalUrl}" />
   <meta property="og:type" content="{{type}}" />
   <meta property="og:site_name" th:content="${site.title}" />
+  <meta
+    property="og:locale"
+    th:content="${#strings.replace(theme.config.basic.site_language ?: 'en-US', '-', '_')}"
+  />
   <meta property="og:title" th:content="${shareTitle}" />
   <meta property="og:url" th:content="${canonicalUrl}" />
   <meta

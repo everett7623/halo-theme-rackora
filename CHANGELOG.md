@@ -3,6 +3,20 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.1] - 2026-08-15
+
+### 修复
+
+- `BlogPosting` 与 `TechArticle` JSON-LD 现在内嵌完整 publisher 名称、网址和 Logo，避免只引用首页 Organization 导致文章页校验缺少 `publisher.name`。
+- 首页 Organization Logo 改为 `ImageObject`，与文章页一致。
+
+### 调整
+
+- 文档将「时间因子 SEO」定性为迁站/旧主题留下的站点侧残留，而非 Rackora 依赖；明确不要植入主题，并给出停用与清缓存步骤。
+- 清理 README 中对 Joe3 SEO 补丁与内部 P2 任务的过时表述。
+- 文章与文档页补充 `article:published_time` / `article:modified_time`；共享 SEO head 增加 `og:locale`。
+- 独立页输出 `WebPage` JSON-LD，关于页输出 `AboutPage`（不再依赖外部 SEO 插件把页面误标成 BlogPosting）。
+
 ## [0.6.0] - 2026-08-15
 
 ### 新增
@@ -133,6 +147,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.1
 [0.6.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.0
 [0.5.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.5.0
 [0.4.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.2

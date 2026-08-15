@@ -30,7 +30,10 @@
         "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site",
         "url": /*[[${site.url}]]*/ "https://example.com/",
         "mainEntityOfPage": /*[[${theme.config.seo.about_url ?: site.url}]]*/ "https://example.com/",
-        "logo": /*[[${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)}]]*/ "",
+        "logo": {
+          "@type": "ImageObject",
+          "url": /*[[${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)}]]*/ ""
+        },
         "sameAs": /*[[${theme.config.basic.socials.?[not #strings.isEmpty(url)].![url]}]]*/ []
       }
     </script>

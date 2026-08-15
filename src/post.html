@@ -9,6 +9,11 @@
       image="post.spec.cover ?: site.logo"
       type="article"
     ></include>
+    <meta property="article:published_time" th:content="${post.spec.publishTime}" />
+    <meta
+      property="article:modified_time"
+      th:content="${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}"
+    />
     <script type="application/ld+json" th:inline="javascript">
       {
         "@context": "https://schema.org",
@@ -30,7 +35,14 @@
           "url": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + post.owner.permalink}]]*/ "https://example.com/authors/author"
         },
         "publisher": {
-          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization"
+          "@type": "Organization",
+          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization",
+          "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site",
+          "url": /*[[${site.url}]]*/ "https://example.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": /*[[${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)}]]*/ ""
+          }
         },
         "image": /*[[${post.spec.cover ?: (theme.config.seo.organization_logo ?: site.logo)}]]*/ ""
       }

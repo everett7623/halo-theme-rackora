@@ -85,6 +85,11 @@ assert.match(
   new RegExp("Current release: `v" + packageManifest.version.replaceAll(".", "\\.") + "`"),
   "README.md must identify the current release version",
 );
+assert.match(
+  await read("docs/plugin-compatibility.md"),
+  /Site leftovers|plugin-time-factor/,
+  "plugin docs must treat Time Factor as a site leftover, not a theme dependency",
+);
 
 assert.match(layout, /<html\b[^>]*xmlns:th=/, "layout must declare the Thymeleaf namespace");
 assert.match(layout, /menuFinder\.getPrimary\(\)/, "layout must render the primary Halo menu");
@@ -101,6 +106,7 @@ assert.doesNotMatch(
 );
 assert.match(seoHead, /<link\s+rel=["']canonical["']/i, "theme pages need a self canonical");
 assert.match(seoHead, /property=["']og:url["']/i, "theme pages need an Open Graph URL");
+assert.match(seoHead, /property=["']og:locale["']/i, "theme pages need an Open Graph locale");
 assert.match(seoHead, /name=["']twitter:card["']/i, "theme pages need Twitter card metadata");
 assert.match(
   seoHead,
@@ -127,6 +133,7 @@ for (const page of requiredPages) {
 }
 
 const post = await read("src/post.html");
+const postDocs = await read("src/post_docs.html");
 const singlePage = await read("src/page.html");
 const home = await read("src/index.html");
 const archives = await read("src/archives.html");
@@ -149,6 +156,31 @@ assert.match(
   /itemtype=["']https:\/\/schema\.org\/BreadcrumbList["']/,
   "posts need breadcrumb schema",
 );
+for (const [label, source] of [
+  ["post", post],
+  ["documentation post", postDocs],
+]) {
+  assert.match(
+    source,
+    /["']publisher["']\s*:\s*\{[\s\S]*?["']@type["']\s*:\s*["']Organization["'][\s\S]*?["']name["']\s*:[\s\S]*?theme\.config\.seo\.organization_name/,
+    `${label} JSON-LD must embed the publisher organization name`,
+  );
+  assert.match(
+    source,
+    /["']logo["']\s*:\s*\{[\s\S]*?["']@type["']\s*:\s*["']ImageObject["'][\s\S]*?theme\.config\.seo\.organization_logo/,
+    `${label} JSON-LD must embed the publisher logo`,
+  );
+  assert.match(
+    source,
+    /property=["']article:published_time["']/,
+    `${label} pages need Open Graph article published time`,
+  );
+  assert.match(
+    source,
+    /property=["']article:modified_time["']/,
+    `${label} pages need Open Graph article modified time`,
+  );
+}
 assert.match(
   post,
   /rackora_affiliate_relation/,
@@ -464,6 +496,16 @@ assert.match(
   post,
   /<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?["']@type["']:\s*["']BlogPosting["'][\s\S]*?post\.spec\.title[\s\S]*?<\/script>/,
   "post pages need dynamic BlogPosting JSON-LD",
+);
+assert.match(
+  singlePage,
+  /<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?["']@type["']:\s*["']WebPage["'][\s\S]*?singlePage\.spec\.title[\s\S]*?<\/script>/,
+  "single pages need WebPage JSON-LD without depending on SEO plugins",
+);
+assert.match(
+  home,
+  /["']@type["']:\s*["']Organization["'][\s\S]*?["']logo["']\s*:\s*\{[\s\S]*?["']@type["']:\s*["']ImageObject["']/,
+  "home Organization JSON-LD must use ImageObject for logo",
 );
 assert.match(
   post,
