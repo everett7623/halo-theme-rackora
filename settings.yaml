@@ -184,6 +184,31 @@ spec:
           label: 首页横幅（可选）
           help: 留空即为极简无图首页；建议使用 1600×480 或更宽的图片。
           value: ""
+        - $formkit: select
+          name: content_width
+          id: content_width
+          label: 正文内容宽度
+          help: 影响文章与独立页主栏最大宽度。
+          value: comfortable
+          options:
+            - label: 紧凑
+              value: narrow
+            - label: 适中
+              value: comfortable
+            - label: 宽松
+              value: wide
+        - $formkit: select
+          name: font_scale
+          id: font_scale
+          label: 正文字号
+          value: md
+          options:
+            - label: 偏小
+              value: sm
+            - label: 标准
+              value: md
+            - label: 偏大
+              value: lg
     - group: home
       label: 首页
       formSchema:
@@ -282,8 +307,34 @@ spec:
           name: show_share_link
           id: show_share_link
           label: 显示复制链接
-          help: 在标签区旁提供一键复制当前文章地址。
+          help: 在分享栏提供一键复制当前文章地址。
           value: true
+        - $formkit: switch
+          name: show_share_bar
+          id: show_share_bar
+          label: 显示社交分享
+          help: 提供 X、LinkedIn、Telegram、微博等一键分享入口。
+          value: true
+        - $formkit: checkbox
+          name: share_targets
+          id: share_targets
+          key: share_targets
+          label: 分享平台
+          value:
+            - twitter
+            - linkedin
+            - telegram
+            - weibo
+          options:
+            - label: X / Twitter
+              value: twitter
+            - label: LinkedIn
+              value: linkedin
+            - label: Telegram
+              value: telegram
+            - label: 微博
+              value: weibo
+          if: "$get(show_share_bar).value === true"
         - $formkit: switch
           name: show_image_lightbox
           id: show_image_lightbox
@@ -306,6 +357,22 @@ spec:
           max: 6
           step: 1
           if: "$get(show_related_posts).value === true"
+        - $formkit: switch
+          name: show_series
+          id: show_series
+          label: 显示文章系列
+          help: 需在文章元数据中填写系列名称；同系列文章会出现在正文底部。
+          value: true
+        - $formkit: number
+          name: series_post_count
+          id: series_post_count
+          key: series_post_count
+          label: 系列文章数量
+          value: 6
+          min: 3
+          max: 10
+          step: 1
+          if: "$get(show_series).value === true"
         - $formkit: switch
           name: show_post_license
           id: show_post_license

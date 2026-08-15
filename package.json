@@ -1,6 +1,6 @@
 {
   "name": "halo-theme-rackora",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "A minimal, content-first Halo theme for independent publishing and technical writing.",
   "type": "module",
@@ -18,7 +18,9 @@
     "skills:update": "npx skills update"
   },
   "dependencies": {
-    "highlight.js": "^11.11.1",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/source-serif-4": "^5.3.0",
+    "highlight.js": "^11.12.0",
     "lucide": "^0.468.0"
   },
   "devDependencies": {

@@ -53,6 +53,12 @@
     th:classappend="${showHomeSidebar} ? '' : ' home-grid--single'"
   >
     <section class="home-heading" aria-labelledby="home-title">
+      <p
+        class="home-heading__brand"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? '独立出版' : 'Independent publishing'}"
+      >
+        Independent publishing
+      </p>
       <h1 id="home-title" th:text="${site.title}">站点标题</h1>
       <p th:if="${not #strings.isEmpty(site.subtitle)}" th:text="${site.subtitle}"></p>
       <div class="home-heading__meta">
@@ -61,8 +67,8 @@
           >0 posts</span
         >
         <span
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '独立出版，清晰表达' : 'Independent publishing, clearly presented'}"
-          >Independent publishing, clearly presented</span
+          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '清晰表达，长期可读' : 'Written for clarity and longevity'}"
+          >Written for clarity and longevity</span
         >
       </div>
     </section>

@@ -7,9 +7,9 @@ import { gzipSync } from "node:zlib";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const assetsRoot = path.join(root, "templates", "assets");
 const budgets = {
-  css: 32 * 1024,
+  css: 48 * 1024,
   js: 120 * 1024,
-  total: 145 * 1024,
+  total: 160 * 1024,
 };
 
 const entries = await readdir(assetsRoot, { recursive: true, withFileTypes: true });

@@ -2,8 +2,8 @@
 <html
   th:lang="${theme.config.basic.site_language ?: 'en-US'}"
   xmlns:th="http://www.thymeleaf.org"
-  th:attr="data-color-scheme=${theme.config.appearance.color_scheme ?: 'auto'},data-ui-language=${theme.config.basic.ui_language ?: 'en'}"
-  th:class="|color-scheme-${theme.config.appearance.color_scheme ?: 'auto'}|"
+  th:attr="data-color-scheme=${theme.config.appearance.color_scheme ?: 'auto'},data-ui-language=${theme.config.basic.ui_language ?: 'en'},data-content-width=${theme.config.appearance.content_width ?: 'comfortable'},data-font-scale=${theme.config.appearance.font_scale ?: 'md'}"
+  th:class="|color-scheme-${theme.config.appearance.color_scheme ?: 'auto'} content-width-${theme.config.appearance.content_width ?: 'comfortable'} font-scale-${theme.config.appearance.font_scale ?: 'md'}|"
 >
   <head>
     <meta charset="UTF-8" />

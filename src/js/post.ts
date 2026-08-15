@@ -11,6 +11,7 @@ import nginx from "highlight.js/lib/languages/nginx";
 import plaintext from "highlight.js/lib/languages/plaintext";
 import python from "highlight.js/lib/languages/python";
 import rust from "highlight.js/lib/languages/rust";
+import scss from "highlight.js/lib/languages/scss";
 import sql from "highlight.js/lib/languages/sql";
 import typescript from "highlight.js/lib/languages/typescript";
 import xml from "highlight.js/lib/languages/xml";
@@ -19,6 +20,7 @@ import yaml from "highlight.js/lib/languages/yaml";
 const languageAliases: Record<string, string> = {
   shell: "bash",
   sh: "bash",
+  zsh: "bash",
   yml: "yaml",
   ts: "typescript",
   js: "javascript",
@@ -27,6 +29,7 @@ const languageAliases: Record<string, string> = {
   py: "python",
   golang: "go",
   rs: "rust",
+  conf: "nginx",
 };
 
 hljs.registerLanguage("bash", bash);
@@ -41,6 +44,7 @@ hljs.registerLanguage("nginx", nginx);
 hljs.registerLanguage("plaintext", plaintext);
 hljs.registerLanguage("python", python);
 hljs.registerLanguage("rust", rust);
+hljs.registerLanguage("scss", scss);
 hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("typescript", typescript);
 hljs.registerLanguage("xml", xml);
@@ -307,30 +311,68 @@ function initAffiliateMarkup(content: HTMLElement): void {
 }
 
 function initShareLink(): void {
-  const button = document.querySelector<HTMLButtonElement>("[data-share-link]");
-  if (!button) return;
-
-  const label = button.querySelector("span");
-  const idle = label?.textContent || uiText("Copy link", "复制链接");
-  button.addEventListener("click", async () => {
-    const shareUrl =
-      button.dataset.shareUrl ||
-      (button.getAttribute("data-share-url") ?? "") ||
-      window.location.href;
-    const absolute = new URL(shareUrl, window.location.origin).href;
-    try {
-      await copyText(absolute);
-      if (label) label.textContent = uiText("Copied", "已复制");
-      button.classList.add("is-copied");
-      window.setTimeout(() => {
-        if (label) label.textContent = idle;
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-share-link]")) {
+    button.addEventListener("click", async () => {
+      const shareUrl =
+        button.dataset.shareUrl ||
+        button.closest<HTMLElement>("[data-share-url]")?.dataset.shareUrl ||
+        window.location.href;
+      const absolute = new URL(shareUrl, window.location.origin).href;
+      try {
+        await copyText(absolute);
+        button.classList.add("is-copied");
+        window.setTimeout(() => button.classList.remove("is-copied"), 1600);
+      } catch {
         button.classList.remove("is-copied");
-      }, 1600);
-    } catch {
-      if (label) label.textContent = uiText("Copy failed", "复制失败");
-    }
-    document.dispatchEvent(new CustomEvent("rackora:icons"));
-  });
+      }
+      document.dispatchEvent(new CustomEvent("rackora:icons"));
+    });
+  }
+}
+
+function initShareBar(): void {
+  const bar = document.querySelector<HTMLElement>("[data-share-bar]");
+  if (!bar) return;
+
+  const title = bar.dataset.shareTitle || document.title;
+  const sharePath = bar.dataset.shareUrl || window.location.pathname;
+  const url = new URL(sharePath, window.location.origin).href;
+  const encodedUrl = encodeURIComponent(url);
+  const encodedTitle = encodeURIComponent(title);
+
+  const targets: Record<string, string> = {
+    twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+    telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+    weibo: `https://service.weibo.com/share/share.php?url=${encodedUrl}&title=${encodedTitle}`,
+  };
+
+  for (const link of bar.querySelectorAll<HTMLAnchorElement>("[data-share]")) {
+    const href = targets[link.dataset.share || ""];
+    if (!href) continue;
+    link.href = href;
+  }
+}
+
+function initSeriesList(): void {
+  const list = document.querySelector<HTMLElement>("[data-series-list]");
+  if (!list) return;
+  const ordered = list.querySelector("ol");
+  if (!ordered) return;
+
+  const limit = Math.max(1, Number.parseInt(list.dataset.seriesLimit || "6", 10) || 6);
+  const items = Array.from(ordered.children) as HTMLElement[];
+  items
+    .sort((left, right) => {
+      const orderDifference =
+        Number.parseInt(left.dataset.seriesOrder || "9999", 10) -
+        Number.parseInt(right.dataset.seriesOrder || "9999", 10);
+      return orderDifference || 0;
+    })
+    .forEach((item, index) => {
+      if (index < limit) ordered.append(item);
+      else item.remove();
+    });
 }
 
 function initLightbox(content: HTMLElement): void {
@@ -386,6 +428,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initTables(content);
   initAffiliateMarkup(content);
   initReadingMetrics(content);
+  initShareBar();
   initShareLink();
+  initSeriesList();
   initLightbox(content);
 });

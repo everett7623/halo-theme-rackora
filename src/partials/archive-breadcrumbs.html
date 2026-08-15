@@ -1,0 +1,13 @@
+<nav
+  class="breadcrumbs archive-breadcrumbs"
+  th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '面包屑' : 'Breadcrumb'}"
+  th:with="crumbParentHref = ${({{crumbParentHref}})},crumbParentLabel = ${({{crumbParentLabel}})},crumbCurrent = ${({{crumbCurrent}})}"
+>
+  <a th:href="@{/}" th:text="${theme.config.basic.ui_language == 'zh-CN' ? '首页' : 'Home'}"
+    >Home</a
+  >
+  <span aria-hidden="true">/</span>
+  <a th:href="@{${crumbParentHref}}" th:text="${crumbParentLabel}"></a>
+  <span aria-hidden="true">/</span>
+  <span aria-current="page" th:text="${crumbCurrent}">Current</span>
+</nav>

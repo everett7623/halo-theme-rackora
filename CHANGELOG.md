@@ -3,6 +3,22 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.0] - 2026-08-15
+
+### 新增
+
+- 文章社交一键分享：X、LinkedIn、Telegram、微博，可与复制链接组合开关。
+- 文章系列元数据与正文系列目录，支持序号排序。
+- 栏目/标签页面包屑；Documentation 模板增加同栏目导航。
+- 样式设置支持正文宽度与正文字号。
+- Source Serif 4 + IBM Plex Sans 字体组合，首页品牌层级与纸面氛围背景。
+- 列表入场、目录激活与返回顶部等微动效。
+
+### 调整
+
+- 打印样式隐藏分享/目录控件，并为外链补充可读地址。
+- Highlight.js 增加 SCSS 等别名；系列与相关文章空列表自动隐藏。
+
 ## [0.5.0] - 2026-08-15
 
 ### 新增
@@ -117,6 +133,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.0
 [0.5.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.5.0
 [0.4.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.2
 [0.4.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.4.1

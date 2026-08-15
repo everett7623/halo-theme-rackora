@@ -12,6 +12,12 @@
   </template>
 
   <header class="archive-heading">
+    <include
+      src="archive-breadcrumbs.html"
+      crumbParentHref="site.routes.categoriesUri"
+      crumbParentLabel="theme.config.basic.ui_language == 'zh-CN' ? '全部栏目' : 'Categories'"
+      crumbCurrent="category.spec.displayName"
+    ></include>
     <h1 th:text="${category.spec.displayName}">Category</h1>
     <p
       th:if="${not #strings.isEmpty(category.spec.description)}"

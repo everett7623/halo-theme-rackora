@@ -234,7 +234,9 @@ for (const fieldName of [
   "show_post_toc",
   "show_post_latest",
   "show_share_link",
+  "show_share_bar",
   "show_related_posts",
+  "show_series",
 ]) {
   assert.equal(
     postForm?.formSchema?.find((field) => field.name === fieldName)?.value,
@@ -250,8 +252,18 @@ assert.equal(
   postForm?.formSchema?.find((field) => field.name === "show_image_lightbox")?.value,
   true,
 );
+assert.ok(postForm?.formSchema?.find((field) => field.name === "share_targets"));
+assert.equal(
+  appearanceForm?.formSchema?.find((field) => field.name === "content_width")?.value,
+  "comfortable",
+);
+assert.equal(appearanceForm?.formSchema?.find((field) => field.name === "font_scale")?.value, "md");
 assert.ok(postForm?.formSchema?.find((field) => field.name === "license_name"));
 assert.ok(postForm?.formSchema?.find((field) => field.name === "license_url"));
+assert.ok(annotationSource.includes("rackora_series"));
+assert.match(mainStyles, /Source Serif 4|source-serif-4|--rack-font-display/);
+assert.match(mainStyles, /IBM Plex Sans|ibm-plex-sans|--rack-font-sans/);
+assert.match(mainStyles, /@keyframes rack-rise/);
 assert.deepEqual(
   settings?.spec?.forms?.map((form) => form.group),
   [
@@ -490,8 +502,27 @@ assert.match(
   /function initActiveNavigation\(/,
   "primary navigation must mark the current page",
 );
-assert.match(post, /data-share-link/, "posts must expose a copy-link control");
+assert.match(
+  await read("src/partials/share-bar.html"),
+  /data-share-link/,
+  "posts must expose a copy-link control",
+);
+assert.match(
+  await read("src/partials/share-bar.html"),
+  /data-share-bar|data-share=/,
+  "posts must expose social share controls",
+);
+assert.match(post, /share-bar\.html/, "posts must include the share bar partial");
 assert.match(post, /related-posts/, "posts must expose related articles by category");
+assert.match(post, /series-posts|rackora_series/, "posts must support series grouping");
+assert.match(postScript, /function initShareBar\(/, "share targets must be wired in post script");
+assert.match(postScript, /function initSeriesList\(/, "series lists must be sorted client-side");
+assert.match(
+  await read("src/category.html"),
+  /archive-breadcrumbs/,
+  "category pages need breadcrumbs",
+);
+assert.match(await read("src/tag.html"), /archive-breadcrumbs/, "tag pages need breadcrumbs");
 assert.match(
   post,
   /class=["']article-license["']/,

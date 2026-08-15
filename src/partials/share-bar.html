@@ -1,0 +1,65 @@
+<nav
+  class="share-bar"
+  th:if="${showShareBar or showShareLink}"
+  th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享文章' : 'Share this post'},data-share-title=${post.spec.title},data-share-url=@{${post.status.permalink}}"
+  data-share-bar
+>
+  <span
+    class="share-bar__label"
+    th:text="${theme.config.basic.ui_language == 'zh-CN' ? '分享' : 'Share'}"
+    >Share</span
+  >
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareTwitter}"
+    href="#"
+    data-share="twitter"
+    target="_blank"
+    rel="noopener noreferrer"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 X' : 'Share on X'}"
+  >
+    <i data-lucide="twitter" aria-hidden="true"></i>
+  </a>
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareLinkedin}"
+    href="#"
+    data-share="linkedin"
+    target="_blank"
+    rel="noopener noreferrer"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 LinkedIn' : 'Share on LinkedIn'}"
+  >
+    <i data-lucide="linkedin" aria-hidden="true"></i>
+  </a>
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareTelegram}"
+    href="#"
+    data-share="telegram"
+    target="_blank"
+    rel="noopener noreferrer"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Telegram' : 'Share on Telegram'}"
+  >
+    <i data-lucide="send" aria-hidden="true"></i>
+  </a>
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareWeibo}"
+    href="#"
+    data-share="weibo"
+    target="_blank"
+    rel="noopener noreferrer"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到微博' : 'Share on Weibo'}"
+  >
+    <i data-lucide="globe" aria-hidden="true"></i>
+  </a>
+  <button
+    class="share-bar__button"
+    type="button"
+    th:if="${showShareLink}"
+    data-share-link
+    th:attr="data-share-url=@{${post.status.permalink}},aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'}"
+  >
+    <i data-lucide="copy" aria-hidden="true"></i>
+  </button>
+</nav>

@@ -17,6 +17,12 @@
   </template>
 
   <header class="archive-heading">
+    <include
+      src="archive-breadcrumbs.html"
+      crumbParentHref="site.routes.tagsUri"
+      crumbParentLabel="theme.config.basic.ui_language == 'zh-CN' ? '全部标签' : 'Tags'"
+      crumbCurrent="tag.spec.displayName"
+    ></include>
     <h1 th:text="${tag.spec.displayName}">Tag</h1>
     <p
       th:if="${not #strings.isEmpty(#annotations.get(tag, 'rackora_description'))}"

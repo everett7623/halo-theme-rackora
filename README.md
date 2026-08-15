@@ -4,7 +4,7 @@ Rackora is a minimal, content-first Halo 2.x theme for independent publishing, k
 and technical writing. It combines a Fuwari-inspired information hierarchy with the low-image
 article flow, dark mode, and responsive reading experience common to modern publishing themes.
 
-Current release: `v0.5.0`.
+Current release: `v0.6.0`.
 
 ## 设计原则
 
@@ -65,9 +65,9 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 | 分组     | 设置                                                           |
 | -------- | -------------------------------------------------------------- |
 | 基础     | 界面/网站语言、地区、社交、RSS、页脚、署名、站点统计与建站日期 |
-| 样式     | 默认配色、强调色、文章封面显示模式、可选首页横幅               |
+| 样式     | 配色、强调色、封面、横幅、正文宽度与字号                       |
 | 首页     | 资料侧栏、资料卡、分类、高频标签及数量                         |
-| 文章     | 侧栏目录/最新文章/评论、复制链接、图片灯箱、相关文章、许可声明 |
+| 文章     | 侧栏、分享平台、灯箱、相关文章、系列、许可声明                 |
 | 备案     | 可选 ICP 与公网安备号及跳转链接                                |
 | SEO      | 标签/归档索引策略、站点验证、Organization 实体                 |
 | 访问分析 | 可选 GA4、Microsoft Clarity 和百度统计，默认关闭               |

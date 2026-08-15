@@ -100,11 +100,33 @@
       class="article-sidebar"
       th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '文档目录' : 'Documentation outline'}"
     >
-      <section class="article-sidebar__section" data-toc-container hidden>
+      <section
+        class="article-sidebar__section article-sidebar__section--docs"
+        data-toc-container
+        hidden
+      >
         <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
           On this page
         </h2>
         <nav data-toc></nav>
+      </section>
+      <section
+        class="article-sidebar__section"
+        th:if="${not #lists.isEmpty(post.categories)}"
+        th:with="docsPosts = ${postFinder.list({page: 1, size: 8, categoryName: post.categories[0].metadata.name, sort: {'spec.publishTime,desc'}})}"
+      >
+        <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '同栏目' : 'In this category'}">
+          In this category
+        </h2>
+        <ol class="article-sidebar__posts">
+          <li th:each="docsPost : ${docsPosts.items}">
+            <a
+              th:href="@{${docsPost.status.permalink}}"
+              th:text="${docsPost.spec.title}"
+              th:classappend="${docsPost.metadata.name == post.metadata.name} ? ' is-active'"
+            ></a>
+          </li>
+        </ol>
       </section>
     </aside>
   </div>

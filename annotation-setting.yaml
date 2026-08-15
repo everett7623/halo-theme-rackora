@@ -53,6 +53,16 @@ spec:
       label: Pillar 标识
       help: 仅填写已按内容架构审核确认的归属；主题不会根据标签自动猜测。
       value: ""
+    - $formkit: text
+      name: rackora_series
+      label: 文章系列
+      help: 同一系列请填写完全相同的名称；主题会按此聚合显示系列目录。
+      value: ""
+    - $formkit: text
+      name: rackora_series_order
+      label: 系列序号
+      help: 可选；填写数字用于系列内排序，越小越靠前。
+      value: ""
 
 ---
 apiVersion: v1alpha1
