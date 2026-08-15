@@ -383,12 +383,13 @@ img {
 
 .home-heading {
   grid-area: heading;
-  margin: 0;
+  margin: 0 0 8px;
+  padding-bottom: 4px;
   animation: rack-rise 520ms ease both;
 }
 
 .home-heading__brand {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   color: var(--rack-accent);
   font-family: var(--rack-font-mono);
   font-size: 0.72rem;
@@ -398,7 +399,7 @@ img {
 }
 
 .home-heading h1 {
-  margin: 6px 0 10px;
+  margin: 0 0 12px;
   color: var(--rack-ink);
   font-family: var(--rack-font-display);
   font-size: clamp(2.1rem, 4vw, 3rem);
@@ -408,18 +409,21 @@ img {
 }
 
 .home-heading > p {
-  max-width: 42rem;
+  max-width: 36rem;
   margin: 0;
   color: var(--rack-ink-soft);
-  font-size: 1.05rem;
+  font-size: 1.08rem;
   line-height: 1.55;
 }
 
 .home-heading__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 22px;
-  margin-top: 20px;
+  align-items: baseline;
+  gap: 8px 18px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rack-line);
   color: var(--rack-muted);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.78rem;

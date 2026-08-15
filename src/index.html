@@ -56,16 +56,11 @@
 
   <div
     class="home-grid"
-    th:with="showHomeSidebar = ${theme.config.home?.show_home_sidebar != null ? theme.config.home.show_home_sidebar : (theme.config.content?.show_home_sidebar == null or theme.config.content.show_home_sidebar)}"
+    th:with="showHomeSidebar = ${theme.config.home?.show_home_sidebar != null ? theme.config.home.show_home_sidebar : (theme.config.content?.show_home_sidebar == null or theme.config.content.show_home_sidebar)},homeEyebrow = ${theme.config.appearance?.home_eyebrow},homeTagline = ${theme.config.appearance?.home_tagline},homeEyebrowText = ${not #strings.isEmpty(homeEyebrow) ? homeEyebrow : (theme.config.basic.ui_language == 'zh-CN' ? '独立出版' : 'Independent publishing')},homeTaglineText = ${not #strings.isEmpty(homeTagline) ? homeTagline : (theme.config.basic.ui_language == 'zh-CN' ? '清晰表达，长期可读' : 'Written for clarity and longevity')}"
     th:classappend="${showHomeSidebar} ? '' : ' home-grid--single'"
   >
     <section class="home-heading" aria-labelledby="home-title">
-      <p
-        class="home-heading__brand"
-        th:text="${theme.config.basic.ui_language == 'zh-CN' ? '独立出版' : 'Independent publishing'}"
-      >
-        Independent publishing
-      </p>
+      <p class="home-heading__brand" th:text="${homeEyebrowText}">Independent publishing</p>
       <h1 id="home-title" th:text="${site.title}">站点标题</h1>
       <p th:if="${not #strings.isEmpty(site.subtitle)}" th:text="${site.subtitle}"></p>
       <div class="home-heading__meta">
@@ -73,10 +68,7 @@
           th:text="${theme.config.basic.ui_language == 'zh-CN' ? posts.total + ' 篇内容' : posts.total + ' posts'}"
           >0 posts</span
         >
-        <span
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '清晰表达，长期可读' : 'Written for clarity and longevity'}"
-          >Written for clarity and longevity</span
-        >
+        <span th:text="${homeTaglineText}">Written for clarity and longevity</span>
       </div>
     </section>
 
