@@ -382,8 +382,9 @@ img {
 }
 
 .archive-heading {
-  max-width: 720px;
-  margin-bottom: 44px;
+  width: 100%;
+  max-width: var(--rack-content);
+  margin: 0 auto 44px;
 }
 
 .archive-heading h1,
@@ -404,6 +405,12 @@ img {
   color: var(--rack-ink-soft);
   font-size: 1.05rem;
   line-height: 1.55;
+}
+
+.author-heading {
+  width: 100%;
+  max-width: var(--rack-content);
+  margin: 0 auto 36px;
 }
 
 .author-heading__count {
@@ -664,9 +671,11 @@ img {
 }
 
 .post-list {
+  width: 100%;
+  max-width: var(--rack-content);
   display: grid;
   gap: 12px;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   list-style: none;
 }
@@ -889,10 +898,12 @@ img {
 }
 
 .featured-entry {
+  width: 100%;
+  max-width: var(--rack-content);
   display: flex;
   align-items: baseline;
   gap: 12px;
-  margin: -16px 0 28px;
+  margin: -16px auto 28px;
   padding: 12px 14px;
   background: var(--rack-accent-soft);
   border-radius: 7px;
@@ -912,12 +923,14 @@ img {
 }
 
 .pagination {
+  width: 100%;
+  max-width: var(--rack-content);
   min-height: 44px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 16px;
-  margin-top: 32px;
+  margin: 32px auto 0;
 }
 
 .pagination__link {
@@ -962,6 +975,7 @@ img {
 
 .article--page,
 .comments--page {
+  width: 100%;
   max-width: var(--rack-content);
   margin-inline: auto;
 }
@@ -1491,11 +1505,13 @@ img {
 }
 
 .page-heading {
+  width: 100%;
   max-width: var(--rack-content);
   margin: 0 auto 32px;
 }
 
 .link-groups {
+  width: 100%;
   max-width: var(--rack-content);
   display: flex;
   flex-wrap: wrap;
@@ -1520,6 +1536,7 @@ img {
 }
 
 .friend-grid {
+  width: 100%;
   max-width: var(--rack-content);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1849,12 +1866,13 @@ img {
 
 .timeline {
   width: 100%;
-  max-width: 1040px;
+  max-width: var(--rack-content);
+  margin-inline: auto;
 }
 
 .timeline-year {
   display: grid;
-  grid-template-columns: 100px minmax(0, 1fr);
+  grid-template-columns: 5.5rem minmax(0, 1fr);
   gap: 28px;
   padding: 30px 0;
   border-top: 1px solid var(--rack-line-strong);
@@ -1881,16 +1899,19 @@ img {
 }
 
 .timeline-month ol {
+  min-width: 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.timeline-month li {
+.timeline-month li,
+.timeline-entry {
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr) minmax(96px, 160px);
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto;
   align-items: baseline;
-  gap: 18px;
+  gap: 14px 16px;
+  min-width: 0;
   padding: 10px 0;
 }
 
@@ -1898,7 +1919,8 @@ img {
   border-top: 1px solid var(--rack-line);
 }
 
-.timeline-month time {
+.timeline-month time,
+.timeline-entry__date {
   color: var(--rack-muted);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.72rem;
@@ -1907,7 +1929,8 @@ img {
 .timeline-entry__title {
   min-width: 0;
   color: var(--rack-ink-soft);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: break-word;
   text-decoration: none;
 }
 
@@ -1916,8 +1939,7 @@ img {
 }
 
 .timeline-entry__category {
-  min-width: 0;
-  max-width: 100%;
+  max-width: 9rem;
   overflow: hidden;
   justify-self: end;
   color: var(--rack-muted);
@@ -1938,10 +1960,12 @@ a.timeline-entry__category:hover {
 
 .taxonomy-grid,
 .tag-cloud {
+  width: 100%;
+  max-width: var(--rack-content);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 36px;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   list-style: none;
 }
@@ -2036,6 +2060,9 @@ a.timeline-entry__category:hover {
 
 .empty-state,
 .error-page {
+  width: 100%;
+  max-width: var(--rack-content);
+  margin-inline: auto;
   padding: 54px 20px;
   text-align: center;
 }
@@ -2531,11 +2558,12 @@ a.timeline-entry__category:hover {
     position: static;
   }
 
-  .timeline-month li {
+  .timeline-month li,
+  .timeline-entry {
     grid-template-areas:
       "date title"
       ". category";
-    grid-template-columns: 46px minmax(0, 1fr);
+    grid-template-columns: 2.9rem minmax(0, 1fr);
     gap: 4px 10px;
   }
 
@@ -2549,6 +2577,7 @@ a.timeline-entry__category:hover {
 
   .timeline-entry__category {
     grid-area: category;
+    max-width: none;
     justify-self: start;
   }
 

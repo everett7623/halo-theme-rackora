@@ -227,6 +227,31 @@ assert.match(
   /post\.categories\[0\]\.status\.permalink/,
   "archives must link each post's primary category",
 );
+assert.match(
+  mainStyles,
+  /\.timeline-entry__title\s*\{[\s\S]*?overflow-wrap:\s*break-word/,
+  "archive titles must use break-word so long titles do not collapse the grid column",
+);
+assert.doesNotMatch(
+  mainStyles,
+  /\.timeline-entry__title\s*\{[^}]*overflow-wrap:\s*anywhere/,
+  "overflow-wrap:anywhere shrinks archive title columns to one character",
+);
+assert.match(
+  mainStyles,
+  /\.timeline\s*\{[\s\S]*?max-width:\s*var\(--rack-content\)/,
+  "archives must share the same content measure as other single-column pages",
+);
+assert.match(
+  mainStyles,
+  /\.page-heading\s*\{[\s\S]*?max-width:\s*var\(--rack-content\)/,
+  "links page heading must use the shared content measure",
+);
+assert.match(
+  mainStyles,
+  /\.article--page[\s\S]*?max-width:\s*var\(--rack-content\)/,
+  "about and page templates must use the shared content measure",
+);
 assert.doesNotMatch(
   home,
   /sidebar-shortcuts/,

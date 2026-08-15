@@ -3,6 +3,16 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.3] - 2026-08-15
+
+### 修复
+
+- 归档时间线标题改用 `overflow-wrap: break-word`，避免 `anywhere` 把长标题列宽压成单字竖排。
+
+### 调整
+
+- 归档、友链、关于、栏目/标签、文章列表与分页统一到 `--rack-content` 内容宽，避免有的页 720、有的页 1040。
+
 ## [0.6.2] - 2026-08-15
 
 ### 调整
@@ -156,6 +166,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.3
 [0.6.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.2
 [0.6.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.1
 [0.6.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.0
