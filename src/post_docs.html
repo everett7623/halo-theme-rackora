@@ -132,9 +132,14 @@
         data-toc-container
         hidden
       >
-        <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
-          On this page
-        </h2>
+        <header class="article-sidebar__heading">
+          <span class="article-sidebar__heading-icon" aria-hidden="true">
+            <i data-lucide="list"></i>
+          </span>
+          <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
+            On this page
+          </h2>
+        </header>
         <nav data-toc></nav>
       </section>
       <section
@@ -142,9 +147,16 @@
         th:if="${not #lists.isEmpty(post.categories)}"
         th:with="docsPosts = ${postFinder.list({page: 1, size: 8, categoryName: post.categories[0].metadata.name, sort: {'spec.publishTime,desc'}})}"
       >
-        <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '同栏目' : 'In this category'}">
-          In this category
-        </h2>
+        <header class="article-sidebar__heading">
+          <span class="article-sidebar__heading-icon" aria-hidden="true">
+            <i data-lucide="list"></i>
+          </span>
+          <h2
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '同栏目' : 'In this category'}"
+          >
+            In this category
+          </h2>
+        </header>
         <ol class="article-sidebar__posts">
           <li th:each="docsPost : ${docsPosts.items}">
             <a

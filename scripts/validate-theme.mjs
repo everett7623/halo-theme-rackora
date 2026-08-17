@@ -672,9 +672,60 @@ for (const target of [
 assert.match(previewScript, /data-share=["']x["']/, "article preview must exercise the share bar");
 assert.match(
   mainStyles,
-  /\.article-sidebar__section\s*\{[\s\S]*?background:[\s\S]*?border-left:/,
-  "article sidebar sections must have a visible surface and accent edge",
+  /\.article-sidebar__section\s*\{[\s\S]*?background:\s*var\(--rack-surface\)[\s\S]*?border:/,
+  "article sidebar sections must use a defined surface and border",
 );
+assert.match(
+  mainStyles,
+  /\.article-sidebar nav\s*\{[\s\S]*?border-left:\s*1px solid var\(--rack-line-strong\)/,
+  "article table of contents must expose a visible navigation rail",
+);
+assert.match(
+  mainStyles,
+  /\.article-sidebar a\.is-active\s*\{[\s\S]*?font-weight:\s*600/,
+  "the current table-of-contents item must remain visually distinct",
+);
+assert.match(
+  mainStyles,
+  /counter-reset:\s*sidebar-post[\s\S]*?counter\(sidebar-post, decimal-leading-zero\)/,
+  "latest sidebar posts must use numbered scanning cues",
+);
+for (const source of [post, postDocs]) {
+  assert.match(source, /article-sidebar__heading/, "sidebar sections need structured headings");
+  assert.match(source, /article-sidebar__heading-icon/, "sidebar headings need compact icons");
+}
+assert.match(post, /data-lucide=["']clock-3["']/, "latest posts must use a recency icon");
+assert.match(
+  post,
+  /th:classappend=[^\n]*is-current/,
+  "latest posts must identify the current post",
+);
+assert.match(
+  postScript,
+  /setActiveLink\(headings\[0\]\.id\)/,
+  "the first TOC item must start active",
+);
+assert.match(
+  postScript,
+  /section\.closest<HTMLElement>\("\.article-sidebar"\)[\s\S]*?sidebar\.after\(toggle\)/,
+  "mobile table of contents must mount outside the hidden desktop sidebar",
+);
+assert.match(
+  postScript,
+  /aria-current["'], ["']location/,
+  "active TOC links need location semantics",
+);
+assert.match(
+  previewScript,
+  /article-sidebar__heading-icon/,
+  "article preview must exercise sidebar headings",
+);
+assert.match(
+  previewScript,
+  /class=["']is-current["']/,
+  "article preview must exercise current-post styling",
+);
+assert.match(mainScript, /\bClock3\b/, "sidebar heading icons must be registered with Lucide");
 for (const requiredStep of [
   "pnpm check",
   "pnpm build",

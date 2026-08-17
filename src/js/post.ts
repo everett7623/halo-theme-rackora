@@ -112,15 +112,22 @@ function initTableOfContents(content: HTMLElement): void {
 
   section.hidden = false;
   const links = Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));
+  const setActiveLink = (targetId: string): void => {
+    for (const link of links) {
+      const active = link.hash === `#${targetId}`;
+      link.classList.toggle("is-active", active);
+      if (active) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    }
+  };
+  setActiveLink(headings[0].id);
   const observer = new IntersectionObserver(
     (entries) => {
       const visible = entries
         .filter((entry) => entry.isIntersecting)
         .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top)[0];
       if (!visible) return;
-      for (const link of links) {
-        link.classList.toggle("is-active", link.hash === `#${visible.target.id}`);
-      }
+      setActiveLink(visible.target.id);
     },
     { rootMargin: "-20% 0px -72%", threshold: 0 },
   );
@@ -170,7 +177,9 @@ function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
     if (event.key === "Escape" && !panel.hidden) close();
   });
 
-  section.after(toggle);
+  const sidebar = section.closest<HTMLElement>(".article-sidebar");
+  if (sidebar) sidebar.after(toggle);
+  else section.after(toggle);
   document.body.append(panel);
   document.dispatchEvent(new CustomEvent("rackora:icons"));
 }

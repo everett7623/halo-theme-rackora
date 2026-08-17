@@ -181,8 +181,8 @@ const article = `
       </footer>
     </article>
     <aside class="article-sidebar" aria-label="Post navigation">
-      <section class="article-sidebar__section" data-toc-container hidden><h2>On this page</h2><nav data-toc></nav></section>
-      <section class="article-sidebar__section"><h2>Latest posts</h2><ol class="article-sidebar__posts"><li><a href="#">A practical framework for infrastructure reviews</a></li><li><a href="#">Building a reliable content workflow</a></li><li><a href="#">Deploy and restore a small publication</a></li></ol></section>
+      <section class="article-sidebar__section" data-toc-container hidden><header class="article-sidebar__heading"><span class="article-sidebar__heading-icon" aria-hidden="true"><i data-lucide="list"></i></span><h2>On this page</h2></header><nav data-toc></nav></section>
+      <section class="article-sidebar__section"><header class="article-sidebar__heading"><span class="article-sidebar__heading-icon" aria-hidden="true"><i data-lucide="clock-3"></i></span><h2>Latest posts</h2></header><ol class="article-sidebar__posts"><li><a class="is-current" href="/post.html" aria-current="page">A practical framework for infrastructure reviews</a></li><li><a href="#">Building a reliable content workflow</a></li><li><a href="#">Deploy and restore a small publication</a></li></ol></section>
     </aside>
   </div>`;
 
