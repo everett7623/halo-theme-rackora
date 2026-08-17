@@ -176,7 +176,19 @@ spec:
           name: banner_image
           id: banner_image
           label: 首页横幅（可选）
-          help: 留空即为极简无图首页；建议使用 1600×480 或更宽的图片。
+          help: 全宽大图，留空为极简无图首页；建议 1600×480 或更宽。标题区本身不再单独配背景图，避免与顶栏、侧栏品牌重复。
+          value: ""
+        - $formkit: text
+          name: home_eyebrow
+          id: home_eyebrow
+          label: 首页眉题
+          help: 标题上方的小字；留空则按界面语言显示「独立出版」或 Independent publishing。
+          value: ""
+        - $formkit: text
+          name: home_tagline
+          id: home_tagline
+          label: 首页短句
+          help: 标题区底部短句（与篇数并列）；留空则用主题默认文案。站点标题和副标题仍在 Halo 系统设置里改。
           value: ""
         - $formkit: select
           name: content_width
