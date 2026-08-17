@@ -23,7 +23,7 @@ spec:
       - name: Documentation
         description: Documentation layout with persistent table of contents
         file: post_docs.html
-  version: 0.6.10
+  version: 0.7.0
   requires: ">=2.20.0"
   license:
     - name: "GPL-3.0"

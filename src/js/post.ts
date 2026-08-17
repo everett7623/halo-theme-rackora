@@ -339,12 +339,17 @@ function initShareBar(): void {
   const url = new URL(sharePath, window.location.origin).href;
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
+  const encodedMessage = encodeURIComponent(`${title}\n${url}`);
 
   const targets: Record<string, string> = {
-    twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+    x: `https://x.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+    reddit: `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`,
     telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodedMessage}`,
     weibo: `https://service.weibo.com/share/share.php?url=${encodedUrl}&title=${encodedTitle}`,
+    email: `mailto:?subject=${encodedTitle}&body=${encodedMessage}`,
   };
 
   for (const link of bar.querySelectorAll<HTMLAnchorElement>("[data-share]")) {

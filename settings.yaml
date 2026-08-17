@@ -51,7 +51,7 @@ spec:
               options:
                 - label: GitHub
                   value: github
-                - label: X / Twitter
+                - label: X
                   value: twitter
                 - label: LinkedIn
                   value: linkedin
@@ -319,7 +319,7 @@ spec:
           name: show_share_bar
           id: show_share_bar
           label: 显示社交分享
-          help: 提供 X、LinkedIn、Telegram、微博等一键分享入口。
+          help: 提供 X、Facebook、LinkedIn、Reddit、Telegram、WhatsApp、微博和邮件分享入口。
           value: true
         - $formkit: checkbox
           name: share_targets
@@ -328,18 +328,30 @@ spec:
           label: 分享平台
           value:
             - twitter
+            - facebook
             - linkedin
+            - reddit
             - telegram
+            - whatsapp
             - weibo
+            - email
           options:
-            - label: X / Twitter
+            - label: X
               value: twitter
+            - label: Facebook
+              value: facebook
             - label: LinkedIn
               value: linkedin
+            - label: Reddit
+              value: reddit
             - label: Telegram
               value: telegram
+            - label: WhatsApp
+              value: whatsapp
             - label: 微博
               value: weibo
+            - label: 邮件
+              value: email
           if: $get(show_share_bar).value === true
         - $formkit: switch
           name: show_image_lightbox

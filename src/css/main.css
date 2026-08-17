@@ -1485,21 +1485,25 @@ img {
   align-self: start;
   overflow: auto;
   display: grid;
-  gap: 18px;
+  gap: 12px;
+  scrollbar-width: thin;
 }
 
 .article-sidebar__section {
-  padding-left: 16px;
-  border-left: 1px solid var(--rack-line);
+  padding: 14px 12px;
+  background: color-mix(in srgb, var(--rack-surface) 88%, var(--rack-paper));
+  border: 1px solid color-mix(in srgb, var(--rack-line) 88%, transparent);
+  border-left: 3px solid color-mix(in srgb, var(--rack-accent) 52%, var(--rack-line-strong));
+  border-radius: 6px;
 }
 
 .article-sidebar__section h2 {
   margin: 0 0 12px;
-  color: var(--rack-muted);
+  color: var(--rack-ink);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 0.7rem;
-  font-weight: 720;
-  letter-spacing: 0.04em;
+  font-size: 0.74rem;
+  font-weight: 750;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -1510,11 +1514,11 @@ img {
 
 .article-sidebar a {
   display: block;
-  padding: 5px 8px;
-  color: var(--rack-muted);
+  padding: 6px 7px;
+  color: var(--rack-ink-soft);
   border-radius: 3px;
-  font-size: 0.78rem;
-  line-height: 1.45;
+  font-size: 0.8rem;
+  line-height: 1.5;
   text-decoration: none;
   transition:
     color 160ms ease,
@@ -1542,13 +1546,13 @@ img {
 
 .article-sidebar__posts li + li,
 .article-sidebar__comments li + li {
-  border-top: 1px solid var(--rack-line);
+  border-top: 1px solid color-mix(in srgb, var(--rack-line-strong) 72%, transparent);
 }
 
 .article-sidebar__posts a {
   padding-block: 8px;
-  color: var(--rack-ink-soft);
-  font-size: 0.76rem;
+  color: var(--rack-ink);
+  font-size: 0.78rem;
   line-height: 1.5;
 }
 
@@ -1709,7 +1713,9 @@ img {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
+  max-width: 100%;
   margin-left: auto;
 }
 
@@ -1718,15 +1724,16 @@ img {
   color: var(--rack-muted);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .share-bar__button {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   display: inline-grid;
   place-items: center;
+  padding: 0;
   color: var(--rack-muted);
   background: var(--rack-surface);
   border: 1px solid var(--rack-line);
@@ -1749,9 +1756,15 @@ img {
 }
 
 .share-bar__button svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   stroke-width: 1.8;
+}
+
+.share-bar__x-mark {
+  font-size: 0.82rem;
+  font-weight: 750;
+  line-height: 1;
 }
 
 .series-posts,
@@ -2630,6 +2643,17 @@ a.timeline-entry__category:hover {
 
   .article-license {
     grid-template-columns: 1fr;
+  }
+
+  .share-bar {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .share-bar__label {
+    flex-basis: 100%;
+    margin: 0 0 2px;
   }
 
   .article-license dl {

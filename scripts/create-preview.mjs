@@ -161,7 +161,21 @@ const article = `
         <p>Each post closes with its permanent URL, author, publication date, and declared license.</p>
       </div>
       <footer class="article-footer">
-        <div class="article-tags" aria-label="Post tags"><a href="#">Halo</a><a href="#">Design</a><a href="#">Publishing</a></div>
+        <div class="article-footer__meta">
+          <div class="article-tags" aria-label="Post tags"><a href="#">Halo</a><a href="#">Design</a><a href="#">Publishing</a></div>
+          <nav class="share-bar" aria-label="Share this post" data-share-title="Designing a calmer technical publication" data-share-url="/post.html" data-share-bar>
+            <span class="share-bar__label">Share</span>
+            <a class="share-bar__button" href="#" data-share="x" target="_blank" rel="noopener noreferrer" aria-label="Share on X" title="Share on X"><span class="share-bar__x-mark" aria-hidden="true">X</span></a>
+            <a class="share-bar__button" href="#" data-share="facebook" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Share on Facebook"><i data-lucide="facebook" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="#" data-share="linkedin" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" title="Share on LinkedIn"><i data-lucide="linkedin" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="#" data-share="reddit" target="_blank" rel="noopener noreferrer" aria-label="Share on Reddit" title="Share on Reddit"><i data-lucide="messages-square" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="#" data-share="telegram" target="_blank" rel="noopener noreferrer" aria-label="Share on Telegram" title="Share on Telegram"><i data-lucide="send" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="#" data-share="whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp" title="Share on WhatsApp"><i data-lucide="message-circle" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="#" data-share="weibo" target="_blank" rel="noopener noreferrer" aria-label="Share on Weibo" title="Share on Weibo"><i data-lucide="globe" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="#" data-share="email" aria-label="Share by email" title="Share by email"><i data-lucide="mail" aria-hidden="true"></i></a>
+            <button class="share-bar__button" type="button" data-share-link data-share-url="/post.html" aria-label="Copy post link" title="Copy post link"><i data-lucide="copy" aria-hidden="true"></i></button>
+          </nav>
+        </div>
         <aside class="article-license" aria-label="Author and copyright notice"><div class="article-license__lead"><strong>Designing a calmer technical publication</strong><a href="/post.html">http://127.0.0.1:4173/post.html</a></div><dl><div><dt>Author</dt><dd>Everett Labs</dd></div><div><dt>Published</dt><dd>2026-08-14</dd></div><div><dt>License</dt><dd>All rights reserved</dd></div></dl><span class="article-license__mark" aria-hidden="true">©</span></aside>
         <nav class="post-navigation" aria-label="Adjacent posts"><a href="#"><span>Previous</span><strong>Building a reliable content workflow</strong></a><a href="#"><span>Next</span><strong>Verification notes for independent sites</strong></a></nav>
       </footer>

@@ -11,14 +11,25 @@
   >
   <a
     class="share-bar__button"
-    th:if="${showShareBar and shareTwitter}"
+    th:if="${showShareBar and shareX}"
     href="#"
-    data-share="twitter"
+    data-share="x"
     target="_blank"
     rel="noopener noreferrer"
-    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 X' : 'Share on X'}"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 X' : 'Share on X'},title=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 X' : 'Share on X'}"
   >
-    <i data-lucide="twitter" aria-hidden="true"></i>
+    <span class="share-bar__x-mark" aria-hidden="true">X</span>
+  </a>
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareFacebook}"
+    href="#"
+    data-share="facebook"
+    target="_blank"
+    rel="noopener noreferrer"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Facebook' : 'Share on Facebook'},title=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Facebook' : 'Share on Facebook'}"
+  >
+    <i data-lucide="facebook" aria-hidden="true"></i>
   </a>
   <a
     class="share-bar__button"
@@ -27,9 +38,20 @@
     data-share="linkedin"
     target="_blank"
     rel="noopener noreferrer"
-    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 LinkedIn' : 'Share on LinkedIn'}"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 LinkedIn' : 'Share on LinkedIn'},title=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 LinkedIn' : 'Share on LinkedIn'}"
   >
     <i data-lucide="linkedin" aria-hidden="true"></i>
+  </a>
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareReddit}"
+    href="#"
+    data-share="reddit"
+    target="_blank"
+    rel="noopener noreferrer"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Reddit' : 'Share on Reddit'},title=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Reddit' : 'Share on Reddit'}"
+  >
+    <i data-lucide="messages-square" aria-hidden="true"></i>
   </a>
   <a
     class="share-bar__button"
@@ -38,9 +60,20 @@
     data-share="telegram"
     target="_blank"
     rel="noopener noreferrer"
-    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Telegram' : 'Share on Telegram'}"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Telegram' : 'Share on Telegram'},title=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 Telegram' : 'Share on Telegram'}"
   >
     <i data-lucide="send" aria-hidden="true"></i>
+  </a>
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareWhatsapp}"
+    href="#"
+    data-share="whatsapp"
+    target="_blank"
+    rel="noopener noreferrer"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 WhatsApp' : 'Share on WhatsApp'},title=${theme.config.basic.ui_language == 'zh-CN' ? '分享到 WhatsApp' : 'Share on WhatsApp'}"
+  >
+    <i data-lucide="message-circle" aria-hidden="true"></i>
   </a>
   <a
     class="share-bar__button"
@@ -49,16 +82,25 @@
     data-share="weibo"
     target="_blank"
     rel="noopener noreferrer"
-    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到微博' : 'Share on Weibo'}"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享到微博' : 'Share on Weibo'},title=${theme.config.basic.ui_language == 'zh-CN' ? '分享到微博' : 'Share on Weibo'}"
   >
     <i data-lucide="globe" aria-hidden="true"></i>
+  </a>
+  <a
+    class="share-bar__button"
+    th:if="${showShareBar and shareEmail}"
+    href="#"
+    data-share="email"
+    th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '通过邮件分享' : 'Share by email'},title=${theme.config.basic.ui_language == 'zh-CN' ? '通过邮件分享' : 'Share by email'}"
+  >
+    <i data-lucide="mail" aria-hidden="true"></i>
   </a>
   <button
     class="share-bar__button"
     type="button"
     th:if="${showShareLink}"
     data-share-link
-    th:attr="data-share-url=@{${post.status.permalink}},aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'}"
+    th:attr="data-share-url=@{${post.status.permalink}},aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'},title=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'}"
   >
     <i data-lucide="copy" aria-hidden="true"></i>
   </button>

@@ -160,8 +160,12 @@ const archives = await read("src/archives.html");
 const tags = await read("src/tags.html");
 const tagPage = await read("src/tag.html");
 const adSlot = await read("src/partials/ad-slot.html");
+const shareBar = await read("src/partials/share-bar.html");
 const mainScript = await read("src/js/main.ts");
 const postScript = await read("src/js/post.ts");
+const previewScript = await read("scripts/create-preview.mjs");
+const agentInstructions = await read("AGENTS.md");
+const contributing = await read("CONTRIBUTING.md");
 assert.match(post, /kind=["']Post["']/, "post comments must target Post");
 assert.match(singlePage, /kind=["']SinglePage["']/, "page comments must target SinglePage");
 assert.match(post, /post\.owner\.permalink/, "posts must link to their Halo author page");
@@ -350,7 +354,17 @@ assert.equal(
   postForm?.formSchema?.find((field) => field.name === "show_image_lightbox")?.value,
   true,
 );
-assert.ok(postForm?.formSchema?.find((field) => field.name === "share_targets"));
+const shareTargetsField = postForm?.formSchema?.find((field) => field.name === "share_targets");
+assert.deepEqual(shareTargetsField?.value, [
+  "twitter",
+  "facebook",
+  "linkedin",
+  "reddit",
+  "telegram",
+  "whatsapp",
+  "weibo",
+  "email",
+]);
 assert.equal(
   appearanceForm?.formSchema?.find((field) => field.name === "content_width")?.value,
   "comfortable",
@@ -634,16 +648,49 @@ assert.match(
   /function initActiveNavigation\(/,
   "primary navigation must mark the current page",
 );
+assert.match(shareBar, /data-share-link/, "posts must expose a copy-link control");
+assert.match(shareBar, /data-share-bar|data-share=/, "posts must expose social share controls");
+assert.match(shareBar, /share-bar__x-mark[^>]*>X</, "X sharing must use current branding");
+assert.doesNotMatch(shareBar, /data-lucide=["']twitter["']/, "do not show the legacy bird icon");
+for (const target of [
+  "x",
+  "facebook",
+  "linkedin",
+  "reddit",
+  "telegram",
+  "whatsapp",
+  "weibo",
+  "email",
+]) {
+  assert.match(
+    shareBar,
+    new RegExp(`data-share=["']${target}["']`),
+    `missing ${target} share control`,
+  );
+  assert.match(postScript, new RegExp(`\\b${target}:`), `missing ${target} share URL`);
+}
+assert.match(previewScript, /data-share=["']x["']/, "article preview must exercise the share bar");
 assert.match(
-  await read("src/partials/share-bar.html"),
-  /data-share-link/,
-  "posts must expose a copy-link control",
+  mainStyles,
+  /\.article-sidebar__section\s*\{[\s\S]*?background:[\s\S]*?border-left:/,
+  "article sidebar sections must have a visible surface and accent edge",
 );
-assert.match(
-  await read("src/partials/share-bar.html"),
-  /data-share-bar|data-share=/,
-  "posts must expose social share controls",
-);
+for (const requiredStep of [
+  "pnpm check",
+  "pnpm build",
+  "Release theme",
+  "SHA-256",
+  "origin/main",
+]) {
+  assert.ok(
+    agentInstructions.includes(requiredStep),
+    `AGENTS.md is missing release step: ${requiredStep}`,
+  );
+  assert.ok(
+    contributing.includes(requiredStep),
+    `CONTRIBUTING.md is missing release step: ${requiredStep}`,
+  );
+}
 assert.match(post, /share-bar\.html/, "posts must include the share bar partial");
 assert.match(post, /related-posts/, "posts must expose related articles by category");
 assert.match(post, /series-posts|rackora_series/, "posts must support series grouping");
