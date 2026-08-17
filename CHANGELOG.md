@@ -3,6 +3,12 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.9] - 2026-08-17
+
+### 优化
+
+- 调整后台设置菜单顺序：按使用频率排序（基础 → 样式 → 侧边栏 → 文章 → 插件 → SEO → 访问分析 → 广告 → 备案），将一次性配置的「备案」移至最后。
+
 ## [0.6.8] - 2026-08-17
 
 ### 修复
@@ -212,6 +218,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.9]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.9
 [0.6.8]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.8
 [0.6.7]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.7
 [0.6.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.6
