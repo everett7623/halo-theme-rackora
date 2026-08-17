@@ -693,8 +693,8 @@ assert.match(
 );
 assert.match(
   mainStyles,
-  /\.article-sidebar a\.is-active\s*\{[\s\S]*?font-weight:\s*650/,
-  "the current table-of-contents item must be visually distinct",
+  /\.article-sidebar \[data-toc\] a\.is-active,[\s\S]*?aria-current=["']location["'][\s\S]*?background:\s*color-mix\([^;]+18%[\s\S]*?box-shadow:\s*inset 0 0 0 1px[\s\S]*?font-weight:\s*650/,
+  "the current table-of-contents item must have a visible accent-tinted frame",
 );
 for (const source of [post, postDocs]) {
   assert.match(source, /article-sidebar__heading/, "sidebar sections need structured headings");
