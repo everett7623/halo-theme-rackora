@@ -3,6 +3,17 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.6.8] - 2026-08-17
+
+### 修复
+
+- 修复首页眉题/短句配置字段的 null 安全问题：在调用 `#strings.isEmpty()` 前先判断 null，避免 NullPointerException。
+- 修复语言判断缺少 null-safe 导航：`theme.config.basic.ui_language` 改为 `theme.config.basic?.ui_language`。
+- 优化性能：提取 `isZhCN` 变量，消除首页模板中 10+ 处重复的语言判断。
+- 提升可读性：将首页 `th:with` 单行 500+ 字符表达式拆分为多行。
+- 增强验证：验证脚本新增检查回退文案、null 安全逻辑和变量提取。
+- 新增项目文档 `CLAUDE.md`，为 Claude Code 提供开发指引。
+
 ## [0.6.7] - 2026-08-16
 
 ### 新增
@@ -201,6 +212,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.6.8]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.8
 [0.6.7]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.7
 [0.6.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.6
 [0.6.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.5
