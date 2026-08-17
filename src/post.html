@@ -164,26 +164,29 @@
         </div>
       </header>
 
-      <aside
-        class="article-disclosure"
+      <th:block
         th:with="relation = ${#annotations.getOrDefault(post, 'rackora_affiliate_relation', 'none')}"
-        th:if="${relation != 'none'}"
-        th:switch="${relation}"
-        th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '内容关系披露' : 'Content relationship disclosure'}"
       >
-        <p
-          th:case="'affiliate'"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含 Affiliate / Referral 推广链接，本站可能获得佣金，不影响用户价格与编辑判断。' : 'This post contains affiliate or referral links. The site may earn a commission without affecting your price or our editorial judgment.'}"
-        ></p>
-        <p
-          th:case="'sponsored_review'"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含商家提供的送测资源；测试方法、结果与限制仍由本站独立记录。' : 'A vendor supplied resources for this review; the methods, results, and limitations remain independently documented.'}"
-        ></p>
-        <p
-          th:case="'self_purchased'"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文涉及的产品或服务由本站自购测试。' : 'The product or service covered in this post was independently purchased for testing.'}"
-        ></p>
-      </aside>
+        <aside
+          class="article-disclosure"
+          th:if="${relation == 'affiliate' or relation == 'sponsored_review' or relation == 'self_purchased'}"
+          th:switch="${relation}"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '内容关系披露' : 'Content relationship disclosure'}"
+        >
+          <p
+            th:case="'affiliate'"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含 Affiliate / Referral 推广链接，本站可能获得佣金，不影响用户价格与编辑判断。' : 'This post contains affiliate or referral links. The site may earn a commission without affecting your price or our editorial judgment.'}"
+          ></p>
+          <p
+            th:case="'sponsored_review'"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含商家提供的送测资源；测试方法、结果与限制仍由本站独立记录。' : 'A vendor supplied resources for this review; the methods, results, and limitations remain independently documented.'}"
+          ></p>
+          <p
+            th:case="'self_purchased'"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文涉及的产品或服务由本站自购测试。' : 'The product or service covered in this post was independently purchased for testing.'}"
+          ></p>
+        </aside>
+      </th:block>
 
       <figure
         class="article-cover"
