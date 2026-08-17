@@ -369,13 +369,13 @@ assert.deepEqual(
     "appearance",
     "home",
     "post",
-    "compliance",
+    "integrations",
     "seo",
     "analytics",
-    "integrations",
     "monetization",
+    "compliance",
   ],
-  "theme settings must follow mainstream Halo grouping with home/post split",
+  "theme settings must follow usage frequency order with compliance last",
 );
 assert.equal(basicForm?.label, "基础");
 assert.equal(appearanceForm?.label, "样式");

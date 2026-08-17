@@ -110,7 +110,7 @@ spec:
           help: 可选；留空使用主题自带的归档、栏目、标签等链接。
           clearable: true
           value: ""
-          if: "$get(show_footer_menu).value === true"
+          if: $get(show_footer_menu).value === true
         - $formkit: switch
           name: show_theme_credit
           id: show_theme_credit
@@ -122,8 +122,8 @@ spec:
           id: studio_url
           key: studio_url
           label: 制作团队链接
-          value: "https://everettlabs.dev/"
-          if: "$get(show_theme_credit).value === true"
+          value: https://everettlabs.dev/
+          if: $get(show_theme_credit).value === true
         - $formkit: switch
           name: show_home_stats
           id: show_home_stats
@@ -231,14 +231,14 @@ spec:
           label: 显示站点资料卡
           help: 显示 Logo、站点名、副标题、社交账号；开启站点统计时一并显示轻量指标。
           value: true
-          if: "$get(show_home_sidebar).value === true"
+          if: $get(show_home_sidebar).value === true
         - $formkit: switch
           name: show_home_categories
           id: show_home_categories
           key: show_home_categories
           label: 显示文章分类
           value: true
-          if: "$get(show_home_sidebar).value === true"
+          if: $get(show_home_sidebar).value === true
         - $formkit: switch
           name: show_home_tags
           id: show_home_tags
@@ -246,7 +246,7 @@ spec:
           label: 显示高频标签
           help: 按文章数展示常用标签；完整标签仍在标签汇总页显示。
           value: true
-          if: "$get(show_home_sidebar).value === true"
+          if: $get(show_home_sidebar).value === true
         - $formkit: number
           name: home_tag_count
           id: home_tag_count
@@ -256,7 +256,7 @@ spec:
           min: 6
           max: 16
           step: 1
-          if: "$get(show_home_sidebar).value === true && $get(show_home_tags).value === true"
+          if: $get(show_home_sidebar).value === true && $get(show_home_tags).value === true
     - group: post
       label: 文章
       formSchema:
@@ -272,14 +272,14 @@ spec:
           key: show_post_toc
           label: 显示文章目录
           value: true
-          if: "$get(show_post_sidebar).value === true"
+          if: $get(show_post_sidebar).value === true
         - $formkit: switch
           name: show_post_latest
           id: show_post_latest
           key: show_post_latest
           label: 侧栏显示最新文章
           value: true
-          if: "$get(show_post_sidebar).value === true"
+          if: $get(show_post_sidebar).value === true
         - $formkit: number
           name: post_sidebar_count
           id: post_sidebar_count
@@ -290,7 +290,7 @@ spec:
           min: 3
           max: 8
           step: 1
-          if: "$get(show_post_sidebar).value === true && $get(show_post_latest).value === true"
+          if: $get(show_post_sidebar).value === true && $get(show_post_latest).value === true
         - $formkit: switch
           name: show_post_comments
           id: show_post_comments
@@ -298,7 +298,7 @@ spec:
           label: 侧栏显示当前文章最新评论
           help: 仅在当前文章存在公开评论时显示，不替代正文评论区。
           value: false
-          if: "$get(show_post_sidebar).value === true"
+          if: $get(show_post_sidebar).value === true
         - $formkit: number
           name: post_comment_count
           id: post_comment_count
@@ -308,7 +308,7 @@ spec:
           min: 1
           max: 5
           step: 1
-          if: "$get(show_post_sidebar).value === true && $get(show_post_comments).value === true"
+          if: $get(show_post_sidebar).value === true && $get(show_post_comments).value === true
         - $formkit: switch
           name: show_share_link
           id: show_share_link
@@ -340,7 +340,7 @@ spec:
               value: telegram
             - label: 微博
               value: weibo
-          if: "$get(show_share_bar).value === true"
+          if: $get(show_share_bar).value === true
         - $formkit: switch
           name: show_image_lightbox
           id: show_image_lightbox
@@ -362,7 +362,7 @@ spec:
           min: 2
           max: 6
           step: 1
-          if: "$get(show_related_posts).value === true"
+          if: $get(show_related_posts).value === true
         - $formkit: switch
           name: show_series
           id: show_series
@@ -379,7 +379,7 @@ spec:
           min: 3
           max: 10
           step: 1
-          if: "$get(show_series).value === true"
+          if: $get(show_series).value === true
         - $formkit: switch
           name: show_post_license
           id: show_post_license
@@ -393,7 +393,7 @@ spec:
           label: 内容许可名称
           help: 例如 All rights reserved 或 CC BY-NC-SA 4.0。
           value: All rights reserved
-          if: "$get(show_post_license).value === true"
+          if: $get(show_post_license).value === true
         - $formkit: url
           name: license_url
           id: license_url
@@ -401,34 +401,23 @@ spec:
           label: 内容许可地址
           help: 可选；使用 Creative Commons 等公开许可时填写对应说明地址。
           value: ""
-          if: "$get(show_post_license).value === true"
-    - group: compliance
-      label: 备案
+          if: $get(show_post_license).value === true
+    - group: integrations
+      label: 插件
       formSchema:
-        - $formkit: text
-          name: icp_number
-          id: icp_number
-          label: ICP备案号
-          help: 可选；留空时页脚不显示 ICP 备案信息。
-          value: ""
-        - $formkit: url
-          name: icp_url
-          id: icp_url
-          label: ICP备案跳转链接
-          help: 默认跳转至工信部备案管理系统。
-          value: "https://beian.miit.gov.cn/"
-        - $formkit: text
-          name: public_security_number
-          id: public_security_number
-          label: 公网安备号
-          help: 可选；填写完整展示文案，例如“京公网安备 11000002000001号”。
-          value: ""
-        - $formkit: url
-          name: public_security_url
-          id: public_security_url
-          label: 公网安备跳转链接
-          help: 可选；建议填写该备案记录在公安备案系统中的详情链接。
-          value: ""
+        - $formkit: switch
+          name: show_links
+          id: show_links
+          label: 显示友情链接入口
+          help: 需要 Halo 官方“链接管理”插件；主题适配其 /links 页面并控制首页、页脚入口。
+          value: true
+        - $formkit: switch
+          name: show_links_in_footer
+          id: show_links_in_footer
+          key: show_links_in_footer
+          label: 页脚显示友情链接入口
+          value: true
+          if: $get(show_links).value === true
     - group: seo
       label: SEO
       formSchema:
@@ -499,7 +488,7 @@ spec:
           help: 格式为 G-XXXXXXXXXX。不要填写完整脚本代码。
           value: ""
           validation: matches:/^G-[A-Z0-9]+$/
-          if: "$get(analytics_enabled).value === true"
+          if: $get(analytics_enabled).value === true
         - $formkit: text
           name: clarity_id
           id: clarity_id
@@ -508,7 +497,7 @@ spec:
           help: 可选，只填写项目 ID；使用前请按所在地区完成隐私与 Cookie 告知。
           value: ""
           validation: matches:/^[A-Za-z0-9]+$/
-          if: "$get(analytics_enabled).value === true"
+          if: $get(analytics_enabled).value === true
         - $formkit: text
           name: baidu_analytics_id
           id: baidu_analytics_id
@@ -517,23 +506,7 @@ spec:
           help: 可选，只填写 hm.js? 后的 32 位十六进制 ID。
           value: ""
           validation: matches:/^[a-fA-F0-9]{32}$/
-          if: "$get(analytics_enabled).value === true"
-    - group: integrations
-      label: 插件
-      formSchema:
-        - $formkit: switch
-          name: show_links
-          id: show_links
-          label: 显示友情链接入口
-          help: 需要 Halo 官方“链接管理”插件；主题适配其 /links 页面并控制首页、页脚入口。
-          value: true
-        - $formkit: switch
-          name: show_links_in_footer
-          id: show_links_in_footer
-          key: show_links_in_footer
-          label: 页脚显示友情链接入口
-          value: true
-          if: "$get(show_links).value === true"
+          if: $get(analytics_enabled).value === true
     - group: monetization
       label: 广告
       formSchema:
@@ -551,7 +524,7 @@ spec:
           help: 仅在实际显示主题广告时出现，保持简短、真实。
           rows: 2
           value: ""
-          if: "$get(monetization_enabled).value === true"
+          if: $get(monetization_enabled).value === true
         - $formkit: array
           name: ads
           id: ads
@@ -562,7 +535,7 @@ spec:
           max: 8
           addLabel: 添加广告
           emptyText: 暂未添加广告
-          if: "$get(monetization_enabled).value === true"
+          if: $get(monetization_enabled).value === true
           itemLabels:
             - type: text
               label: $value.name
@@ -606,3 +579,30 @@ spec:
               help: 推广地址会自动添加 sponsored、nofollow 和安全属性。
               value: ""
               validation: required
+    - group: compliance
+      label: 备案
+      formSchema:
+        - $formkit: text
+          name: icp_number
+          id: icp_number
+          label: ICP备案号
+          help: 可选；留空时页脚不显示 ICP 备案信息。
+          value: ""
+        - $formkit: url
+          name: icp_url
+          id: icp_url
+          label: ICP备案跳转链接
+          help: 默认跳转至工信部备案管理系统。
+          value: https://beian.miit.gov.cn/
+        - $formkit: text
+          name: public_security_number
+          id: public_security_number
+          label: 公网安备号
+          help: 可选；填写完整展示文案，例如“京公网安备 11000002000001号”。
+          value: ""
+        - $formkit: url
+          name: public_security_url
+          id: public_security_url
+          label: 公网安备跳转链接
+          help: 可选；建议填写该备案记录在公安备案系统中的详情链接。
+          value: ""
