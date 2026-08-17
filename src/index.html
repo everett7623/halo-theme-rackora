@@ -56,7 +56,12 @@
 
   <div
     class="home-grid"
-    th:with="showHomeSidebar = ${theme.config.home?.show_home_sidebar != null ? theme.config.home.show_home_sidebar : (theme.config.content?.show_home_sidebar == null or theme.config.content.show_home_sidebar)},homeEyebrow = ${theme.config.appearance?.home_eyebrow},homeTagline = ${theme.config.appearance?.home_tagline},homeEyebrowText = ${not #strings.isEmpty(homeEyebrow) ? homeEyebrow : (theme.config.basic.ui_language == 'zh-CN' ? '独立出版' : 'Independent publishing')},homeTaglineText = ${not #strings.isEmpty(homeTagline) ? homeTagline : (theme.config.basic.ui_language == 'zh-CN' ? '清晰表达，长期可读' : 'Written for clarity and longevity')}"
+    th:with="showHomeSidebar = ${theme.config.home?.show_home_sidebar != null ? theme.config.home.show_home_sidebar : (theme.config.content?.show_home_sidebar == null or theme.config.content.show_home_sidebar)},
+      isZhCN = ${theme.config.basic?.ui_language == 'zh-CN'},
+      homeEyebrow = ${theme.config.appearance?.home_eyebrow},
+      homeTagline = ${theme.config.appearance?.home_tagline},
+      homeEyebrowText = ${(homeEyebrow != null and not #strings.isEmpty(homeEyebrow)) ? homeEyebrow : (isZhCN ? '独立出版' : 'Independent publishing')},
+      homeTaglineText = ${(homeTagline != null and not #strings.isEmpty(homeTagline)) ? homeTagline : (isZhCN ? '清晰表达，长期可读' : 'Written for clarity and longevity')}"
     th:classappend="${showHomeSidebar} ? '' : ' home-grid--single'"
   >
     <section class="home-heading" aria-labelledby="home-title">
@@ -64,10 +69,7 @@
       <h1 id="home-title" th:text="${site.title}">站点标题</h1>
       <p th:if="${not #strings.isEmpty(site.subtitle)}" th:text="${site.subtitle}"></p>
       <div class="home-heading__meta">
-        <span
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? posts.total + ' 篇内容' : posts.total + ' posts'}"
-          >0 posts</span
-        >
+        <span th:text="${isZhCN ? posts.total + ' 篇内容' : posts.total + ' posts'}">0 posts</span>
         <span th:text="${homeTaglineText}">Written for clarity and longevity</span>
       </div>
     </section>
@@ -76,16 +78,11 @@
       <include src="ad-slot.html" position="home_top"></include>
 
       <header class="section-heading">
-        <h2
-          id="latest-title"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新文章' : 'Latest posts'}"
-        >
-          Latest posts
-        </h2>
+        <h2 id="latest-title" th:text="${isZhCN ? '最新文章' : 'Latest posts'}">Latest posts</h2>
         <a
           class="text-link"
           th:href="@{${site.routes.archivesUri}}"
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '查看归档' : 'View archives'}"
+          th:text="${isZhCN ? '查看归档' : 'View archives'}"
           >View archives</a
         >
       </header>
@@ -94,13 +91,11 @@
         <include src="post-card.html"></include>
       </ul>
       <div class="empty-state" th:if="${#lists.isEmpty(posts.items)}">
-        <h2
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '暂时没有公开文章' : 'No public posts yet'}"
-        >
+        <h2 th:text="${isZhCN ? '暂时没有公开文章' : 'No public posts yet'}">
           No public posts yet
         </h2>
         <p
-          th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布第一篇内容后，它会显示在这里。' : 'Your first published post will appear here.'}"
+          th:text="${isZhCN ? '发布第一篇内容后，它会显示在这里。' : 'Your first published post will appear here.'}"
         >
           Your first published post will appear here.
         </p>
@@ -111,9 +106,9 @@
 
     <aside
       class="home-sidebar"
-      th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '站点信息' : 'Site information'}"
+      th:attr="aria-label=${isZhCN ? '站点信息' : 'Site information'}"
       th:if="${showHomeSidebar}"
-      th:with="showHomeStats = ${theme.config.basic.show_home_stats != null ? theme.config.basic.show_home_stats : (theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats)},siteLaunchDate = ${theme.config.basic.site_launch_date ?: theme.config.stats?.site_launch_date},showHomeProfile = ${theme.config.home?.show_home_profile != null ? theme.config.home.show_home_profile : (theme.config.content?.show_home_profile == null or theme.config.content.show_home_profile)},showHomeCategories = ${theme.config.home?.show_home_categories != null ? theme.config.home.show_home_categories : (theme.config.content?.show_home_categories == null or theme.config.content.show_home_categories)},showHomeTags = ${theme.config.home?.show_home_tags != null ? theme.config.home.show_home_tags : (theme.config.content?.show_home_tags == null or theme.config.content.show_home_tags)},homeTagCount = ${theme.config.home?.home_tag_count ?: theme.config.content?.home_tag_count ?: 10}"
+      th:with="showHomeStats = ${theme.config.basic.show_home_stats != null ? theme.config.basic.show_home_stats : (theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats)},siteLaunchDate = ${theme.config.basic.site_launch_date ?: theme.config.stats?.site_launch_date},showHomeProfile = ${theme.config.home?.show_home_profile != null ? theme.config.home.show_home_profile : (theme.config.content?.show_home_profile == null or theme.config.content.show_home_profile)},showHomeCategories = ${theme.config.home?.show_home_categories != null ? theme.config.home.show_home_categories : (theme.config.content?.show_home_categories == null or theme.config.content.show_home_categories)},showHomeTags = ${theme.config.home?.show_home_tags != null ? theme.config.home.show_home_tags : (theme.config.content?.show_home_tags == null or theme.config.content.show_home_tags)},homeTagCount = ${theme.config.home?.home_tag_count ?: theme.config.content?.home_tag_count ?: 10},isZhCNSidebar = ${theme.config.basic?.ui_language == 'zh-CN'}"
     >
       <section
         class="profile-panel"
@@ -134,7 +129,7 @@
           </div>
           <nav
             class="profile-socials"
-            th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '社交账号' : 'Social profiles'}"
+            th:attr="aria-label=${isZhCN ? '社交账号' : 'Social profiles'}"
             th:if="${not #lists.isEmpty(theme.config.basic.socials)}"
           >
             <a
@@ -157,29 +152,23 @@
           th:with="siteStats = ${siteStatsFinder.getStats()}"
         >
           <div>
-            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '访问' : 'Visits'}">
-              Visits
-            </dt>
+            <dt th:text="${isZhCNSidebar ? '访问' : 'Visits'}">Visits</dt>
             <dd th:text="${siteStats.visit ?: 0}">0</dd>
           </div>
           <div>
-            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '文章' : 'Posts'}">Posts</dt>
+            <dt th:text="${isZhCNSidebar ? '文章' : 'Posts'}">Posts</dt>
             <dd th:text="${siteStats.post ?: 0}">0</dd>
           </div>
           <div>
-            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '评论' : 'Comments'}">
-              Comments
-            </dt>
+            <dt th:text="${isZhCNSidebar ? '评论' : 'Comments'}">Comments</dt>
             <dd th:text="${siteStats.comment ?: 0}">0</dd>
           </div>
           <div>
-            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '分类' : 'Categories'}">
-              Categories
-            </dt>
+            <dt th:text="${isZhCNSidebar ? '分类' : 'Categories'}">Categories</dt>
             <dd th:text="${siteStats.category ?: 0}">0</dd>
           </div>
           <div th:if="${not #strings.isEmpty(siteLaunchDate)}">
-            <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '运行' : 'Days'}">Days</dt>
+            <dt th:text="${isZhCNSidebar ? '运行' : 'Days'}">Days</dt>
             <dd data-site-launch-compact th:attr="data-site-launch=${siteLaunchDate}">--</dd>
           </div>
         </dl>
@@ -189,14 +178,10 @@
         <th:block th:with="homeCategories = ${categoryFinder.listAll()}">
           <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
             <header>
-              <h2
-                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '内容栏目' : 'Categories'}"
-              >
-                Categories
-              </h2>
+              <h2 th:text="${isZhCNSidebar ? '内容栏目' : 'Categories'}">Categories</h2>
               <a
                 th:href="@{${site.routes.categoriesUri}}"
-                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
+                th:text="${isZhCNSidebar ? '全部' : 'All'}"
                 >All</a
               >
             </header>
@@ -219,10 +204,8 @@
             th:if="${not #lists.isEmpty(homeTags)}"
           >
             <header>
-              <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '标签' : 'Tags'}">Tags</h2>
-              <a
-                th:href="@{${site.routes.tagsUri}}"
-                th:text="${theme.config.basic.ui_language == 'zh-CN' ? '全部' : 'All'}"
+              <h2 th:text="${isZhCNSidebar ? '标签' : 'Tags'}">Tags</h2>
+              <a th:href="@{${site.routes.tagsUri}}" th:text="${isZhCNSidebar ? '全部' : 'All'}"
                 >All</a
               >
             </header>

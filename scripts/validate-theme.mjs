@@ -384,6 +384,31 @@ assert.ok(appearanceForm?.formSchema?.find((field) => field.name === "home_eyebr
 assert.ok(appearanceForm?.formSchema?.find((field) => field.name === "home_tagline"));
 assert.match(home, /home_eyebrow|homeEyebrowText/, "home heading eyebrow must be configurable");
 assert.match(home, /home_tagline|homeTaglineText/, "home heading tagline must be configurable");
+assert.match(
+  home,
+  /独立出版|Independent publishing/,
+  "home must contain eyebrow fallback text for both languages",
+);
+assert.match(
+  home,
+  /清晰表达，长期可读|Written for clarity and longevity/,
+  "home must contain tagline fallback text for both languages",
+);
+assert.match(
+  home,
+  /homeEyebrow != null and not #strings\.isEmpty\(homeEyebrow\)/,
+  "home eyebrow must check null before isEmpty to avoid NullPointerException",
+);
+assert.match(
+  home,
+  /homeTagline != null and not #strings\.isEmpty\(homeTagline\)/,
+  "home tagline must check null before isEmpty to avoid NullPointerException",
+);
+assert.match(
+  home,
+  /isZhCN = \$\{theme\.config\.basic\?\.ui_language == 'zh-CN'\}/,
+  "home must use null-safe navigation for ui_language and extract to isZhCN variable",
+);
 assert.equal(homeForm?.label, "侧边栏");
 assert.equal(postForm?.label, "文章");
 assert.equal(settings?.spec?.forms?.find((form) => form.group === "compliance")?.label, "备案");
