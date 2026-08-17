@@ -387,9 +387,6 @@
     >
       <section class="article-sidebar__section" data-toc-container th:if="${showPostToc}" hidden>
         <header class="article-sidebar__heading">
-          <span class="article-sidebar__heading-icon" aria-hidden="true">
-            <i data-lucide="list"></i>
-          </span>
           <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
             On this page
           </h2>
@@ -403,21 +400,13 @@
         th:with="sidebarPosts = ${postFinder.list({page: 1, size: postSidebarCount, sort: {'spec.publishTime,desc'}})}"
       >
         <header class="article-sidebar__heading">
-          <span class="article-sidebar__heading-icon" aria-hidden="true">
-            <i data-lucide="clock-3"></i>
-          </span>
           <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新文章' : 'Latest posts'}">
             Latest posts
           </h2>
         </header>
         <ol class="article-sidebar__posts">
           <li th:each="sidebarPost : ${sidebarPosts.items}">
-            <a
-              th:href="@{${sidebarPost.status.permalink}}"
-              th:text="${sidebarPost.spec.title}"
-              th:classappend="${sidebarPost.metadata.name == post.metadata.name} ? ' is-current'"
-              th:attr="aria-current=${sidebarPost.metadata.name == post.metadata.name ? 'page' : null}"
-            ></a>
+            <a th:href="@{${sidebarPost.status.permalink}}" th:text="${sidebarPost.spec.title}"></a>
           </li>
         </ol>
       </section>
@@ -428,9 +417,6 @@
         th:with="sidebarComments = ${commentFinder.list({group: 'content.halo.run', version: 'v1alpha1', kind: 'Post', name: post.metadata.name}, 1, postCommentCount)}"
       >
         <header class="article-sidebar__heading">
-          <span class="article-sidebar__heading-icon" aria-hidden="true">
-            <i data-lucide="message-square"></i>
-          </span>
           <h2
             th:text="${theme.config.basic.ui_language == 'zh-CN' ? '最新评论' : 'Recent comments'}"
           >

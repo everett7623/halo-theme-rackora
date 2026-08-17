@@ -133,9 +133,6 @@
         hidden
       >
         <header class="article-sidebar__heading">
-          <span class="article-sidebar__heading-icon" aria-hidden="true">
-            <i data-lucide="list"></i>
-          </span>
           <h2 th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本页目录' : 'On this page'}">
             On this page
           </h2>
@@ -148,9 +145,6 @@
         th:with="docsPosts = ${postFinder.list({page: 1, size: 8, categoryName: post.categories[0].metadata.name, sort: {'spec.publishTime,desc'}})}"
       >
         <header class="article-sidebar__heading">
-          <span class="article-sidebar__heading-icon" aria-hidden="true">
-            <i data-lucide="list"></i>
-          </span>
           <h2
             th:text="${theme.config.basic.ui_language == 'zh-CN' ? '同栏目' : 'In this category'}"
           >

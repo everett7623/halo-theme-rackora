@@ -111,8 +111,10 @@ function initTableOfContents(content: HTMLElement): void {
   }
 
   section.hidden = false;
-  const links = Array.from(navigation.querySelectorAll<HTMLAnchorElement>("a"));
   const setActiveLink = (targetId: string): void => {
+    const links = document.querySelectorAll<HTMLAnchorElement>(
+      "[data-toc] a, [data-mobile-toc] nav a",
+    );
     for (const link of links) {
       const active = link.hash === `#${targetId}`;
       link.classList.toggle("is-active", active);
@@ -120,19 +122,38 @@ function initTableOfContents(content: HTMLElement): void {
       else link.removeAttribute("aria-current");
     }
   };
-  setActiveLink(headings[0].id);
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top)[0];
-      if (!visible) return;
-      setActiveLink(visible.target.id);
-    },
-    { rootMargin: "-20% 0px -72%", threshold: 0 },
-  );
-  headings.forEach((heading) => observer.observe(heading));
+
+  let updateScheduled = false;
+  const updateActiveHeading = (): void => {
+    updateScheduled = false;
+    const configuredHeader = Number.parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--rack-header-height"),
+    );
+    const marker = Math.max(
+      (Number.isFinite(configuredHeader) ? configuredHeader : 72) + 24,
+      Math.min(window.innerHeight * 0.28, 220),
+    );
+    let activeHeading = headings[0];
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top > marker) break;
+      activeHeading = heading;
+    }
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+      activeHeading = headings.at(-1) || activeHeading;
+    }
+    setActiveLink(activeHeading.id);
+  };
+  const scheduleActiveHeading = (): void => {
+    if (updateScheduled) return;
+    updateScheduled = true;
+    window.requestAnimationFrame(updateActiveHeading);
+  };
+
   initMobileToc(section, navigation);
+  scheduleActiveHeading();
+  window.addEventListener("scroll", scheduleActiveHeading, { passive: true });
+  window.addEventListener("resize", scheduleActiveHeading);
+  window.addEventListener("hashchange", scheduleActiveHeading);
 }
 
 function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {

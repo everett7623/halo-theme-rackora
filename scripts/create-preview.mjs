@@ -157,8 +157,16 @@ const article = `
         <h2>Structured technical content</h2>
         <p>Tables remain readable on small screens and code blocks expose their language and a copy action.</p>
         <table><thead><tr><th>Feature</th><th>Owner</th><th>Result</th></tr></thead><tbody><tr><td>Search</td><td>Halo plugin</td><td>Integrated</td></tr><tr><td>Code highlighting</td><td>Rackora</td><td>Built in</td></tr><tr><td>Backups</td><td>Server/plugin</td><td>External</td></tr></tbody></table>
+        <h3>Verification details</h3>
+        <p>Every release records its expected behavior, generated package, and a small set of browser checks.</p>
+        <h2>Operational maintenance</h2>
+        <p>Routine maintenance keeps dependencies, backups, and publishing workflows predictable.</p>
+        <h3>Release checks</h3>
+        <p>Build output, route validation, and responsive behavior are checked before a package is published.</p>
         <h2>Publish with context</h2>
         <p>Each post closes with its permanent URL, author, publication date, and declared license.</p>
+        <h2>Closing notes</h2>
+        <p>A calm reading interface keeps navigation available without competing with the article itself.</p>
       </div>
       <footer class="article-footer">
         <div class="article-footer__meta">
@@ -181,8 +189,8 @@ const article = `
       </footer>
     </article>
     <aside class="article-sidebar" aria-label="Post navigation">
-      <section class="article-sidebar__section" data-toc-container hidden><header class="article-sidebar__heading"><span class="article-sidebar__heading-icon" aria-hidden="true"><i data-lucide="list"></i></span><h2>On this page</h2></header><nav data-toc></nav></section>
-      <section class="article-sidebar__section"><header class="article-sidebar__heading"><span class="article-sidebar__heading-icon" aria-hidden="true"><i data-lucide="clock-3"></i></span><h2>Latest posts</h2></header><ol class="article-sidebar__posts"><li><a class="is-current" href="/post.html" aria-current="page">A practical framework for infrastructure reviews</a></li><li><a href="#">Building a reliable content workflow</a></li><li><a href="#">Deploy and restore a small publication</a></li></ol></section>
+      <section class="article-sidebar__section" data-toc-container hidden><header class="article-sidebar__heading"><h2>On this page</h2></header><nav data-toc></nav></section>
+      <section class="article-sidebar__section"><header class="article-sidebar__heading"><h2>Latest posts</h2></header><ol class="article-sidebar__posts"><li><a href="/post.html">A practical framework for infrastructure reviews</a></li><li><a href="#">Building a reliable content workflow</a></li><li><a href="#">Deploy and restore a small publication</a></li></ol></section>
     </aside>
   </div>`;
 

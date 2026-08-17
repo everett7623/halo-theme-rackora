@@ -266,11 +266,6 @@ assert.match(
   /html\.content-width-narrow\s*\{[\s\S]*?--rack-wide:/,
   "content width setting must scale the whole-site canvas",
 );
-assert.match(
-  mainStyles,
-  /\.article-layout\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)\s+240px/,
-  "article pages must use the full shell width like the home grid",
-);
 assert.doesNotMatch(
   mainStyles,
   /\.timeline\s*\{[^}]*max-width:\s*var\(--rack-content\)/,
@@ -672,8 +667,24 @@ for (const target of [
 assert.match(previewScript, /data-share=["']x["']/, "article preview must exercise the share bar");
 assert.match(
   mainStyles,
-  /\.article-sidebar__section\s*\{[\s\S]*?background:\s*var\(--rack-surface\)[\s\S]*?border:/,
-  "article sidebar sections must use a defined surface and border",
+  /\.article-layout\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\) 280px/,
+  "desktop articles must reserve a readable 280px navigation column",
+);
+const articleSidebarRule = mainStyles.match(/\.article-sidebar\s*\{([^}]*)\}/)?.[1] ?? "";
+assert.doesNotMatch(
+  articleSidebarRule,
+  /max-height|overflow|scrollbar-width/,
+  "the article sidebar must not create an independent scroll container",
+);
+assert.match(
+  mainStyles,
+  /\.article-sidebar__section\s*\{[\s\S]*?min-width:\s*0/,
+  "article sidebar sections must remain flat and width-safe",
+);
+assert.doesNotMatch(
+  mainStyles,
+  /\.article-sidebar__section\s*\{[^}]*?(?:background|box-shadow|border-radius):/,
+  "article sidebar sections must not regress into decorated cards",
 );
 assert.match(
   mainStyles,
@@ -682,28 +693,37 @@ assert.match(
 );
 assert.match(
   mainStyles,
-  /\.article-sidebar a\.is-active\s*\{[\s\S]*?font-weight:\s*600/,
-  "the current table-of-contents item must remain visually distinct",
-);
-assert.match(
-  mainStyles,
-  /counter-reset:\s*sidebar-post[\s\S]*?counter\(sidebar-post, decimal-leading-zero\)/,
-  "latest sidebar posts must use numbered scanning cues",
+  /\.article-sidebar a\.is-active\s*\{[\s\S]*?font-weight:\s*650/,
+  "the current table-of-contents item must be visually distinct",
 );
 for (const source of [post, postDocs]) {
   assert.match(source, /article-sidebar__heading/, "sidebar sections need structured headings");
-  assert.match(source, /article-sidebar__heading-icon/, "sidebar headings need compact icons");
+  assert.doesNotMatch(source, /article-sidebar__heading-icon/, "sidebar headings must stay simple");
 }
-assert.match(post, /data-lucide=["']clock-3["']/, "latest posts must use a recency icon");
 assert.match(
-  post,
-  /th:classappend=[^\n]*is-current/,
-  "latest posts must identify the current post",
+  postScript,
+  /function initTableOfContents\([\s\S]*?getBoundingClientRect\(\)\.top/,
+  "table-of-contents state must follow the article's actual scroll position",
 );
 assert.match(
   postScript,
-  /setActiveLink\(headings\[0\]\.id\)/,
-  "the first TOC item must start active",
+  /window\.addEventListener\("scroll", scheduleActiveHeading, \{ passive: true \}\)/,
+  "scroll spy must update while the article scrolls",
+);
+assert.match(
+  postScript,
+  /window\.requestAnimationFrame\(updateActiveHeading\)/,
+  "scroll spy updates must be animation-frame throttled",
+);
+assert.doesNotMatch(
+  postScript,
+  /new IntersectionObserver/,
+  "scroll spy must not depend on a narrow intersection band",
+);
+assert.match(
+  postScript,
+  /\[data-toc\] a, \[data-mobile-toc\] nav a/,
+  "scroll spy must synchronize desktop and mobile table-of-contents links",
 );
 assert.match(
   postScript,
@@ -717,15 +737,20 @@ assert.match(
 );
 assert.match(
   previewScript,
-  /article-sidebar__heading-icon/,
-  "article preview must exercise sidebar headings",
+  /Operational maintenance[\s\S]*?Release checks[\s\S]*?Closing notes/,
+  "article preview must contain enough sections to exercise scroll spy",
 );
-assert.match(
+assert.doesNotMatch(
   previewScript,
-  /class=["']is-current["']/,
-  "article preview must exercise current-post styling",
+  /article-sidebar__heading-icon/,
+  "preview sidebar must stay flat",
 );
-assert.match(mainScript, /\bClock3\b/, "sidebar heading icons must be registered with Lucide");
+assert.doesNotMatch(
+  mainStyles,
+  /counter\(sidebar-post/,
+  "latest posts must not show decorative counters",
+);
+assert.doesNotMatch(mainScript, /\bClock3\b/, "unused sidebar decoration icons must be removed");
 for (const requiredStep of [
   "pnpm check",
   "pnpm build",
