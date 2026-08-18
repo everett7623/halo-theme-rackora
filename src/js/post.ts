@@ -116,7 +116,7 @@ function initTableOfContents(content: HTMLElement): void {
       "[data-toc] a, [data-mobile-toc] nav a",
     );
     for (const link of links) {
-      const active = link.hash === `#${targetId}`;
+      const active = link.getAttribute("href") === `#${targetId}`;
       link.classList.toggle("is-active", active);
       if (active) link.setAttribute("aria-current", "location");
       else link.removeAttribute("aria-current");
@@ -131,7 +131,7 @@ function initTableOfContents(content: HTMLElement): void {
     );
     const marker = Math.max(
       (Number.isFinite(configuredHeader) ? configuredHeader : 72) + 24,
-      Math.min(window.innerHeight * 0.28, 220),
+      Math.min(window.innerHeight * 0.48, 520),
     );
     let activeHeading = headings[0];
     for (const heading of headings) {

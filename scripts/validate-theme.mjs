@@ -710,8 +710,13 @@ assert.match(
 );
 assert.match(
   mainStyles,
-  /\.article-sidebar \[data-toc\] a\.is-active,[\s\S]*?aria-current=["']location["'][\s\S]*?background:\s*color-mix\([^;]+18%[\s\S]*?box-shadow:\s*inset 0 0 0 1px[\s\S]*?font-weight:\s*650/,
-  "the current table-of-contents item must have a visible accent-tinted frame",
+  /\.article-sidebar \[data-toc\] a:hover,[\s\S]*?a\.is-active,[\s\S]*?aria-current=["']location["'][\s\S]*?background:\s*var\(--rack-accent-soft\)[\s\S]*?border-left-color:\s*var\(--rack-accent\)/,
+  "the current table-of-contents item must retain the hover accent treatment",
+);
+assert.match(
+  mainStyles,
+  /\.article-sidebar__posts a\s*\{[^}]*font-size:\s*0\.8rem/,
+  "latest-post links must use the same font size as table-of-contents links",
 );
 for (const source of [post, postDocs]) {
   assert.match(source, /article-sidebar__heading/, "sidebar sections need structured headings");
@@ -744,6 +749,21 @@ assert.match(
 );
 assert.match(
   postScript,
+  /link\.getAttribute\("href"\) === `#\$\{targetId\}`/,
+  "scroll spy must compare raw fragment attributes so Unicode heading IDs stay active",
+);
+assert.doesNotMatch(
+  postScript,
+  /link\.hash === `#\$\{targetId\}`/,
+  "scroll spy must not compare encoded URL hashes with raw Unicode heading IDs",
+);
+assert.match(
+  postScript,
+  /window\.innerHeight \* 0\.48, 520/,
+  "scroll spy must switch when a heading enters the main reading area",
+);
+assert.match(
+  postScript,
   /section\.closest<HTMLElement>\("\.article-sidebar"\)[\s\S]*?sidebar\.after\(toggle\)/,
   "mobile table of contents must mount outside the hidden desktop sidebar",
 );
@@ -756,6 +776,11 @@ assert.match(
   previewScript,
   /Operational maintenance[\s\S]*?Release checks[\s\S]*?Closing notes/,
   "article preview must contain enough sections to exercise scroll spy",
+);
+assert.match(
+  previewScript,
+  /第五步：读懂端口、流量和限速条件/,
+  "article preview must exercise Unicode heading IDs",
 );
 assert.match(
   previewScript,

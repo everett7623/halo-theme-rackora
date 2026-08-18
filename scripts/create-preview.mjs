@@ -164,6 +164,8 @@ const article = `
         <p>Routine maintenance keeps dependencies, backups, and publishing workflows predictable.</p>
         <h3>Release checks</h3>
         <p>Build output, route validation, and responsive behavior are checked before a package is published.</p>
+        <h2>第五步：读懂端口、流量和限速条件</h2>
+        <p>A Unicode heading verifies that reading-position highlighting follows the visible section instead of relying on an encoded URL hash.</p>
         <h2>Publish with context</h2>
         <p>Each post closes with its permanent URL, author, publication date, and declared license.</p>
         <h2>Closing notes</h2>
