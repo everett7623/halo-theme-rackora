@@ -389,22 +389,20 @@ assert.match(mainStyles, /Source Serif 4|source-serif-4|--rack-font-display/);
 assert.match(mainStyles, /IBM Plex Sans|ibm-plex-sans|--rack-font-sans/);
 assert.match(mainStyles, /@keyframes rack-rise/);
 assert.deepEqual(
-  settings?.spec?.forms?.map((form) => form.group),
+  settings?.spec?.forms?.map(({ group, label }) => ({ group, label })),
   [
-    "basic",
-    "appearance",
-    "home",
-    "post",
-    "integrations",
-    "seo",
-    "analytics",
-    "monetization",
-    "compliance",
+    { group: "basic", label: "基础" },
+    { group: "appearance", label: "外观" },
+    { group: "home", label: "侧边栏" },
+    { group: "post", label: "文章" },
+    { group: "integrations", label: "插件" },
+    { group: "seo", label: "SEO" },
+    { group: "analytics", label: "分析" },
+    { group: "monetization", label: "广告" },
+    { group: "compliance", label: "备案" },
   ],
-  "theme settings must follow usage frequency order with compliance last",
+  "theme settings groups and labels must match the Console navigation",
 );
-assert.equal(basicForm?.label, "基础");
-assert.equal(appearanceForm?.label, "样式");
 assert.ok(appearanceForm?.formSchema?.find((field) => field.name === "banner_image"));
 assert.ok(appearanceForm?.formSchema?.find((field) => field.name === "home_eyebrow"));
 assert.ok(appearanceForm?.formSchema?.find((field) => field.name === "home_tagline"));
@@ -435,11 +433,6 @@ assert.match(
   /isZhCN = \$\{theme\.config\.basic\?\.ui_language == 'zh-CN'\}/,
   "home must use null-safe navigation for ui_language and extract to isZhCN variable",
 );
-assert.equal(homeForm?.label, "侧边栏");
-assert.equal(postForm?.label, "文章");
-assert.equal(settings?.spec?.forms?.find((form) => form.group === "compliance")?.label, "备案");
-assert.equal(settings?.spec?.forms?.find((form) => form.group === "integrations")?.label, "插件");
-assert.equal(settings?.spec?.forms?.find((form) => form.group === "monetization")?.label, "广告");
 assert.equal(basicForm?.formSchema?.find((field) => field.name === "show_home_stats")?.value, true);
 const siteLaunchDate = basicForm?.formSchema?.find((field) => field.name === "site_launch_date");
 assert.equal(
@@ -470,7 +463,6 @@ assert.ok(seoForm?.formSchema?.find((field) => field.name === "organization_name
 assert.ok(seoForm?.formSchema?.find((field) => field.name === "organization_logo"));
 
 const analyticsForm = settings?.spec?.forms?.find((form) => form.group === "analytics");
-assert.equal(analyticsForm?.label, "访问分析");
 assert.equal(analyticsForm?.formSchema?.find((field) => field.name === "enabled")?.value, false);
 assert.equal(
   analyticsForm?.formSchema?.find((field) => field.name === "ga4_id")?.validation,

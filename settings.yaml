@@ -137,7 +137,7 @@ spec:
           help: 可选；填写后侧栏统计显示已运行天数。
           value: ""
     - group: appearance
-      label: 样式
+      label: 外观
       formSchema:
         - $formkit: radio
           name: color_scheme
@@ -484,7 +484,7 @@ spec:
           help: 可选，用于补充站点实体信息，例如 https://example.com/about。
           value: ""
     - group: analytics
-      label: 访问分析
+      label: 分析
       formSchema:
         - $formkit: switch
           name: enabled

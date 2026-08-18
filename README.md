@@ -4,7 +4,7 @@ Rackora is a minimal, content-first Halo 2.x theme for independent publishing, k
 and technical writing. It combines a Fuwari-inspired information hierarchy with the low-image
 article flow, dark mode, and responsive reading experience common to modern publishing themes.
 
-Current release: `v0.7.5`.
+Current release: `v0.7.6`.
 
 ## 设计原则
 
@@ -64,19 +64,19 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 
 主题后台按主流 Halo 主题习惯分为 9 组：
 
-| 分组     | 设置                                                           |
-| -------- | -------------------------------------------------------------- |
-| 基础     | 界面/网站语言、地区、社交、RSS、页脚、署名、站点统计与建站日期 |
-| 样式     | 配色、强调色、封面、横幅、首页眉题/短句、正文宽度与字号        |
-| 侧边栏   | 首页侧栏总开关、资料卡、分类、高频标签及数量                   |
-| 文章     | 侧栏、分享平台、灯箱、相关文章、系列、许可声明                 |
-| 备案     | 可选 ICP 与公网安备号及跳转链接                                |
-| SEO      | 标签/归档索引策略、站点验证、Organization 实体                 |
-| 访问分析 | 可选 GA4、Microsoft Clarity 和百度统计，默认关闭               |
-| 插件     | Halo 官方友情链接页面和页脚入口                                |
-| 广告     | 总开关、统一披露文案、可排序广告位                             |
+| 分组   | 设置                                                           |
+| ------ | -------------------------------------------------------------- |
+| 基础   | 界面/网站语言、地区、社交、RSS、页脚、署名、站点统计与建站日期 |
+| 外观   | 配色、强调色、封面、横幅、首页眉题/短句、正文宽度与字号        |
+| 侧边栏 | 首页侧栏总开关、资料卡、分类、高频标签及数量                   |
+| 文章   | 侧栏、分享平台、灯箱、相关文章、系列、许可声明                 |
+| 插件   | Halo 官方友情链接页面和页脚入口                                |
+| SEO    | 标签/归档索引策略、站点验证、Organization 实体                 |
+| 分析   | 可选 GA4、Microsoft Clarity 和百度统计，默认关闭               |
+| 广告   | 总开关、统一披露文案、可排序广告位                             |
+| 备案   | 可选 ICP 与公网安备号及跳转链接                                |
 
-命名对齐 Earth / Stack / Hao 等常见主题（基础、样式、文章、备案、插件），首页侧栏独立为「侧边栏」页签，并保留 SEO 能力。从旧版升级后请“重新加载配置”；旧 `content.*` / `stats.*` 仍会回退读取。
+后台分组固定为「基础、外观、侧边栏、文章、插件、SEO、分析、广告、备案」，按常用配置优先、一次性配置靠后的顺序排列。从旧版升级后请“重新加载配置”；旧 `content.*` / `stats.*` 仍会回退读取。
 
 首页横幅留空、文章封面选择“不显示”即为默认少图方案。目录、阅读时间和代码复制按内容
 自动启用。站点标题、Logo、副标题和全站 description 直接复用 Halo 系统资料；主题基于
@@ -88,7 +88,7 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 页脚菜单留空时使用主题自带的归档、栏目、标签等链接，也可以选择 Halo 中已有的菜单。备案号为空时
 不会生成备案区域；公网安备链接建议填写对应备案记录的官方详情地址。
 
-访问分析设置只接受 GA4 Measurement ID、Clarity Project ID 或百度统计站点 ID，不接受任意脚本。启用访问分析前请根据
+「分析」分组只接受 GA4 Measurement ID、Clarity Project ID 或百度统计站点 ID，不接受任意脚本。启用第三方访问分析前请根据
 访问者所在地完成隐私政策、Cookie 告知和同意管理。RSS 依赖 Halo 官方 RSS 插件，友情链接
 依赖 Halo 官方链接管理插件；插件不存在时主题不会渲染对应入口。
 
