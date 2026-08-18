@@ -36,6 +36,7 @@ const [
   packageSource,
   changelog,
   readme,
+  viteConfig,
 ] = await Promise.all([
   read("theme.yaml"),
   read("settings.yaml"),
@@ -46,6 +47,7 @@ const [
   read("package.json"),
   read("CHANGELOG.md"),
   read("README.md"),
+  read("vite.config.ts"),
 ]);
 const theme = YAML.parse(themeSource);
 const settings = YAML.parse(settingsSource);
@@ -84,6 +86,21 @@ assert.match(
   readme,
   new RegExp("Current release: `v" + packageManifest.version.replaceAll(".", "\\.") + "`"),
   "README.md must identify the current release version",
+);
+assert.match(
+  viteConfig,
+  /canonicalScriptSources[\s\S]*?assets\/main\.js[\s\S]*?src\/js\/main\.ts[\s\S]*?assets\/post\.js[\s\S]*?src\/js\/post\.ts/,
+  "theme JavaScript bundles must map to stable filenames by source module",
+);
+assert.match(
+  viteConfig,
+  /fileName:\s*["']assets\/main\.css["'][\s\S]*?source:\s*stylesheet\.source/,
+  "the primary theme stylesheet must be copied to a stable filename",
+);
+assert.match(
+  viteConfig,
+  /canonicalName\}\?v=\$\{themeVersion\}/,
+  "stable theme assets must carry the release version as a cache key",
 );
 assert.doesNotMatch(
   readme,
@@ -740,6 +757,11 @@ assert.match(
   /Operational maintenance[\s\S]*?Release checks[\s\S]*?Closing notes/,
   "article preview must contain enough sections to exercise scroll spy",
 );
+assert.match(
+  previewScript,
+  /legacy-upgrade\.html[\s\S]*?main-zTR4KUqa\.css[\s\S]*?main-yc4NlTUX\.js[\s\S]*?post-Br0gHPGa\.js/,
+  "the preview must exercise a stale pre-stable-assets article template",
+);
 assert.doesNotMatch(
   previewScript,
   /article-sidebar__heading-icon/,
@@ -823,6 +845,55 @@ assert.doesNotMatch(
 await read("public/assets/images/rackora-mark.svg");
 const builtThemeMark = await read("templates/assets/images/rackora-mark.svg");
 assert.match(builtThemeMark, /<svg\b/, "the built theme must contain the default mark asset");
+const builtIndex = await read("templates/index.html");
+const builtPost = await read("templates/post.html");
+const assetVersion = packageManifest.version.replaceAll(".", "\\.");
+assert.match(
+  builtIndex,
+  new RegExp(`/assets/main\\.js\\?v=${assetVersion}`),
+  "built pages must version the stable main script",
+);
+assert.match(
+  builtIndex,
+  new RegExp(`/assets/main\\.css\\?v=${assetVersion}`),
+  "built pages must version the stable stylesheet",
+);
+assert.match(
+  builtPost,
+  new RegExp(`/assets/post\\.js\\?v=${assetVersion}`),
+  "built article pages must version the stable post script",
+);
+for (const source of [builtIndex, builtPost]) {
+  assert.doesNotMatch(
+    source,
+    /\/assets\/(?:main|post)-[^/"']+\.(?:css|js)/,
+    "built templates must not depend on disposable hashed theme entry assets",
+  );
+}
+const canonicalAssets = {
+  "main.css": await read("templates/assets/main.css"),
+  "main.js": await read("templates/assets/main.js"),
+  "post.js": await read("templates/assets/post.js"),
+};
+for (const [legacyName, canonicalName] of [
+  ["main-C94QBGj4.css", "main.css"],
+  ["main-jGzUTz-A.js", "main.js"],
+  ["post-Df6TdZI-.js", "post.js"],
+  ["main-Wmud_qCD.css", "main.css"],
+  ["main-BlOEJXrT.js", "main.js"],
+  ["post-BjpWceAN.js", "post.js"],
+  ["main-zTR4KUqa.css", "main.css"],
+  ["main-yc4NlTUX.js", "main.js"],
+  ["post-Br0gHPGa.js", "post.js"],
+  ["main-BC4DLRCu.css", "main.css"],
+  ["main-BBWn-Rvk.js", "main.js"],
+]) {
+  assert.equal(
+    await read(`templates/assets/${legacyName}`),
+    canonicalAssets[canonicalName],
+    `${legacyName} must remain a working upgrade alias for ${canonicalName}`,
+  );
+}
 console.log(
   `Theme validation passed: ${requiredPages.length} routes, config, SEO, and extensions.`,
 );

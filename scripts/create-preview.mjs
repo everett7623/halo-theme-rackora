@@ -1,4 +1,4 @@
-import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -6,11 +6,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.join(root, ".preview");
 const builtAssets = path.join(root, "templates", "assets");
 const assetNames = await readdir(builtAssets);
-const cssName = assetNames.find((name) => /^main-.*\.css$/.test(name));
-const mainName = assetNames.find((name) => /^main-.*\.js$/.test(name));
-const postName = assetNames.find((name) => /^post-.*\.js$/.test(name));
+const { version } = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const cssName = "main.css";
+const mainName = "main.js";
+const postName = "post.js";
 
-if (!cssName || !mainName || !postName) {
+if (![cssName, mainName, postName].every((name) => assetNames.includes(name))) {
   throw new Error("Built assets are missing; run pnpm build-only before creating the preview");
 }
 
@@ -94,9 +95,9 @@ function page(title, body, scripts = "") {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>${title}</title>
-    <link rel="stylesheet" href="/assets/${cssName}" />
+    <link rel="stylesheet" href="/assets/${cssName}?v=${version}" />
     <style>[data-preview-header] { position: relative; }</style>
-    <script type="module" src="/assets/${mainName}"></script>
+    <script type="module" src="/assets/${mainName}?v=${version}"></script>
     ${scripts}
   </head>
   <body style="--rack-accent:#08775b">
@@ -222,12 +223,17 @@ const archives = `
 
 await writeFile(path.join(output, "index.html"), page("Rackora preview", home));
 await writeFile(path.join(output, "archives.html"), page("Archives - Rackora", archives));
+const articlePage = page(
+  "Designing a calmer technical publication - Rackora",
+  article,
+  `<script type="module" src="/assets/${postName}?v=${version}"></script>`,
+);
+await writeFile(path.join(output, "post.html"), articlePage);
 await writeFile(
-  path.join(output, "post.html"),
-  page(
-    "Designing a calmer technical publication - Rackora",
-    article,
-    `<script type="module" src="/assets/${postName}"></script>`,
-  ),
+  path.join(output, "legacy-upgrade.html"),
+  articlePage
+    .replace(`/assets/${cssName}?v=${version}`, "/assets/main-zTR4KUqa.css")
+    .replace(`/assets/${mainName}?v=${version}`, "/assets/main-yc4NlTUX.js")
+    .replace(`/assets/${postName}?v=${version}`, "/assets/post-Br0gHPGa.js"),
 );
 console.log(`Preview generated at ${output}`);
