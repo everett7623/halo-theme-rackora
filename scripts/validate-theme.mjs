@@ -278,10 +278,26 @@ assert.match(
   /\.shell\s*\{[\s\S]*?var\(--rack-wide\)/,
   "all pages share the same shell canvas width",
 );
+assert.match(mainStyles, /--rack-wide:\s*1240px/, "comfortable shell width must be 1240px");
 assert.match(
   mainStyles,
-  /html\.content-width-narrow\s*\{[\s\S]*?--rack-wide:/,
-  "content width setting must scale the whole-site canvas",
+  /html\.content-width-narrow\s*\{[^}]*--rack-wide:\s*1040px/,
+  "narrow shell width must be 1040px",
+);
+assert.match(
+  mainStyles,
+  /html\.content-width-wide\s*\{[^}]*--rack-wide:\s*1440px/,
+  "wide shell width must be 1440px",
+);
+assert.match(
+  mainStyles,
+  /\.home-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+340px/,
+  "home sidebar must use the wider 340px column",
+);
+assert.match(
+  mainStyles,
+  /\.profile-stats\s*\{[^}]*grid-auto-flow:\s*column[^}]*grid-auto-columns:\s*minmax\(0,\s*1fr\)/,
+  "profile stats must keep every available metric on one row",
 );
 assert.doesNotMatch(
   mainStyles,
@@ -644,6 +660,7 @@ assert.match(home, /profile-panel__mark/, "home sidebar must keep the site logo"
 assert.match(home, /profile-panel__copy/, "home sidebar must keep the site title and subtitle");
 assert.match(home, /profile-stats/, "home stats belong in the compact sidebar profile");
 assert.match(home, /siteStatsFinder\.getStats\(\)/, "home sidebar must use native Halo stats");
+assert.match(previewScript, /<dd>12,840<\/dd>/, "home preview must exercise long stat values");
 assert.match(home, /tagFinder\.listAll\(\)/, "home must query tags through Halo Tag Finder");
 assert.match(home, /data-popular-tags/, "home must expose sortable popular tags");
 assert.match(mainScript, /function initPopularTags\(/, "home tags must be sorted by post count");
