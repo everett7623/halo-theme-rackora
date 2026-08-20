@@ -4,7 +4,7 @@ Rackora is a minimal, content-first Halo 2.x theme for independent publishing, k
 and technical writing. It combines a Fuwari-inspired information hierarchy with the low-image
 article flow, dark mode, and responsive reading experience common to modern publishing themes.
 
-Current release: `v0.7.7`.
+Current release: `v0.8.0`.
 
 ## 设计原则
 
@@ -37,6 +37,7 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 - Fuwari 启发的正文标题标记、行内代码、代码块和文末作者/许可声明。
 - Highlight.js 按需语言包（含 Python/Go/Rust/Java/SQL/CSS 等）、代码复制、横向表格容器、正文图片灯箱和 VPS 产品表识别。
 - 评论插件、搜索组件和 Halo 页脚扩展点。
+- Halo 页面布局契约，插件前台页面可复用 Rackora 页头、页脚、配色和内容画布。
 - Halo 官方友情链接插件、RSS 自动发现，以及可选 GA4、Microsoft Clarity 和百度统计。
 - 可选择 Halo 菜单作为页脚导航，并支持可选 ICP 与公网安备信息。
 - 主导航当前页高亮，以及可关闭的主题署名。
@@ -84,6 +85,9 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 
 首页站点统计默认开启，在首页侧栏以单行轻量指标展示访问、文章、评论和分类累计数据；页脚不再重复统计。建站日期使用 `YYYY-MM-DD` 即可在统计区域显示运行天数，
 不调用外部统计接口。全站内容宽度的紧凑、适中、宽松三档最大值分别为 `1040px`、`1240px`、`1440px`。
+
+文章分享默认开启 X、Facebook、LinkedIn、Reddit、Telegram、WhatsApp、微博、邮件和复制链接。文末内容许可默认使用
+`CC BY-NC-SA 4.0` 及其 Creative Commons 说明地址，站点可在「文章」设置中覆盖。
 
 页脚菜单留空时使用主题自带的归档、栏目、标签等链接，也可以选择 Halo 中已有的菜单。备案号为空时
 不会生成备案区域；公网安备链接建议填写对应备案记录的官方详情地址。
@@ -135,6 +139,7 @@ pnpm preview
 - `scripts/create-preview.mjs`：生成不进入主题包的本地视觉夹具，不替代 Halo 运行时测试。
 
 `pnpm build` 会依次执行 TypeScript/Vite 构建、主题校验、性能预算检查和可复现 ZIP 打包。
+安装包仅保留 WOFF2 字体和轻量升级 alias，并限制在 `400 KiB` 内；本地 `dist/` 只保留当前版本 ZIP，历史安装包由 GitHub Release 保存。
 `pnpm dev` 持续构建 `templates/`。开发 Halo 实例建议设置 `SPRING_THYMELEAF_CACHE=false`。
 
 ## 版本与发布

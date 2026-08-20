@@ -3,6 +3,18 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.8.0] - 2026-08-20
+
+### 新增
+
+- 新增 Halo `templates/layout.html` 页面布局契约，插件前台页面可复用 Rackora 页头、页脚、配色和内容画布，不再回退到 Halo 默认布局。
+
+### 优化
+
+- 文章内容许可默认改为 `CC BY-NC-SA 4.0` 并预填 Creative Commons 说明地址；X、Facebook、LinkedIn、Reddit、Telegram、WhatsApp、微博、邮件和复制链接默认全部开启。
+- 字体产物仅保留 WOFF2，旧模板哈希资源改用轻量 alias 转发稳定文件，并移除无引用的构建入口与安装包截图；增加 `400 KiB` ZIP 体积门禁。
+- 本地构建时自动移除 `dist/` 中旧版本 ZIP，仅保留当前安装包；历史发布继续由 GitHub Release 保存。
+
 ## [0.7.7] - 2026-08-20
 
 ### 优化

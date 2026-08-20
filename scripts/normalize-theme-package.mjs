@@ -1,5 +1,5 @@
 import { createWriteStream } from "node:fs";
-import { mkdir, readFile, readdir, stat } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat, unlink } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,6 +14,8 @@ const name = theme?.metadata?.name;
 if (!name || !version) throw new Error("theme.yaml must define metadata.name and spec.version");
 
 const outputPath = path.join(root, "dist", `${name}-${version}.zip`);
+const distRoot = path.dirname(outputPath);
+const maxReleaseBytes = 400 * 1024;
 const requiredFiles = [
   "theme.yaml",
   "settings.yaml",
@@ -21,7 +23,6 @@ const requiredFiles = [
   "CHANGELOG.md",
   "README.md",
   "LICENSE",
-  "screenshot.png",
   "docs/plugin-compatibility.md",
 ];
 const textExtensions = new Set([
@@ -53,7 +54,21 @@ if (!(await stat(path.join(root, "templates"))).isDirectory()) {
   throw new Error("templates must be built before packaging");
 }
 
-await mkdir(path.dirname(outputPath), { recursive: true });
+await mkdir(distRoot, { recursive: true });
+const stalePackages = (await readdir(distRoot, { withFileTypes: true })).filter(
+  (entry) =>
+    entry.isFile() &&
+    entry.name.startsWith(`${name}-`) &&
+    entry.name.endsWith(".zip") &&
+    entry.name !== path.basename(outputPath),
+);
+for (const entry of stalePackages) {
+  await unlink(path.join(distRoot, entry.name));
+}
+if (stalePackages.length > 0) {
+  console.log(`Removed ${stalePackages.length} stale local release package(s).`);
+}
+
 const output = createWriteStream(outputPath);
 const releaseTimestamp = new Date("2000-01-01T00:00:00.000Z");
 const archive = archiver("zip", { zlib: { level: 9 } });
@@ -91,4 +106,8 @@ for (const relativePath of templateFiles) {
 await archive.finalize();
 await completed;
 
-console.log(`Normalized release package: ${outputPath} (${archive.pointer()} bytes)`);
+const releaseBytes = archive.pointer();
+if (releaseBytes > maxReleaseBytes) {
+  throw new Error(`Release package budget exceeded: ${releaseBytes} > ${maxReleaseBytes} bytes`);
+}
+console.log(`Normalized release package: ${outputPath} (${releaseBytes} bytes)`);

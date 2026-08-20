@@ -1,0 +1,9 @@
+<include src="layout.html" layoutFragment='th:fragment="html (head, content)"'>
+  <template name="head">
+    <th:block th:if="${head != null}">
+      <th:block th:replace="${head}"></th:block>
+    </th:block>
+  </template>
+
+  <th:block th:replace="${content}"></th:block>
+</include>

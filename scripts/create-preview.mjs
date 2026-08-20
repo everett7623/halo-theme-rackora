@@ -187,7 +187,7 @@ const article = `
             <button class="share-bar__button" type="button" data-share-link data-share-url="/post.html" aria-label="Copy post link" title="Copy post link"><i data-lucide="copy" aria-hidden="true"></i></button>
           </nav>
         </div>
-        <aside class="article-license" aria-label="Author and copyright notice"><div class="article-license__lead"><strong>Designing a calmer technical publication</strong><a href="/post.html">http://127.0.0.1:4173/post.html</a></div><dl><div><dt>Author</dt><dd>Everett Labs</dd></div><div><dt>Published</dt><dd>2026-08-14</dd></div><div><dt>License</dt><dd>All rights reserved</dd></div></dl><span class="article-license__mark" aria-hidden="true">©</span></aside>
+        <aside class="article-license" aria-label="Author and copyright notice"><div class="article-license__lead"><strong>Designing a calmer technical publication</strong><a href="/post.html">http://127.0.0.1:4173/post.html</a></div><dl><div><dt>Author</dt><dd>Everett Labs</dd></div><div><dt>Published</dt><dd>2026-08-14</dd></div><div><dt>License</dt><dd><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></dd></div></dl><span class="article-license__mark" aria-hidden="true">©</span></aside>
         <nav class="post-navigation" aria-label="Adjacent posts"><a href="#"><span>Previous</span><strong>Building a reliable content workflow</strong></a><a href="#"><span>Next</span><strong>Verification notes for independent sites</strong></a></nav>
       </footer>
     </article>
@@ -223,8 +223,19 @@ const archives = `
     </section>
   </div>`;
 
+const layoutContract = `
+  <section class="page-heading" aria-labelledby="plugin-page-title">
+    <p class="eyebrow">Plugin page</p>
+    <h1 id="plugin-page-title">Layout contract preview</h1>
+    <p>This content is rendered inside Rackora's shared header, canvas, color scheme, and footer.</p>
+  </section>`;
+
 await writeFile(path.join(output, "index.html"), page("Rackora preview", home));
 await writeFile(path.join(output, "archives.html"), page("Archives - Rackora", archives));
+await writeFile(
+  path.join(output, "layout-contract.html"),
+  page("Layout contract - Rackora", layoutContract),
+);
 const articlePage = page(
   "Designing a calmer technical publication - Rackora",
   article,

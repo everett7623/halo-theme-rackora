@@ -326,6 +326,7 @@ spec:
           id: share_targets
           key: share_targets
           label: 分享平台
+          help: 默认全部开启，可按站点受众取消不需要的平台。
           value:
             - twitter
             - facebook
@@ -404,7 +405,7 @@ spec:
           key: license_name
           label: 内容许可名称
           help: 例如 All rights reserved 或 CC BY-NC-SA 4.0。
-          value: All rights reserved
+          value: CC BY-NC-SA 4.0
           if: $get(show_post_license).value === true
         - $formkit: url
           name: license_url
@@ -412,7 +413,7 @@ spec:
           key: license_url
           label: 内容许可地址
           help: 可选；使用 Creative Commons 等公开许可时填写对应说明地址。
-          value: ""
+          value: https://creativecommons.org/licenses/by-nc-sa/4.0/
           if: $get(show_post_license).value === true
     - group: integrations
       label: 插件

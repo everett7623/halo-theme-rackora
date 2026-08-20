@@ -22,6 +22,13 @@ const legacyAssetAliases = {
   "assets/main-BBWn-Rvk.js": "assets/main.js",
 };
 
+function legacyAliasSource(legacyName: string, currentName: string): string {
+  const currentFile = currentName.slice(currentName.lastIndexOf("/") + 1);
+  return legacyName.endsWith(".css")
+    ? `@import url("./${currentFile}?v=${themeVersion}");\n`
+    : `import "./${currentFile}?v=${themeVersion}";\n`;
+}
+
 export default defineConfig({
   plugins: [
     haloThemePlugin(),
@@ -31,6 +38,7 @@ export default defineConfig({
       generateBundle(_options, bundle) {
         const renamedAssets = new Map<string, string>();
         const canonicalSources = new Map<string, string | Uint8Array>();
+        const disposableAssets = new Set<string>();
         for (const [canonicalName, sourceSuffix] of Object.entries(canonicalScriptSources)) {
           const output = Object.values(bundle).find(
             (candidate) =>
@@ -45,6 +53,7 @@ export default defineConfig({
           const previousName = output.fileName;
           renamedAssets.set(previousName, canonicalName);
           canonicalSources.set(canonicalName, output.code);
+          disposableAssets.add(previousName);
           this.emitFile({ type: "asset", fileName: canonicalName, source: output.code });
         }
 
@@ -58,6 +67,7 @@ export default defineConfig({
         const previousStylesheetName = stylesheet.fileName;
         renamedAssets.set(previousStylesheetName, "assets/main.css");
         canonicalSources.set("assets/main.css", stylesheet.source);
+        disposableAssets.add(previousStylesheetName);
         this.emitFile({ type: "asset", fileName: "assets/main.css", source: stylesheet.source });
 
         for (const output of Object.values(bundle)) {
@@ -72,9 +82,15 @@ export default defineConfig({
           output.source = html;
         }
 
+        for (const disposableName of disposableAssets) {
+          delete bundle[disposableName];
+        }
+
         for (const [legacyName, currentName] of Object.entries(legacyAssetAliases)) {
-          const source = canonicalSources.get(currentName);
-          if (!source) this.error(`Missing canonical theme asset source: ${currentName}`);
+          if (!canonicalSources.has(currentName)) {
+            this.error(`Missing canonical theme asset source: ${currentName}`);
+          }
+          const source = legacyAliasSource(legacyName, currentName);
           const existing = bundle[legacyName];
           if (existing) {
             const existingSource = existing.type === "asset" ? existing.source : existing.code;

@@ -31,23 +31,27 @@ const [
   settingsSource,
   annotationSource,
   layout,
+  pageLayoutSource,
   seoHead,
   mainStyles,
   packageSource,
   changelog,
   readme,
   viteConfig,
+  packageNormalizer,
 ] = await Promise.all([
   read("theme.yaml"),
   read("settings.yaml"),
   read("annotation-setting.yaml"),
   read("src/partials/layout.html"),
+  read("src/layout.html"),
   read("src/partials/seo-head.html"),
   read("src/css/main.css"),
   read("package.json"),
   read("CHANGELOG.md"),
   read("README.md"),
   read("vite.config.ts"),
+  read("scripts/normalize-theme-package.mjs"),
 ]);
 const theme = YAML.parse(themeSource);
 const settings = YAML.parse(settingsSource);
@@ -101,6 +105,24 @@ assert.match(
   viteConfig,
   /canonicalName\}\?v=\$\{themeVersion\}/,
   "stable theme assets must carry the release version as a cache key",
+);
+assert.match(layout, /\{\{layoutFragment\}\}/, "the shared shell must accept a layout fragment");
+assert.match(
+  pageLayoutSource,
+  /layoutFragment='th:fragment="html \(head, content\)"'/,
+  "the page layout source must declare Halo's html(head, content) contract",
+);
+assert.match(pageLayoutSource, /th:replace=["']\$\{head\}["']/);
+assert.match(pageLayoutSource, /th:replace=["']\$\{content\}["']/);
+assert.match(
+  packageNormalizer,
+  /const maxReleaseBytes = 400 \* 1024/,
+  "release packages must enforce the 400 KiB budget",
+);
+assert.doesNotMatch(
+  packageNormalizer,
+  /["']screenshot\.png["']/,
+  "the repository screenshot must not inflate install packages",
 );
 assert.doesNotMatch(
   readme,
@@ -393,13 +415,20 @@ assert.deepEqual(shareTargetsField?.value, [
   "weibo",
   "email",
 ]);
+assert.match(shareTargetsField?.help ?? "", /默认全部开启/);
 assert.equal(
   appearanceForm?.formSchema?.find((field) => field.name === "content_width")?.value,
   "comfortable",
 );
 assert.equal(appearanceForm?.formSchema?.find((field) => field.name === "font_scale")?.value, "md");
-assert.ok(postForm?.formSchema?.find((field) => field.name === "license_name"));
-assert.ok(postForm?.formSchema?.find((field) => field.name === "license_url"));
+assert.equal(
+  postForm?.formSchema?.find((field) => field.name === "license_name")?.value,
+  "CC BY-NC-SA 4.0",
+);
+assert.equal(
+  postForm?.formSchema?.find((field) => field.name === "license_url")?.value,
+  "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+);
 assert.ok(annotationSource.includes("rackora_series"));
 assert.match(mainStyles, /Source Serif 4|source-serif-4|--rack-font-display/);
 assert.match(mainStyles, /IBM Plex Sans|ibm-plex-sans|--rack-font-sans/);
@@ -661,6 +690,11 @@ assert.match(home, /profile-panel__copy/, "home sidebar must keep the site title
 assert.match(home, /profile-stats/, "home stats belong in the compact sidebar profile");
 assert.match(home, /siteStatsFinder\.getStats\(\)/, "home sidebar must use native Halo stats");
 assert.match(previewScript, /<dd>12,840<\/dd>/, "home preview must exercise long stat values");
+assert.match(
+  previewScript,
+  /layout-contract\.html[\s\S]*Layout contract - Rackora/,
+  "local preview must exercise a contract-aware plugin page",
+);
 assert.match(home, /tagFinder\.listAll\(\)/, "home must query tags through Halo Tag Finder");
 assert.match(home, /data-popular-tags/, "home must expose sortable popular tags");
 assert.match(mainScript, /function initPopularTags\(/, "home tags must be sorted by post count");
@@ -881,7 +915,17 @@ const builtThemeMark = await read("templates/assets/images/rackora-mark.svg");
 assert.match(builtThemeMark, /<svg\b/, "the built theme must contain the default mark asset");
 const builtIndex = await read("templates/index.html");
 const builtPost = await read("templates/post.html");
+const builtLayout = await read("templates/layout.html");
 const assetVersion = packageManifest.version.replaceAll(".", "\\.");
+assert.match(
+  builtLayout,
+  /th:fragment=["']html \(head, content\)["']/,
+  "the built theme must satisfy Halo's page layout contract",
+);
+assert.match(builtLayout, /th:replace=["']\$\{head\}["']/);
+assert.match(builtLayout, /th:replace=["']\$\{content\}["']/);
+assert.match(builtLayout, /class=["'][^"']*site-header/);
+assert.match(builtLayout, /class=["'][^"']*site-footer/);
 assert.match(
   builtIndex,
   new RegExp(`/assets/main\\.js\\?v=${assetVersion}`),
@@ -904,12 +948,12 @@ for (const source of [builtIndex, builtPost]) {
     "built templates must not depend on disposable hashed theme entry assets",
   );
 }
-const canonicalAssets = {
-  "main.css": await read("templates/assets/main.css"),
-  "main.js": await read("templates/assets/main.js"),
-  "post.js": await read("templates/assets/post.js"),
-};
-for (const [legacyName, canonicalName] of [
+await Promise.all([
+  read("templates/assets/main.css"),
+  read("templates/assets/main.js"),
+  read("templates/assets/post.js"),
+]);
+const legacyAssetAliases = [
   ["main-C94QBGj4.css", "main.css"],
   ["main-jGzUTz-A.js", "main.js"],
   ["post-Df6TdZI-.js", "post.js"],
@@ -921,11 +965,40 @@ for (const [legacyName, canonicalName] of [
   ["post-Br0gHPGa.js", "post.js"],
   ["main-BC4DLRCu.css", "main.css"],
   ["main-BBWn-Rvk.js", "main.js"],
-]) {
+];
+const builtAssets = (
+  await readdir(path.join(root, "templates", "assets"), {
+    withFileTypes: true,
+  })
+)
+  .filter((entry) => entry.isFile())
+  .map((entry) => entry.name);
+assert.deepEqual(
+  builtAssets.filter((name) => name.endsWith(".woff")),
+  [],
+  "modern release packages must not duplicate WOFF2 fonts with legacy WOFF files",
+);
+assert.equal(
+  builtAssets.filter((name) => name.endsWith(".woff2")).length,
+  7,
+  "the theme must include the seven configured WOFF2 font subsets",
+);
+const allowedLegacyNames = new Set(legacyAssetAliases.map(([legacyName]) => legacyName));
+assert.deepEqual(
+  builtAssets.filter(
+    (name) => /^(?:main|post)-[^/]+\.(?:css|js)$/.test(name) && !allowedLegacyNames.has(name),
+  ),
+  [],
+  "disposable hashed entry assets must be removed after stable files are emitted",
+);
+for (const [legacyName, canonicalName] of legacyAssetAliases) {
+  const expectedAlias = legacyName.endsWith(".css")
+    ? `@import url("./${canonicalName}?v=${packageManifest.version}");\n`
+    : `import "./${canonicalName}?v=${packageManifest.version}";\n`;
   assert.equal(
     await read(`templates/assets/${legacyName}`),
-    canonicalAssets[canonicalName],
-    `${legacyName} must remain a working upgrade alias for ${canonicalName}`,
+    expectedAlias,
+    `${legacyName} must forward upgraded pages to ${canonicalName}`,
   );
 }
 console.log(
