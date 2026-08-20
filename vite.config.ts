@@ -79,6 +79,12 @@ export default defineConfig({
               `/themes/theme-rackora/${canonicalName}?v=${themeVersion}`,
             );
           }
+          for (const legacyName of Object.keys(legacyAssetAliases)) {
+            html = html.replaceAll(
+              `/themes/theme-rackora/${legacyName}`,
+              `/themes/theme-rackora/${legacyName}?v=${themeVersion}`,
+            );
+          }
           output.source = html;
         }
 

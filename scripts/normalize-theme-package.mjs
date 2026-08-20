@@ -108,6 +108,7 @@ await completed;
 
 const releaseBytes = archive.pointer();
 if (releaseBytes > maxReleaseBytes) {
+  await unlink(outputPath);
   throw new Error(`Release package budget exceeded: ${releaseBytes} > ${maxReleaseBytes} bytes`);
 }
 console.log(`Normalized release package: ${outputPath} (${releaseBytes} bytes)`);
