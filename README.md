@@ -4,7 +4,7 @@ Rackora is a minimal, content-first Halo 2.x theme for independent publishing, k
 and technical writing. It combines a Fuwari-inspired information hierarchy with the low-image
 article flow, dark mode, and responsive reading experience common to modern publishing themes.
 
-Current release: `v0.9.0`.
+Current release: `v0.9.1`.
 
 ## 设计原则
 
@@ -26,7 +26,7 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 ## 功能
 
 - 首页可选横幅、带可排序社交链接的站点资料侧栏、原生站点统计、栏目索引和低图片文章流。
-- Logo 支持 `1:1` 方形图标加站点标题，以及图片自带文字的 `3:1` 横向模式。
+- 「外观」设置可直接选择并上传 `1:1` 方形 Logo 或图片自带文字的 `3:1` 横向 Logo。
 - 主题界面默认英文，可在后台切换简体中文；站点内容与菜单保持原语言。
 - 首页按文章数展示可配置数量的高频标签，标签汇总页保留完整列表，标签名称不添加 `#`。
 - 首页、文章、独立页、归档、标签、栏目、作者、友情链接和 404 共 11 个 Halo 路由模板，另含 About / Documentation 自定义模板。
@@ -80,9 +80,12 @@ Fuwari 采用 MIT License。Rackora 没有复制其 Astro 组件或样式源码�
 
 后台分组固定为「基础、外观、侧边栏、文章、插件、SEO、分析、广告、备案」，按常用配置优先、一次性配置靠后的顺序排列。从旧版升级后请“重新加载配置”；旧 `content.*` / `stats.*` 仍会回退读取。
 
+Logo 配置路径为「主题设置 → 外观」：先在「Logo 展示方式」中选择 `1:1` 或 `3:1`，再在同一处上传对应图片。SEO 分组中的「站点组织 Logo」只用于 Organization 结构化数据，不影响前台页头 Logo。
+
 首页横幅留空、文章封面选择“不显示”即为默认少图方案。目录、阅读时间和代码复制按内容
-自动启用。站点标题、Logo、副标题和全站 description 直接复用 Halo 系统资料；主题基于
-实际路由生成 canonical、Open Graph 和 Twitter Card，避免后台再维护一套重复 SEO 数据。
+自动启用。站点标题、副标题和全站 description 直接复用 Halo 系统资料；前台 Logo 在主题
+「外观」设置中选择并上传，SEO 分组的组织 Logo 仅用于结构化数据。主题基于实际路由生成
+canonical、Open Graph 和 Twitter Card，避免后台再维护一套重复 SEO 数据。
 
 首页站点统计默认开启，在首页侧栏以单行轻量指标展示访问、文章、评论和分类累计数据；页脚不再重复统计。建站日期使用 `YYYY-MM-DD` 即可在统计区域显示运行天数，
 不调用外部统计接口。全站内容宽度的紧凑、适中、宽松三档最大值分别为 `1040px`、`1240px`、`1440px`。

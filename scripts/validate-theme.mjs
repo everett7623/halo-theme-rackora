@@ -59,6 +59,8 @@ const packageManifest = JSON.parse(packageSource);
 const annotations = YAML.parseAllDocuments(annotationSource).map((document) => document.toJSON());
 const appearanceForm = settings?.spec?.forms?.find((form) => form.group === "appearance");
 const logoModeSetting = appearanceForm?.formSchema?.find((field) => field.name === "logo_mode");
+const squareLogoSetting = appearanceForm?.formSchema?.find((field) => field.name === "square_logo");
+const wideLogoSetting = appearanceForm?.formSchema?.find((field) => field.name === "wide_logo");
 
 assert.equal(theme?.metadata?.name, "theme-rackora", "theme ID must match the folder name");
 assert.equal(
@@ -142,10 +144,23 @@ assert.deepEqual(
   ["square", "wide"],
   "theme settings must offer square and wide logo modes",
 );
+for (const [label, field, mode] of [
+  ["square", squareLogoSetting, "square"],
+  ["wide", wideLogoSetting, "wide"],
+]) {
+  assert.equal(field?.$formkit, "attachment", `${label} logos need a visible upload control`);
+  assert.deepEqual(field?.accepts, ["image/*"], `${label} logos must accept image files only`);
+  assert.equal(field?.key, field?.name, `${label} conditional uploads need a stable FormKit key`);
+  assert.equal(
+    field?.if,
+    `$get(logo_mode).value === '${mode}'`,
+    `${label} upload visibility must follow the selected logo mode`,
+  );
+}
 assert.match(
   layout,
-  /logo_mode == 'wide'[\s\S]*?not #strings\.isEmpty\(site\.logo\)[\s\S]*?brand--wide/,
-  "wide header logos must require a configured site logo",
+  /squareLogo = \$\{theme\.config\.appearance\?\.square_logo\}[\s\S]*?wideLogo = \$\{theme\.config\.appearance\?\.wide_logo\}[\s\S]*?logo_mode == 'wide'[\s\S]*?not #strings\.isEmpty\(wideLogo\)[\s\S]*?brandLogo = \$\{useWideLogo \? wideLogo/,
+  "the header must use the logo uploaded for the selected mode",
 );
 assert.match(layout, /brand-copy["'][^>]*th:unless="\$\{useWideLogo\}"/);
 assert.match(
@@ -702,7 +717,7 @@ assert.match(home, /profile-panel__mark/, "home sidebar must keep the site logo"
 assert.match(home, /profile-panel__copy/, "home sidebar must keep the site title and subtitle");
 assert.match(
   home,
-  /logo_mode == 'wide'[\s\S]*?profile-panel--wide-logo[\s\S]*?th:unless="\$\{useWideLogo\}"/,
+  /squareLogo = \$\{theme\.config\.appearance\?\.square_logo\}[\s\S]*?wideLogo = \$\{theme\.config\.appearance\?\.wide_logo\}[\s\S]*?profileLogo = \$\{useWideLogo \? wideLogo[\s\S]*?profile-panel--wide-logo[\s\S]*?th:unless="\$\{useWideLogo\}"/,
   "home profile must use the selected logo presentation",
 );
 assert.match(

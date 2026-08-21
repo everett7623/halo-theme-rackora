@@ -108,7 +108,7 @@
       class="home-sidebar"
       th:attr="aria-label=${isZhCN ? '站点信息' : 'Site information'}"
       th:if="${showHomeSidebar}"
-      th:with="showHomeStats = ${theme.config.basic.show_home_stats != null ? theme.config.basic.show_home_stats : (theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats)},siteLaunchDate = ${theme.config.basic.site_launch_date ?: theme.config.stats?.site_launch_date},showHomeProfile = ${theme.config.home?.show_home_profile != null ? theme.config.home.show_home_profile : (theme.config.content?.show_home_profile == null or theme.config.content.show_home_profile)},showHomeCategories = ${theme.config.home?.show_home_categories != null ? theme.config.home.show_home_categories : (theme.config.content?.show_home_categories == null or theme.config.content.show_home_categories)},showHomeTags = ${theme.config.home?.show_home_tags != null ? theme.config.home.show_home_tags : (theme.config.content?.show_home_tags == null or theme.config.content.show_home_tags)},homeTagCount = ${theme.config.home?.home_tag_count ?: theme.config.content?.home_tag_count ?: 10},isZhCNSidebar = ${theme.config.basic?.ui_language == 'zh-CN'},useWideLogo = ${theme.config.appearance?.logo_mode == 'wide' and not #strings.isEmpty(site.logo)}"
+      th:with="showHomeStats = ${theme.config.basic.show_home_stats != null ? theme.config.basic.show_home_stats : (theme.config.stats?.show_home_stats == null or theme.config.stats.show_home_stats)},siteLaunchDate = ${theme.config.basic.site_launch_date ?: theme.config.stats?.site_launch_date},showHomeProfile = ${theme.config.home?.show_home_profile != null ? theme.config.home.show_home_profile : (theme.config.content?.show_home_profile == null or theme.config.content.show_home_profile)},showHomeCategories = ${theme.config.home?.show_home_categories != null ? theme.config.home.show_home_categories : (theme.config.content?.show_home_categories == null or theme.config.content.show_home_categories)},showHomeTags = ${theme.config.home?.show_home_tags != null ? theme.config.home.show_home_tags : (theme.config.content?.show_home_tags == null or theme.config.content.show_home_tags)},homeTagCount = ${theme.config.home?.home_tag_count ?: theme.config.content?.home_tag_count ?: 10},isZhCNSidebar = ${theme.config.basic?.ui_language == 'zh-CN'},squareLogo = ${theme.config.appearance?.square_logo},wideLogo = ${theme.config.appearance?.wide_logo},useWideLogo = ${theme.config.appearance?.logo_mode == 'wide' and not #strings.isEmpty(wideLogo)},profileLogo = ${useWideLogo ? wideLogo : (not #strings.isEmpty(squareLogo) ? squareLogo : (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo))}"
     >
       <section
         class="profile-panel"
@@ -122,7 +122,7 @@
             height="64"
             th:width="${useWideLogo ? 192 : 64}"
             th:height="64"
-            th:src="${#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo}"
+            th:src="${profileLogo}"
             th:alt="${site.title}"
           />
           <div class="profile-panel__copy" th:unless="${useWideLogo}">
