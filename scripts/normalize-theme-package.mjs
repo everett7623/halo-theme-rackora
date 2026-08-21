@@ -22,6 +22,7 @@ const requiredFiles = [
   "annotation-setting.yaml",
   "CHANGELOG.md",
   "README.md",
+  "README.en.md",
   "LICENSE",
   "docs/plugin-compatibility.md",
 ];
