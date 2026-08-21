@@ -140,6 +140,17 @@ spec:
       label: 外观
       formSchema:
         - $formkit: radio
+          name: logo_mode
+          id: logo_mode
+          label: Logo 展示方式
+          help: 1:1 使用方形 Logo，并显示站点标题与副标题；3:1 仅显示图片本身，适合已包含文字的横向 Logo。Logo 图片请在 Halo 站点设置中上传。
+          value: square
+          options:
+            - label: 1:1 方形 Logo + 站点标题
+              value: square
+            - label: 3:1 横向 Logo（图片自带文字）
+              value: wide
+        - $formkit: radio
           name: color_scheme
           id: color_scheme
           label: 默认配色

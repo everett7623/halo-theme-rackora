@@ -57,6 +57,8 @@ const theme = YAML.parse(themeSource);
 const settings = YAML.parse(settingsSource);
 const packageManifest = JSON.parse(packageSource);
 const annotations = YAML.parseAllDocuments(annotationSource).map((document) => document.toJSON());
+const appearanceForm = settings?.spec?.forms?.find((form) => form.group === "appearance");
+const logoModeSetting = appearanceForm?.formSchema?.find((field) => field.name === "logo_mode");
 
 assert.equal(theme?.metadata?.name, "theme-rackora", "theme ID must match the folder name");
 assert.equal(
@@ -134,6 +136,18 @@ assert.match(
   /name: footer_note[\s\S]*?help: 留空则不显示说明/,
   "footer note help must match layout behavior",
 );
+assert.equal(logoModeSetting?.value, "square", "square logo mode must remain the default");
+assert.deepEqual(
+  logoModeSetting?.options?.map((option) => option.value),
+  ["square", "wide"],
+  "theme settings must offer square and wide logo modes",
+);
+assert.match(
+  layout,
+  /logo_mode == 'wide'[\s\S]*?not #strings\.isEmpty\(site\.logo\)[\s\S]*?brand--wide/,
+  "wide header logos must require a configured site logo",
+);
+assert.match(layout, /brand-copy["'][^>]*th:unless="\$\{useWideLogo\}"/);
 assert.match(
   await read(".github/workflows/release.yml"),
   /extract-changelog\.mjs/,
@@ -368,7 +382,6 @@ assert.equal(
   "footer navigation must use Halo's menu selector",
 );
 
-const appearanceForm = settings?.spec?.forms?.find((form) => form.group === "appearance");
 const homeForm = settings?.spec?.forms?.find((form) => form.group === "home");
 const postForm = settings?.spec?.forms?.find((form) => form.group === "post");
 const imageMode = appearanceForm?.formSchema?.find((field) => field.name === "image_mode");
@@ -687,9 +700,25 @@ assert.match(home, /class=["']home-heading["']/, "home must keep the brand hero 
 assert.match(home, /id=["']home-title["']/, "home hero must expose the site title as H1");
 assert.match(home, /profile-panel__mark/, "home sidebar must keep the site logo");
 assert.match(home, /profile-panel__copy/, "home sidebar must keep the site title and subtitle");
+assert.match(
+  home,
+  /logo_mode == 'wide'[\s\S]*?profile-panel--wide-logo[\s\S]*?th:unless="\$\{useWideLogo\}"/,
+  "home profile must use the selected logo presentation",
+);
+assert.match(
+  mainStyles,
+  /\.brand--wide \.brand-mark\s*\{[^}]*width:\s*108px[^}]*height:\s*36px[^}]*object-fit:\s*contain/,
+  "header wide logos must keep a stable 3:1 box",
+);
+assert.match(
+  mainStyles,
+  /\.profile-panel--wide-logo \.profile-panel__mark\s*\{[^}]*width:\s*192px[^}]*height:\s*64px[^}]*object-fit:\s*contain/,
+  "profile wide logos must keep a stable 3:1 box",
+);
 assert.match(home, /profile-stats/, "home stats belong in the compact sidebar profile");
 assert.match(home, /siteStatsFinder\.getStats\(\)/, "home sidebar must use native Halo stats");
 assert.match(previewScript, /<dd>12,840<\/dd>/, "home preview must exercise long stat values");
+assert.match(previewScript, /logo-wide\.html/, "preview must exercise the 3:1 logo mode");
 assert.match(
   previewScript,
   /layout-contract\.html[\s\S]*Layout contract - Rackora/,

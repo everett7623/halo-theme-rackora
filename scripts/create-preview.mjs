@@ -10,6 +10,9 @@ const { version } = JSON.parse(await readFile(path.join(root, "package.json"), "
 const cssName = "main.css";
 const mainName = "main.js";
 const postName = "post.js";
+const wideLogoSource = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="100" viewBox="0 0 300 100"><rect width="100" height="100" rx="18" fill="#08775b"/><path d="M27 24h31c16 0 26 9 26 23 0 10-5 17-14 21l17 8-7 14-28-15H43v15H27zm16 15v21h15c7 0 10-4 10-11 0-6-4-10-11-10z" fill="white"/><text x="118" y="65" fill="#17211d" font-family="Arial,sans-serif" font-size="38" font-weight="700">Rackora</text></svg>',
+)}`;
 
 if (![cssName, mainName, postName].every((name) => assetNames.includes(name))) {
   throw new Error("Built assets are missing; run pnpm build-only before creating the preview");
@@ -69,12 +72,18 @@ const postMarkup = posts
   )
   .join("");
 
-const header = `
+function header(logoMode = "square") {
+  const isWide = logoMode === "wide";
+  const brandMarkup = isWide
+    ? `<img class="brand-mark" width="108" height="36" src="${wideLogoSource}" alt="Rackora" />`
+    : `<img class="brand-mark" width="34" height="34" src="/assets/images/rackora-mark.svg" alt="Rackora" />
+        <span class="brand-copy"><strong>Rackora</strong><small>Independent publishing with clarity and care.</small></span>`;
+
+  return `
   <header class="site-header site-header--compact" data-preview-header>
     <div class="shell header-inner">
-      <a class="brand" href="/" aria-label="Back to home">
-        <img class="brand-mark" width="34" height="34" src="/assets/images/rackora-mark.svg" alt="Rackora" />
-        <span class="brand-copy"><strong>Rackora</strong><small>Independent publishing with clarity and care.</small></span>
+      <a class="brand brand--${isWide ? "wide" : "square"}" href="/" aria-label="Back to home">
+        ${brandMarkup}
       </a>
       <button class="icon-button nav-toggle" type="button" aria-label="Open navigation" aria-controls="primary-nav" aria-expanded="false" data-nav-toggle><i data-lucide="menu"></i></button>
       <nav id="primary-nav" class="site-nav" aria-label="Primary navigation" data-site-nav>
@@ -83,12 +92,13 @@ const header = `
       <div class="header-actions"><button class="icon-button" type="button" title="Search" aria-label="Search"><i data-lucide="search"></i></button><button class="icon-button" type="button" title="Toggle color scheme" aria-label="Toggle color scheme" data-theme-toggle><i data-lucide="moon"></i></button></div>
     </div>
   </header>`;
+}
 
 const footer = `
   <footer class="site-footer"><div class="shell footer-inner"><div><strong>Rackora</strong></div><nav><a href="#">Archives</a><a href="#">Categories</a><a href="#">Tags</a><a href="#">Links</a><a href="#">RSS</a></nav><small>Powered by Halo · Rackora · Everett Labs · Region SG</small><p class="footer-compliance"><a href="#">Example ICP 00000000</a><a href="#">Public security 00000000000000</a></p></div></footer>
   <button class="back-to-top" type="button" aria-label="Back to top" data-back-to-top><i data-lucide="chevron-up"></i></button>`;
 
-function page(title, body, scripts = "") {
+function page(title, body, scripts = "", logoMode = "square") {
   return `<!doctype html>
 <html lang="en-US" data-color-scheme="light" data-ui-language="en" class="color-scheme-light">
   <head>
@@ -102,14 +112,21 @@ function page(title, body, scripts = "") {
   </head>
   <body style="--rack-accent:#08775b">
     <a class="skip-link" href="#main-content">Skip to content</a>
-    ${header}
+    ${header(logoMode)}
     <main id="main-content" class="site-main"><div class="shell">${body}</div></main>
     ${footer}
   </body>
 </html>`;
 }
 
-const home = `
+function home(logoMode = "square") {
+  const isWide = logoMode === "wide";
+  const profileBrandMarkup = isWide
+    ? `<img class="profile-panel__mark" width="192" height="64" src="${wideLogoSource}" alt="Rackora" />`
+    : `<img class="profile-panel__mark" width="64" height="64" src="/assets/images/rackora-mark.svg" alt="Rackora" />
+        <div class="profile-panel__copy"><h2>Rackora</h2><p>Independent publishing with clarity and care.</p></div>`;
+
+  return `
   <div class="home-grid">
     <section class="home-heading" aria-labelledby="home-title">
       <p class="home-heading__brand">Independent publishing</p>
@@ -123,9 +140,8 @@ const home = `
       <nav class="pagination" aria-label="Pagination"><span class="pagination__status">1 / 4</span><a class="pagination__link" href="#"><span>Next</span><i data-lucide="arrow-right"></i></a></nav>
     </section>
     <aside class="home-sidebar" aria-label="Site information">
-      <section class="profile-panel profile-panel--split">
-        <img class="profile-panel__mark" width="64" height="64" src="/assets/images/rackora-mark.svg" alt="Rackora" />
-        <div class="profile-panel__copy"><h2>Rackora</h2><p>Independent publishing with clarity and care.</p></div>
+      <section class="profile-panel profile-panel--split${isWide ? " profile-panel--wide-logo" : ""}">
+        ${profileBrandMarkup}
         <nav class="profile-socials" aria-label="Social profiles"><a href="#" title="GitHub" aria-label="GitHub"><i data-lucide="github" aria-hidden="true"></i></a><a href="#" title="Telegram" aria-label="Telegram"><i data-lucide="send" aria-hidden="true"></i></a><a href="#" title="RSS" aria-label="RSS"><i data-lucide="rss" aria-hidden="true"></i></a><a href="#" title="Website" aria-label="Website"><i data-lucide="globe" aria-hidden="true"></i></a></nav>
         <dl class="profile-stats"><div><dt>Visits</dt><dd>12,840</dd></div><div><dt>Posts</dt><dd>318</dd></div><div><dt>Comments</dt><dd>4,206</dd></div><div><dt>Categories</dt><dd>26</dd></div><div><dt>Days</dt><dd data-site-launch="2026-03-01" data-site-launch-compact>--</dd></div></dl>
       </section>
@@ -133,6 +149,7 @@ const home = `
       <section class="sidebar-panel sidebar-panel--tags"><header><h2>Tags</h2><a href="#">All</a></header><ul class="sidebar-tag-list" data-popular-tags data-tag-limit="8"><li data-tag-count="4"><a href="#">Halo</a></li><li data-tag-count="13"><a href="#">Performance</a></li><li data-tag-count="8"><a href="#">Linux</a></li><li data-tag-count="17"><a href="#">Infrastructure</a></li><li data-tag-count="6"><a href="#">Security</a></li><li data-tag-count="11"><a href="#">Networking</a></li><li data-tag-count="3"><a href="#">Writing</a></li><li data-tag-count="9"><a href="#">Automation</a></li><li data-tag-count="2"><a href="#">Design</a></li></ul></section>
     </aside>
   </div>`;
+}
 
 const article = `
   <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
@@ -230,7 +247,11 @@ const layoutContract = `
     <p>This content is rendered inside Rackora's shared header, canvas, color scheme, and footer.</p>
   </section>`;
 
-await writeFile(path.join(output, "index.html"), page("Rackora preview", home));
+await writeFile(path.join(output, "index.html"), page("Rackora preview", home()));
+await writeFile(
+  path.join(output, "logo-wide.html"),
+  page("Rackora wide logo preview", home("wide"), "", "wide"),
+);
 await writeFile(path.join(output, "archives.html"), page("Archives - Rackora", archives));
 await writeFile(
   path.join(output, "layout-contract.html"),

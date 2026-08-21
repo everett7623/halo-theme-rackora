@@ -125,6 +125,8 @@
       <div class="shell header-inner">
         <a
           class="brand"
+          th:with="useWideLogo = ${theme.config.appearance?.logo_mode == 'wide' and not #strings.isEmpty(site.logo)}"
+          th:classappend="${useWideLogo} ? ' brand--wide' : ' brand--square'"
           th:href="@{/}"
           th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '返回首页' : 'Back to home'}"
         >
@@ -132,10 +134,12 @@
             class="brand-mark"
             width="34"
             height="34"
+            th:width="${useWideLogo ? 108 : 34}"
+            th:height="${useWideLogo ? 36 : 34}"
             th:src="${#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo}"
             th:alt="${site.title}"
           />
-          <span class="brand-copy">
+          <span class="brand-copy" th:unless="${useWideLogo}">
             <strong th:text="${site.title}">Rackora</strong>
             <small
               th:if="${not #strings.isEmpty(site.subtitle)}"

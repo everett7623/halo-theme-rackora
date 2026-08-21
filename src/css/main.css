@@ -299,8 +299,19 @@ img {
 }
 
 .brand-mark {
+  width: 34px;
+  height: 34px;
   flex: 0 0 34px;
+  object-fit: cover;
   border-radius: 7px;
+}
+
+.brand--wide .brand-mark {
+  width: 108px;
+  height: 36px;
+  flex-basis: 108px;
+  object-fit: contain;
+  border-radius: 0;
 }
 
 .brand-copy {
@@ -611,6 +622,17 @@ img {
   object-fit: cover;
   border: 1px solid var(--rack-line);
   border-radius: 8px;
+}
+
+.profile-panel--wide-logo .profile-panel__mark {
+  grid-column: 1 / -1;
+  width: 192px;
+  max-width: 100%;
+  height: 64px;
+  object-fit: contain;
+  object-position: left center;
+  border: 0;
+  border-radius: 0;
 }
 
 .profile-panel__copy {
@@ -2556,6 +2578,12 @@ a.timeline-entry__category:hover {
 
   .brand-copy small {
     display: none;
+  }
+
+  .brand--wide .brand-mark {
+    width: 96px;
+    height: 32px;
+    flex-basis: 96px;
   }
 
   .nav-toggle {
