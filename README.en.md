@@ -4,7 +4,7 @@ English | [简体中文](README.md)
 
 Rackora is a content-first theme for Halo 2.x. It is designed for independent blogs, knowledge bases, technical documentation, and other sites that need a calm, durable publishing surface. The theme provides responsive reading, light/dark modes, article navigation, syntax highlighting, and page-level SEO without adding a separate frontend runtime.
 
-Current release: `v0.9.2`
+Current release: `v0.9.3`
 
 ## Who It Is For
 

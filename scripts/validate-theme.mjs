@@ -711,6 +711,11 @@ assert.match(
   /showHomeCategories[\s\S]*?homeCategories = \$\{categoryFinder\.listAll\(\)\}/,
   "home categories must only be queried when their panel is enabled",
 );
+assert.match(
+  home,
+  /isZhCNSidebar \? '分类' : 'Categories'/,
+  "home category panel must use the concise Chinese label",
+);
 assert.match(home, /class=["']home-heading["']/, "home must keep the brand hero section");
 assert.match(home, /id=["']home-title["']/, "home hero must expose the site title as H1");
 assert.match(home, /profile-panel__mark/, "home sidebar must keep the site logo");

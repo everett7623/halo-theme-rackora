@@ -180,7 +180,7 @@
         <th:block th:with="homeCategories = ${categoryFinder.listAll()}">
           <section class="sidebar-panel" th:if="${not #lists.isEmpty(homeCategories)}">
             <header>
-              <h2 th:text="${isZhCNSidebar ? '内容栏目' : 'Categories'}">Categories</h2>
+              <h2 th:text="${isZhCNSidebar ? '分类' : 'Categories'}">Categories</h2>
               <a
                 th:href="@{${site.routes.categoriesUri}}"
                 th:text="${isZhCNSidebar ? '全部' : 'All'}"
