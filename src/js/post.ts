@@ -385,7 +385,8 @@ function initShareBar(): void {
   for (const link of bar.querySelectorAll<HTMLAnchorElement>("[data-share]")) {
     const href = targets[link.dataset.share || ""];
     if (!href) continue;
-    link.href = href;
+    const current = link.getAttribute("href");
+    if (!current || current === "#") link.href = href;
   }
 }
 

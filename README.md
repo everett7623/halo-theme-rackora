@@ -4,7 +4,7 @@
 
 Rackora 是一个面向 Halo 2.x 的内容优先主题，适合独立博客、知识库、技术文档和其他长期维护的内容站点。它采用安静、低图片的出版式布局，提供响应式阅读、明暗模式、文章目录、代码高亮和完整的页面 SEO 输出。
 
-当前版本：`v0.9.3`（Current release: `v0.9.3`）
+当前版本：`v0.9.4`（Current release: `v0.9.4`）
 
 ## 适合什么站点
 
@@ -55,15 +55,15 @@ pnpm build
 Logo 上传入口在 **主题设置 → 外观**，不是 SEO 分组中的“站点组织 Logo”。安装或升级后，如果没有看到新字段，请先在主题管理中点击“重新加载配置”。
 
 1. 在“Logo 展示方式”中选择一种模式。
-2. 选择 `1:1 方形 Logo + 站点标题`：在下方上传“1:1 方形 Logo”。页头和首页资料卡显示方形图片，并显示 Halo 站点标题与副标题。
-3. 选择 `3:1 横向 Logo（图片自带文字）`：在下方上传“3:1 横向 Logo”。页头和首页资料卡直接显示图片，不再重复显示标题文字。
+2. 选择 `1:1 方形 Logo + 站点标题`：在下方上传“1:1 方形 Logo”。页头、首页资料卡和 About 模板显示方形图片，并显示 Halo 站点标题与副标题。
+3. 选择 `3:1 横向 Logo（图片自带文字）`：在下方上传“3:1 横向 Logo”。页头、首页资料卡和 About 模板直接显示图片；页头与资料卡不再重复显示标题文字。
 
 推荐上传 SVG、PNG 或 WebP。当前模式对应的上传控件才会显示；切换模式不会删除另一张图片。未上传时的回退顺序如下：
 
 - 方形模式：主题方形 Logo → Halo“站点设置”中的站点 Logo → Rackora 默认图标。
 - 横向模式：主题横向 Logo → 方形 Logo + 站点标题。
 
-SEO 分组中的“站点组织 Logo”只用于 Organization / WebSite 结构化数据，不控制前台页头或首页资料卡。
+SEO 分组中的“站点组织 Logo”只用于 Organization / WebSite 结构化数据，不控制前台页头、首页资料卡或 About 模板。
 
 ## 主题设置
 
@@ -121,7 +121,7 @@ pnpm preview
 
 ## SEO 责任边界
 
-Rackora 输出当前路由的自指 canonical、Open Graph、Twitter Card、可见面包屑、作者/日期语义和 JSON-LD。标签和归档的 `noindex` 策略可在后台配置，但不会修改 Sitemap。
+Rackora 输出当前路由的自指 canonical、Open Graph、Twitter Card、可见面包屑、作者/日期语义和 JSON-LD。首页、栏目、标签、作者和归档的第 2 页及以后会在 canonical 与标题中带上页码，并输出 `rel="prev"` / `rel="next"`。标签和归档的 `noindex` 策略可在后台配置，但不会修改 Sitemap。
 
 自定义 canonical、内容合并、重定向、Sitemap 管理、反向代理修复和搜索引擎 Rich Results 验证属于站点运维工作。停用冲突的 SEO 插件并清理页面缓存后，请在目标 Halo 实例抽查首页、文章、栏目和标签页的 `<head>`。
 

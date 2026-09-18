@@ -59,7 +59,7 @@ canonical / OG / BlogPosting output.
 - Light/dark color schemes and official plugin color-scheme adaptation.
 - Homepage profile, sortable social links, categories, and post-count-ranked popular tags.
 - Article author/license notice, affiliate disclosure, safe sponsored-link attributes, and structured ad slots.
-- Page-level SEO structure: one H1, absolute self canonical, Open Graph, Twitter Card, breadcrumbs, visible dates, author semantics, `WebSite`, `Organization`, and `BlogPosting` data.
+- Page-level SEO structure: one H1, absolute self canonical including paginated list URLs, `rel="prev"` / `rel="next"`, Open Graph, Twitter Card, breadcrumbs, visible dates, author semantics, `WebSite`, `Organization`, and `BlogPosting` data.
 
 Do not install a second frontend syntax-highlighting, table-of-contents, theme analytics, tag-cloud,
 or back-to-top plugin alongside Rackora. Server-side Sitemap, Search, RSS, Comments, Links, caching,

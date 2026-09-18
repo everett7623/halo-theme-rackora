@@ -1,14 +1,19 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${category.spec.displayName} - ${site.title}|">Category</title>
+    <title
+      th:text="${category.spec.displayName + ' - ' + site.title + (posts.page > 1 ? (theme.config.basic.ui_language == 'zh-CN' ? ' - 第 ' + posts.page + ' 页' : ' - Page ' + posts.page) : '')}"
+    >
+      Category
+    </title>
     <include
       src="seo-head.html"
-      path="category.status.permalink"
-      title="category.spec.displayName + ' - ' + site.title"
+      path="posts.page > 1 ? ((#strings.endsWith(category.status.permalink, '/') ? #strings.substring(category.status.permalink, 0, #strings.length(category.status.permalink) - 1) : category.status.permalink) + '/page/' + posts.page) : category.status.permalink"
+      title="category.spec.displayName + ' - ' + site.title + (posts.page > 1 ? (theme.config.basic.ui_language == 'zh-CN' ? ' - 第 ' + posts.page + ' 页' : ' - Page ' + posts.page) : '')"
       description="category.spec.description ?: site.seo.description"
       image="category.spec.cover ?: site.logo"
       type="website"
     ></include>
+    <include src="pagination-head.html" collection="posts"></include>
   </template>
 
   <header class="archive-heading">

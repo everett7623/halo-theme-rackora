@@ -74,7 +74,7 @@
         itemprop="publisher"
         itemscope
         itemtype="https://schema.org/Organization"
-        th:attr="itemid=${site.url + '#organization'}"
+        th:attr="itemid=${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + '#organization'}"
       >
         <meta itemprop="name" th:content="${theme.config.seo.organization_name ?: site.title}" />
         <link itemprop="url" th:href="@{${site.url}}" />

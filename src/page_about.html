@@ -25,7 +25,7 @@
         },
         "publisher": {
           "@type": "Organization",
-          "@id": /*[[${site.url + '#organization'}]]*/ "https://example.com/#organization",
+          "@id": /*[[${(#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url) + '#organization'}]]*/ "https://example.com#organization",
           "name": /*[[${theme.config.seo.organization_name ?: site.title}]]*/ "Site"
         }
       }
@@ -34,12 +34,18 @@
   </template>
 
   <article class="article article--page article--about" data-article>
-    <header class="about-heading">
+    <header
+      class="about-heading"
+      th:with="squareLogo = ${theme.config.appearance?.square_logo},wideLogo = ${theme.config.appearance?.wide_logo},useWideLogo = ${theme.config.appearance?.logo_mode == 'wide' and not #strings.isEmpty(wideLogo)},brandLogo = ${useWideLogo ? wideLogo : (not #strings.isEmpty(squareLogo) ? squareLogo : (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo))}"
+      th:classappend="${useWideLogo} ? ' about-heading--wide-logo'"
+    >
       <img
         class="about-heading__mark"
         width="88"
         height="88"
-        th:src="${#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo}"
+        th:width="${useWideLogo ? 192 : 88}"
+        th:height="${useWideLogo ? 64 : 88}"
+        th:src="${brandLogo}"
         th:alt="${site.title}"
       />
       <div>

@@ -560,6 +560,19 @@ img {
   border-radius: 16px;
 }
 
+.about-heading--wide-logo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.about-heading--wide-logo .about-heading__mark {
+  width: 192px;
+  max-width: 100%;
+  height: 64px;
+  object-fit: contain;
+  object-position: left center;
+  border-radius: 0;
+}
+
 .about-heading .article-title {
   margin: 0 0 8px;
 }

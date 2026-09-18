@@ -179,6 +179,11 @@ assert.match(
   "plugin docs must treat Time Factor as a site leftover, not a theme dependency",
 );
 
+assert.match(
+  await read("README.en.md"),
+  new RegExp("Current release: `v" + packageManifest.version.replaceAll(".", "\\.") + "`"),
+  "README.en.md must identify the current release version",
+);
 assert.match(layout, /<html\b[^>]*xmlns:th=/, "layout must declare the Thymeleaf namespace");
 assert.match(layout, /menuFinder\.getPrimary\(\)/, "layout must render the primary Halo menu");
 assert.match(
@@ -223,6 +228,7 @@ for (const page of requiredPages) {
 const post = await read("src/post.html");
 const postDocs = await read("src/post_docs.html");
 const singlePage = await read("src/page.html");
+const aboutPage = await read("src/page_about.html");
 const home = await read("src/index.html");
 const archives = await read("src/archives.html");
 const tags = await read("src/tags.html");
@@ -735,6 +741,11 @@ assert.match(
   /\.profile-panel--wide-logo \.profile-panel__mark\s*\{[^}]*width:\s*192px[^}]*height:\s*64px[^}]*object-fit:\s*contain/,
   "profile wide logos must keep a stable 3:1 box",
 );
+assert.match(
+  mainStyles,
+  /\.about-heading--wide-logo \.about-heading__mark\s*\{[^}]*width:\s*192px[^}]*height:\s*64px[^}]*object-fit:\s*contain/,
+  "about wide logos must keep a stable 3:1 box",
+);
 assert.match(home, /profile-stats/, "home stats belong in the compact sidebar profile");
 assert.match(home, /siteStatsFinder\.getStats\(\)/, "home sidebar must use native Halo stats");
 assert.match(previewScript, /<dd>12,840<\/dd>/, "home preview must exercise long stat values");
@@ -756,6 +767,21 @@ assert.match(shareBar, /data-share-link/, "posts must expose a copy-link control
 assert.match(shareBar, /data-share-bar|data-share=/, "posts must expose social share controls");
 assert.match(shareBar, /share-bar__x-mark[^>]*>X</, "X sharing must use current branding");
 assert.doesNotMatch(shareBar, /data-lucide=["']twitter["']/, "do not show the legacy bird icon");
+assert.doesNotMatch(
+  shareBar,
+  /href=["']#["']/,
+  "share destinations must be rendered on the server",
+);
+assert.match(
+  shareBar,
+  /#uris\.escapeQueryParam/,
+  "share URLs must be query-encoded without JavaScript",
+);
+assert.match(
+  shareBar,
+  /x\.com\/intent\/tweet/,
+  "X share links must include a real endpoint before JavaScript runs",
+);
 for (const target of [
   "x",
   "facebook",
@@ -774,6 +800,12 @@ for (const target of [
   assert.match(postScript, new RegExp(`\\b${target}:`), `missing ${target} share URL`);
 }
 assert.match(previewScript, /data-share=["']x["']/, "article preview must exercise the share bar");
+assert.match(
+  previewScript,
+  /x\.com\/intent\/tweet/,
+  "article preview share links must have real destinations",
+);
+assert.match(previewScript, /about-heading/, "preview must exercise the About logo heading");
 assert.match(
   mainStyles,
   /\.article-layout\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\) 280px/,
@@ -916,8 +948,68 @@ assert.match(
 );
 assert.match(
   await read("src/author.html"),
-  /path="author\.status\.permalink"/,
+  /author\.status\.permalink/,
   "author SEO must use the Halo permalink, not a reconstructed /authors/ path",
+);
+assert.match(
+  await read("src/author.html"),
+  /pagination-head\.html/,
+  "author list pages must advertise previous and next relations",
+);
+assert.match(
+  home,
+  /pagination-head\.html/,
+  "home list pages must advertise previous and next relations",
+);
+assert.match(
+  home,
+  /posts\.page > 1 \? '\/page\/' \+ posts\.page/,
+  "home canonical must include the Halo page path after page 1",
+);
+assert.match(
+  await read("src/category.html"),
+  /category\.status\.permalink[\s\S]*?\/page\/' \+ posts\.page/,
+  "category canonical must keep the Halo permalink and append /page/N",
+);
+assert.match(
+  await read("src/partials/pagination.html"),
+  /rel=["']prev["'][\s\S]*rel=["']next["']/,
+  "pagination links must expose prev/next relations",
+);
+assert.match(
+  aboutPage,
+  /squareLogo = \$\{theme\.config\.appearance\?\.square_logo\}[\s\S]*?brandLogo = \$\{useWideLogo \? wideLogo/,
+  "the About template must use the same logo fallback as the header",
+);
+assert.doesNotMatch(
+  `${singlePage}\n${aboutPage}`,
+  /site\.url \+ '#organization'/,
+  "Organization @id must not concatenate a possibly slash-terminated site.url",
+);
+assert.match(
+  singlePage,
+  /#strings\.endsWith\(site\.url, '\/'\)[\s\S]*?#organization/,
+  "single pages must normalize Organization @id with siteBase",
+);
+assert.match(
+  post,
+  /itemid=\$\{\(#strings\.endsWith\(site\.url, '\/'\)/,
+  "BlogPosting microdata publisher id must use the normalized site base",
+);
+assert.match(
+  await read("src/category.html"),
+  /pagination-head\.html/,
+  "category list pages must advertise previous and next relations",
+);
+assert.match(
+  await read("src/tag.html"),
+  /pagination-head\.html/,
+  "tag list pages must advertise previous and next relations",
+);
+assert.match(
+  archives,
+  /pagination-head\.html/,
+  "archive list pages must advertise previous and next relations",
 );
 assert.match(post, /\bimageAbs\b/, "BlogPosting JSON-LD must compute an absolutized image URL");
 assert.ok(

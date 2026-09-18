@@ -137,7 +137,7 @@ function home(logoMode = "square") {
     <section class="content-section" aria-labelledby="latest-title">
       <header class="section-heading"><h2 id="latest-title">Latest posts</h2><a class="text-link" href="#">View archives</a></header>
       <ul class="post-list post-list--cards">${postMarkup}</ul>
-      <nav class="pagination" aria-label="Pagination"><span class="pagination__status">1 / 4</span><a class="pagination__link" href="#"><span>Next</span><i data-lucide="arrow-right"></i></a></nav>
+      <nav class="pagination" aria-label="Pagination"><span class="pagination__status">1 / 4</span><a class="pagination__link" href="/page/2" rel="next"><span>Next</span><i data-lucide="arrow-right"></i></a></nav>
     </section>
     <aside class="home-sidebar" aria-label="Site information">
       <section class="profile-panel profile-panel--split${isWide ? " profile-panel--wide-logo" : ""}">
@@ -150,6 +150,12 @@ function home(logoMode = "square") {
     </aside>
   </div>`;
 }
+
+const previewShareTitle = "Designing a calmer technical publication";
+const previewShareUrl = "https://example.com/post.html";
+const encodedShareUrl = encodeURIComponent(previewShareUrl);
+const encodedShareTitle = encodeURIComponent(previewShareTitle);
+const encodedShareMessage = `${encodedShareTitle}%0A${encodedShareUrl}`;
 
 const article = `
   <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
@@ -191,17 +197,17 @@ const article = `
       <footer class="article-footer">
         <div class="article-footer__meta">
           <div class="article-tags" aria-label="Post tags"><a href="#">Halo</a><a href="#">Design</a><a href="#">Publishing</a></div>
-          <nav class="share-bar" aria-label="Share this post" data-share-title="Designing a calmer technical publication" data-share-url="/post.html" data-share-bar>
+          <nav class="share-bar" aria-label="Share this post" data-share-title="${previewShareTitle}" data-share-url="${previewShareUrl}" data-share-bar>
             <span class="share-bar__label">Share</span>
-            <a class="share-bar__button" href="#" data-share="x" target="_blank" rel="noopener noreferrer" aria-label="Share on X" title="Share on X"><span class="share-bar__x-mark" aria-hidden="true">X</span></a>
-            <a class="share-bar__button" href="#" data-share="facebook" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Share on Facebook"><i data-lucide="facebook" aria-hidden="true"></i></a>
-            <a class="share-bar__button" href="#" data-share="linkedin" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" title="Share on LinkedIn"><i data-lucide="linkedin" aria-hidden="true"></i></a>
-            <a class="share-bar__button" href="#" data-share="reddit" target="_blank" rel="noopener noreferrer" aria-label="Share on Reddit" title="Share on Reddit"><i data-lucide="messages-square" aria-hidden="true"></i></a>
-            <a class="share-bar__button" href="#" data-share="telegram" target="_blank" rel="noopener noreferrer" aria-label="Share on Telegram" title="Share on Telegram"><i data-lucide="send" aria-hidden="true"></i></a>
-            <a class="share-bar__button" href="#" data-share="whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp" title="Share on WhatsApp"><i data-lucide="message-circle" aria-hidden="true"></i></a>
-            <a class="share-bar__button" href="#" data-share="weibo" target="_blank" rel="noopener noreferrer" aria-label="Share on Weibo" title="Share on Weibo"><i data-lucide="globe" aria-hidden="true"></i></a>
-            <a class="share-bar__button" href="#" data-share="email" aria-label="Share by email" title="Share by email"><i data-lucide="mail" aria-hidden="true"></i></a>
-            <button class="share-bar__button" type="button" data-share-link data-share-url="/post.html" aria-label="Copy post link" title="Copy post link"><i data-lucide="copy" aria-hidden="true"></i></button>
+            <a class="share-bar__button" href="https://x.com/intent/tweet?url=${encodedShareUrl}&text=${encodedShareTitle}" data-share="x" target="_blank" rel="noopener noreferrer" aria-label="Share on X" title="Share on X"><span class="share-bar__x-mark" aria-hidden="true">X</span></a>
+            <a class="share-bar__button" href="https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}" data-share="facebook" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Share on Facebook"><i data-lucide="facebook" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedShareUrl}" data-share="linkedin" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" title="Share on LinkedIn"><i data-lucide="linkedin" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="https://www.reddit.com/submit?url=${encodedShareUrl}&title=${encodedShareTitle}" data-share="reddit" target="_blank" rel="noopener noreferrer" aria-label="Share on Reddit" title="Share on Reddit"><i data-lucide="messages-square" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="https://t.me/share/url?url=${encodedShareUrl}&text=${encodedShareTitle}" data-share="telegram" target="_blank" rel="noopener noreferrer" aria-label="Share on Telegram" title="Share on Telegram"><i data-lucide="send" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="https://api.whatsapp.com/send?text=${encodedShareMessage}" data-share="whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp" title="Share on WhatsApp"><i data-lucide="message-circle" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="https://service.weibo.com/share/share.php?url=${encodedShareUrl}&title=${encodedShareTitle}" data-share="weibo" target="_blank" rel="noopener noreferrer" aria-label="Share on Weibo" title="Share on Weibo"><i data-lucide="globe" aria-hidden="true"></i></a>
+            <a class="share-bar__button" href="mailto:?subject=${encodedShareTitle}&body=${encodedShareMessage}" data-share="email" aria-label="Share by email" title="Share by email"><i data-lucide="mail" aria-hidden="true"></i></a>
+            <button class="share-bar__button" type="button" data-share-link data-share-url="${previewShareUrl}" aria-label="Copy post link" title="Copy post link"><i data-lucide="copy" aria-hidden="true"></i></button>
           </nav>
         </div>
         <aside class="article-license" aria-label="Author and copyright notice"><div class="article-license__lead"><strong>Designing a calmer technical publication</strong><a href="/post.html">http://127.0.0.1:4173/post.html</a></div><dl><div><dt>Author</dt><dd>Everett Labs</dd></div><div><dt>Published</dt><dd>2026-08-14</dd></div><div><dt>License</dt><dd><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></dd></div></dl><span class="article-license__mark" aria-hidden="true">©</span></aside>
@@ -247,10 +253,36 @@ const layoutContract = `
     <p>This content is rendered inside Rackora's shared header, canvas, color scheme, and footer.</p>
   </section>`;
 
+function about(logoMode = "square") {
+  const isWide = logoMode === "wide";
+  const mark = isWide
+    ? `<img class="about-heading__mark" width="192" height="64" src="${wideLogoSource}" alt="Rackora" />`
+    : `<img class="about-heading__mark" width="88" height="88" src="/assets/images/rackora-mark.svg" alt="Rackora" />`;
+
+  return `
+  <article class="article article--page article--about">
+    <header class="about-heading${isWide ? " about-heading--wide-logo" : ""}">
+      ${mark}
+      <div>
+        <h1 class="article-title">About</h1>
+        <p class="article-deck">Independent publishing with clarity and care.</p>
+      </div>
+    </header>
+    <div class="article-content" data-article-content>
+      <p>About uses the same square and wide logo fallback as the header and homepage profile.</p>
+    </div>
+  </article>`;
+}
+
 await writeFile(path.join(output, "index.html"), page("Rackora preview", home()));
 await writeFile(
   path.join(output, "logo-wide.html"),
   page("Rackora wide logo preview", home("wide"), "", "wide"),
+);
+await writeFile(path.join(output, "about.html"), page("About - Rackora", about()));
+await writeFile(
+  path.join(output, "about-wide.html"),
+  page("About wide logo - Rackora", about("wide"), "", "wide"),
 );
 await writeFile(path.join(output, "archives.html"), page("Archives - Rackora", archives));
 await writeFile(

@@ -4,7 +4,7 @@ English | [简体中文](README.md)
 
 Rackora is a content-first theme for Halo 2.x. It is designed for independent blogs, knowledge bases, technical documentation, and other sites that need a calm, durable publishing surface. The theme provides responsive reading, light/dark modes, article navigation, syntax highlighting, and page-level SEO without adding a separate frontend runtime.
 
-Current release: `v0.9.3`
+Current release: `v0.9.4`
 
 ## Who It Is For
 
@@ -55,15 +55,15 @@ Upload `dist/theme-rackora-X.Y.Z.zip` after the build completes. The theme direc
 Logo uploads are located at **Theme Settings → Appearance**, not under the SEO field named “Organization Logo”. If the fields are missing after an install or upgrade, click “Reload configuration” in Halo Theme Management first.
 
 1. Choose a value under “Logo display mode”.
-2. Choose `1:1 Square Logo + site title`, then upload the “1:1 Square Logo” shown below it. The header and homepage profile show the square image together with the Halo site title and subtitle.
-3. Choose `3:1 Wide Logo (text included in image)`, then upload the “3:1 Wide Logo” shown below it. The header and homepage profile show the image directly and do not repeat the title text.
+2. Choose `1:1 Square Logo + site title`, then upload the “1:1 Square Logo” shown below it. The header, homepage profile, and About template show the square image together with the Halo site title and subtitle.
+3. Choose `3:1 Wide Logo (text included in image)`, then upload the “3:1 Wide Logo” shown below it. The header, homepage profile, and About template show the image directly; the header and profile do not repeat the title text.
 
 SVG, PNG, and WebP are recommended. Only the upload field for the selected mode is displayed; switching modes does not delete the other image. Fallbacks are:
 
 - Square mode: theme square logo → Halo Site Logo → Rackora default mark.
 - Wide mode: theme wide logo → square logo plus site title.
 
-The SEO “Organization Logo” field is used only for Organization / WebSite structured data. It does not control the visible header or homepage profile logo.
+The SEO “Organization Logo” field is used only for Organization / WebSite structured data. It does not control the visible header, homepage profile, or About template logo.
 
 ## Theme Settings
 
@@ -121,7 +121,7 @@ Set `SPRING_THYMELEAF_CACHE=false` for a development Halo instance. `pnpm build`
 
 ## SEO Boundary
 
-Rackora emits a self-referencing canonical URL, Open Graph, Twitter Cards, visible breadcrumbs, author/date semantics, and JSON-LD for the current route. Tag and archive `noindex` policies are configurable and do not modify the Sitemap.
+Rackora emits a self-referencing canonical URL, Open Graph, Twitter Cards, visible breadcrumbs, author/date semantics, and JSON-LD for the current route. Page 2 and later of the home, category, tag, author, and archive lists include the page number in the canonical URL and title, and emit `rel="prev"` / `rel="next"`. Tag and archive `noindex` policies are configurable and do not modify the Sitemap.
 
 Custom canonicals, content consolidation, redirects, Sitemap management, reverse-proxy fixes, and Rich Results verification remain site operations. Disable conflicting SEO plugins, clear page caches, and spot-check the `<head>` on the home, post, category, and tag routes after deployment.
 

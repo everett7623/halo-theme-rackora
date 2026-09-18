@@ -1,7 +1,8 @@
 <nav
   class="share-bar"
   th:if="${showShareBar or showShareLink}"
-  th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享文章' : 'Share this post'},data-share-title=${post.spec.title},data-share-url=@{${post.status.permalink}}"
+  th:with="shareBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},sharePath = ${post.status.permalink},shareUrl = ${shareBase + (#strings.startsWith(sharePath, '/') ? sharePath : '/' + sharePath)},encodedUrl = ${#uris.escapeQueryParam(shareUrl)},encodedTitle = ${#uris.escapeQueryParam(post.spec.title)},encodedMessage = ${encodedTitle + '%0A' + encodedUrl}"
+  th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享文章' : 'Share this post'},data-share-title=${post.spec.title},data-share-url=${shareUrl}"
   data-share-bar
 >
   <span
@@ -12,7 +13,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareX}"
-    href="#"
+    th:href="${'https://x.com/intent/tweet?url=' + encodedUrl + '&text=' + encodedTitle}"
     data-share="x"
     target="_blank"
     rel="noopener noreferrer"
@@ -23,7 +24,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareFacebook}"
-    href="#"
+    th:href="${'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl}"
     data-share="facebook"
     target="_blank"
     rel="noopener noreferrer"
@@ -34,7 +35,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareLinkedin}"
-    href="#"
+    th:href="${'https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl}"
     data-share="linkedin"
     target="_blank"
     rel="noopener noreferrer"
@@ -45,7 +46,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareReddit}"
-    href="#"
+    th:href="${'https://www.reddit.com/submit?url=' + encodedUrl + '&title=' + encodedTitle}"
     data-share="reddit"
     target="_blank"
     rel="noopener noreferrer"
@@ -56,7 +57,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareTelegram}"
-    href="#"
+    th:href="${'https://t.me/share/url?url=' + encodedUrl + '&text=' + encodedTitle}"
     data-share="telegram"
     target="_blank"
     rel="noopener noreferrer"
@@ -67,7 +68,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareWhatsapp}"
-    href="#"
+    th:href="${'https://api.whatsapp.com/send?text=' + encodedMessage}"
     data-share="whatsapp"
     target="_blank"
     rel="noopener noreferrer"
@@ -78,7 +79,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareWeibo}"
-    href="#"
+    th:href="${'https://service.weibo.com/share/share.php?url=' + encodedUrl + '&title=' + encodedTitle}"
     data-share="weibo"
     target="_blank"
     rel="noopener noreferrer"
@@ -89,7 +90,7 @@
   <a
     class="share-bar__button"
     th:if="${showShareBar and shareEmail}"
-    href="#"
+    th:href="${'mailto:?subject=' + encodedTitle + '&body=' + encodedMessage}"
     data-share="email"
     th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '通过邮件分享' : 'Share by email'},title=${theme.config.basic.ui_language == 'zh-CN' ? '通过邮件分享' : 'Share by email'}"
   >
@@ -100,7 +101,7 @@
     type="button"
     th:if="${showShareLink}"
     data-share-link
-    th:attr="data-share-url=@{${post.status.permalink}},aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'},title=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'}"
+    th:attr="data-share-url=${shareUrl},aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'},title=${theme.config.basic.ui_language == 'zh-CN' ? '复制文章链接' : 'Copy post link'}"
   >
     <i data-lucide="copy" aria-hidden="true"></i>
   </button>
