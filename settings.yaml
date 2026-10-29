@@ -327,7 +327,7 @@ spec:
           id: show_post_comments
           key: show_post_comments
           label: 侧栏显示当前文章最新评论
-          help: 仅在当前文章存在公开评论时显示，不替代正文评论区。
+          help: 需要已启用评论插件；仅在当前文章存在公开评论时显示，不替代正文评论区。
           value: false
           if: $get(show_post_sidebar).value === true
         - $formkit: number

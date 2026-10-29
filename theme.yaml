@@ -27,7 +27,7 @@ spec:
       - name: 文档（Documentation）
         description: 目录常驻侧栏的文档式长文布局
         file: post_docs.html
-  version: 0.9.8
+  version: 0.9.9
   requires: ">=2.20.0"
   license:
     - name: "GPL-3.0"

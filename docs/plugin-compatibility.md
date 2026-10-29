@@ -25,6 +25,15 @@ third-party plugin routes (moments, photos, etc.) are out of Rackora’s scope�
 plugin only on sites that actually need those surfaces, and never alongside Rackora’s duplicate
 canonical / OG / BlogPosting output.
 
+## Version matrix
+
+| Component                                                 | Rackora requirement                              | Notes                                                                                                                                                                                   |
+| --------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Halo                                                      | `>=2.20.0` (`theme.yaml` `spec.requires`)        | Theme templates stay on 2.20-compatible Finder and `halo:comment` APIs.                                                                                                                 |
+| Comment Widget                                            | Optional; keep enabled when comments are used    | Rackora gates `<halo:comment>` and the post sidebar with `haloCommentEnabled`, and maps `--halo-cw-*` tokens (including 3.4.0 contrast and image max-width) to theme accent/ink colors. |
+| Comment Widget 3.4.0+                                     | Requires Halo `>=2.27.0` at the **plugin** level | Upgrade Halo before installing Comment Widget 3.4.0. Do not raise the theme `requires` field solely for the plugin.                                                                     |
+| Search Widget / RSS / Links / Sitemap / Page Static Cache | Optional per site                                | Theme only renders discovery links and triggers when `pluginFinder.available(...)` is true.                                                                                             |
+
 ## Keep enabled
 
 | Plugin            | Why it is still needed                                                                                                                       |
@@ -34,7 +43,7 @@ canonical / OG / BlogPosting output.
 | Sitemap           | Generates the sitemap. Rackora can set page-level robots policy but cannot remove URLs from the plugin feed.                                 |
 | Search Widget     | Provides the search index and UI API. Rackora only renders its trigger when available.                                                       |
 | RSS               | Generates the feed. Rackora provides discovery and footer links when the plugin is available.                                                |
-| Comment Widget    | Stores and renders comments. Rackora provides the extension point and matching styles.                                                       |
+| Comment Widget    | Stores and renders comments. Rackora provides the extension point and `--halo-cw-*` style bridging for light/dark schemes.                   |
 | Links             | Supplies the friend-link data and route used by Rackora's `/links` template.                                                                 |
 | Automatic Backup  | A theme cannot back up Halo data, attachments, plugin resources, or configuration. Keep it until restore drills prove another backup system. |
 
@@ -56,7 +65,7 @@ canonical / OG / BlogPosting output.
 - Highlight.js syntax highlighting, code-language labels, and copy controls.
 - Responsive tables and product-comparison table enhancement.
 - Reading time, reading progress, table of contents, heading anchors, and back-to-top control.
-- Light/dark color schemes and official plugin color-scheme adaptation.
+- Light/dark color schemes and official plugin color-scheme adaptation, including Comment Widget `--halo-cw-*` variables.
 - Homepage profile, sortable social links, categories, and post-count-ranked popular tags.
 - Article author/license notice, affiliate disclosure, safe sponsored-link attributes, and structured ad slots.
 - Page-level SEO structure: one H1, absolute self canonical including paginated list URLs, `rel="prev"` / `rel="next"`, Open Graph, Twitter Card, breadcrumbs, visible dates, author semantics, `WebSite`, `Organization`, and `BlogPosting` data.

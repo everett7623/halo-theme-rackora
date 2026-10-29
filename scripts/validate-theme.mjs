@@ -902,6 +902,36 @@ assert.match(post, /postFinder\.list\(/, "post sidebar must provide an article l
 assert.match(post, /commentFinder\.list\(/, "post sidebar must support recent comments");
 assert.match(
   post,
+  /showPostComments = \$\{haloCommentEnabled and \(post\.stats\.comment != null and post\.stats\.comment > 0\)/,
+  "sidebar recent comments must require the comment plugin and existing public comments",
+);
+assert.match(
+  post,
+  /th:if="\$\{showPostComments\}"[\s\S]*?commentFinder\.list\([\s\S]*?th:if="\$\{not #lists\.isEmpty\(sidebarComments\.items\)\}"/,
+  "sidebar recent comments must hide when the comment list is empty",
+);
+assert.match(
+  mainStyles,
+  /--halo-cw-primary-1-color:\s*var\(--rack-accent\)/,
+  "comment widget primary color must follow Rackora accent",
+);
+assert.match(
+  mainStyles,
+  /--halo-cw-primary-contrast-color:/,
+  "comment widget must set primary contrast for submit buttons",
+);
+assert.match(
+  mainStyles,
+  /--halo-cw-content-img-max-width:/,
+  "comment widget must limit embedded image width",
+);
+assert.match(
+  mainStyles,
+  /:root\[data-color-scheme="dark"\][\s\S]*?--halo-cw-primary-1-color:/,
+  "comment widget colors must adapt in dark mode",
+);
+assert.match(
+  post,
   /<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?["']@type["']:\s*["']BlogPosting["'][\s\S]*?post\.spec\.title[\s\S]*?<\/script>/,
   "post pages need dynamic BlogPosting JSON-LD",
 );

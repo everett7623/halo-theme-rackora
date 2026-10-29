@@ -3,6 +3,17 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.9.9] - 2026-10-29
+
+### 修复
+
+- 文章侧栏「最新评论」改为同时要求评论插件已启用（`haloCommentEnabled`）且当前文章已有公开评论；评论插件关闭或没有公开评论时不再调用 `commentFinder`，也不再渲染空侧栏区块。
+
+### 优化
+
+- 将官方 Comment Widget 的 `--halo-cw-*` 样式变量桥接到主题强调色与正文色（含深色模式、提交按钮对比色与评论内图片最大宽度），评论区视觉与 Rackora 配色一致。
+- `docs/plugin-compatibility.md` 补充 Halo / Comment Widget 版本矩阵：主题仍声明 `>=2.20.0`，Comment Widget 3.4.0+ 需站点先升到 Halo `>=2.27.0`。
+
 ## [0.9.8] - 2026-10-16
 
 ### 修复

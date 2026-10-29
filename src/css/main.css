@@ -102,6 +102,22 @@
     "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
   --rack-font-display: "Source Serif 4", "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
   --rack-font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --halo-cw-primary-1-color: var(--rack-accent);
+  --halo-cw-primary-2-color: var(--rack-accent-hover);
+  --halo-cw-primary-3-color: color-mix(in srgb, var(--rack-accent-user) 72%, #000);
+  --halo-cw-primary-contrast-color: #ffffff;
+  --halo-cw-text-1-color: var(--rack-ink);
+  --halo-cw-text-2-color: var(--rack-ink-soft);
+  --halo-cw-text-3-color: var(--rack-muted);
+  --halo-cw-muted-1-color: var(--rack-line-strong);
+  --halo-cw-muted-2-color: var(--rack-line);
+  --halo-cw-muted-3-color: var(--rack-paper);
+  --halo-cw-base-rounded: var(--rack-radius);
+  --halo-cw-avatar-rounded: 999px;
+  --halo-cw-avatar-size: 2.5rem;
+  --halo-cw-base-font-size: 0.95rem;
+  --halo-cw-base-font-family: var(--rack-font-sans);
+  --halo-cw-content-img-max-width: 100%;
   font-family: var(--rack-font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -125,6 +141,16 @@
   --rack-amber-soft: #382b19;
   --rack-code: #0a100e;
   --rack-code-text: #dce9e3;
+  --halo-cw-primary-1-color: var(--rack-accent);
+  --halo-cw-primary-2-color: var(--rack-accent-hover);
+  --halo-cw-primary-3-color: color-mix(in srgb, var(--rack-accent) 78%, #fff);
+  --halo-cw-primary-contrast-color: #0a100e;
+  --halo-cw-text-1-color: var(--rack-ink);
+  --halo-cw-text-2-color: var(--rack-ink-soft);
+  --halo-cw-text-3-color: var(--rack-muted);
+  --halo-cw-muted-1-color: var(--rack-line-strong);
+  --halo-cw-muted-2-color: var(--rack-line);
+  --halo-cw-muted-3-color: var(--rack-surface);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -146,6 +172,16 @@
     --rack-amber-soft: #382b19;
     --rack-code: #0a100e;
     --rack-code-text: #dce9e3;
+    --halo-cw-primary-1-color: var(--rack-accent);
+    --halo-cw-primary-2-color: var(--rack-accent-hover);
+    --halo-cw-primary-3-color: color-mix(in srgb, var(--rack-accent) 78%, #fff);
+    --halo-cw-primary-contrast-color: #0a100e;
+    --halo-cw-text-1-color: var(--rack-ink);
+    --halo-cw-text-2-color: var(--rack-ink-soft);
+    --halo-cw-text-3-color: var(--rack-muted);
+    --halo-cw-muted-1-color: var(--rack-line-strong);
+    --halo-cw-muted-2-color: var(--rack-line);
+    --halo-cw-muted-3-color: var(--rack-surface);
   }
 }
 
