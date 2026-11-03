@@ -1,7 +1,7 @@
 <nav
   class="share-bar"
   th:if="${showShareBar or showShareLink}"
-  th:with="shareBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},sharePath = ${post.status.permalink},shareUrl = ${shareBase + (#strings.startsWith(sharePath, '/') ? sharePath : '/' + sharePath)},encodedUrl = ${#uris.escapeQueryParam(shareUrl)},encodedTitle = ${#uris.escapeQueryParam(post.spec.title)},encodedMessage = ${encodedTitle + '%0A' + encodedUrl}"
+  th:with="shareBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},sharePath = ${post.status.permalink},shareUrl = ${(#strings.startsWith(sharePath, 'http://') or #strings.startsWith(sharePath, 'https://')) ? sharePath : (shareBase + (#strings.startsWith(sharePath, '/') ? sharePath : '/' + sharePath))},encodedUrl = ${#uris.escapeQueryParam(shareUrl)},encodedTitle = ${#uris.escapeQueryParam(post.spec.title)},encodedMessage = ${encodedTitle + '%0A' + encodedUrl}"
   th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '分享文章' : 'Share this post'},data-share-title=${post.spec.title},data-share-url=${shareUrl}"
   data-share-bar
 >

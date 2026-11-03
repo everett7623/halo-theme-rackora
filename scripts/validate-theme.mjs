@@ -356,6 +356,27 @@ for (const [label, source] of [
     /property=["']article:modified_time["']/,
     `${label} pages need Open Graph article modified time`,
   );
+  assert.match(
+    source,
+    /property=["']article:author["']/,
+    `${label} pages need Open Graph article author`,
+  );
+  assert.match(
+    source,
+    /property=["']article:section["']/,
+    `${label} pages need Open Graph article section`,
+  );
+  assert.match(
+    source,
+    /property=["']article:tag["']/,
+    `${label} pages need Open Graph article tag`,
+  );
+  assert.match(source, /["']keywords["']\s*:/, `${label} JSON-LD must declare keywords`);
+  assert.match(
+    source,
+    /["']articleSection["']\s*:/,
+    `${label} JSON-LD must declare articleSection`,
+  );
 }
 assert.match(
   post,
@@ -944,6 +965,21 @@ assert.match(
   home,
   /["']@type["']:\s*["']Organization["'][\s\S]*?["']logo["']\s*:\s*\{[\s\S]*?["']@type["']:\s*["']ImageObject["']/,
   "home Organization JSON-LD must use ImageObject for logo",
+);
+assert.match(
+  home,
+  /["']@type["']:\s*["']SearchAction["']/,
+  "home WebSite JSON-LD must include SearchAction",
+);
+assert.match(
+  layout,
+  /rel=["']preconnect["']/,
+  "layout must preconnect analytics origins when enabled",
+);
+assert.match(
+  postScript,
+  /function initRelatedPosts\(/,
+  "posts need client-side cleanup for empty related posts",
 );
 assert.match(
   post,

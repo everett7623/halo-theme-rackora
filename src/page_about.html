@@ -47,6 +47,7 @@
         th:height="${useWideLogo ? 64 : 88}"
         th:src="${brandLogo}"
         th:alt="${site.title}"
+        decoding="async"
       />
       <div>
         <h1 class="article-title" th:text="${singlePage.spec.title}">About</h1>

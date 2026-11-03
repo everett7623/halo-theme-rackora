@@ -447,6 +447,10 @@ function initSeriesList(): void {
 
   const limit = Math.max(1, Number.parseInt(list.dataset.seriesLimit || "6", 10) || 6);
   const items = Array.from(ordered.children) as HTMLElement[];
+  if (!items.length) {
+    list.remove();
+    return;
+  }
   items
     .sort((left, right) => {
       const orderDifference =
@@ -458,6 +462,15 @@ function initSeriesList(): void {
       if (index < limit) ordered.append(item);
       else item.remove();
     });
+}
+
+function initRelatedPosts(): void {
+  for (const block of document.querySelectorAll<HTMLElement>(".related-posts")) {
+    const list = block.querySelector("ol");
+    if (!list || list.children.length === 0) {
+      block.remove();
+    }
+  }
 }
 
 function initLightbox(content: HTMLElement): void {
@@ -525,5 +538,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initShareBar();
   initShareLink();
   initSeriesList();
+  initRelatedPosts();
   initLightbox(content);
 });

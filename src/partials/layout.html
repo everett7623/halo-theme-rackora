@@ -45,6 +45,38 @@
       th:if="${not #strings.isEmpty(theme.config.seo.baidu_verification)}"
       th:content="${theme.config.seo.baidu_verification}"
     />
+    <link
+      rel="preconnect"
+      href="https://www.googletagmanager.com"
+      crossorigin="anonymous"
+      th:if="${theme.config.analytics?.enabled and #strings.startsWith(theme.config.analytics.ga4_id ?: '', 'G-')}"
+    />
+    <link
+      rel="dns-prefetch"
+      href="https://www.googletagmanager.com"
+      th:if="${theme.config.analytics?.enabled and #strings.startsWith(theme.config.analytics.ga4_id ?: '', 'G-')}"
+    />
+    <link
+      rel="preconnect"
+      href="https://www.clarity.ms"
+      crossorigin="anonymous"
+      th:if="${theme.config.analytics?.enabled and not #strings.isEmpty(theme.config.analytics.clarity_id)}"
+    />
+    <link
+      rel="dns-prefetch"
+      href="https://www.clarity.ms"
+      th:if="${theme.config.analytics?.enabled and not #strings.isEmpty(theme.config.analytics.clarity_id)}"
+    />
+    <link
+      rel="preconnect"
+      href="https://hm.baidu.com"
+      th:if="${theme.config.analytics?.enabled and #strings.length(theme.config.analytics.baidu_analytics_id ?: '') == 32}"
+    />
+    <link
+      rel="dns-prefetch"
+      href="https://hm.baidu.com"
+      th:if="${theme.config.analytics?.enabled and #strings.length(theme.config.analytics.baidu_analytics_id ?: '') == 32}"
+    />
     <slot name="head">
       <title th:text="${site.title}">Site title</title>
     </slot>
@@ -222,7 +254,7 @@
             th:title="${theme.config.basic.ui_language == 'zh-CN' ? '搜索' : 'Search'}"
             th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '搜索' : 'Search'}"
             th:if="${pluginFinder.available('PluginSearchWidget')}"
-            onclick="SearchWidget.open()"
+            onclick="typeof SearchWidget !== 'undefined' &amp;&amp; SearchWidget.open &amp;&amp; SearchWidget.open()"
           >
             <i data-lucide="search" aria-hidden="true"></i>
           </button>

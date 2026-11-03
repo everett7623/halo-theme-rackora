@@ -3,6 +3,26 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.10.0] - 2026-11-03
+
+### 修复
+
+- 顶部导航搜索按钮增加 `SearchWidget` 运行时防御，避免第三方搜索插件脚本尚未加载就绪时抛出未捕获错误。
+- 分享栏链接生成增加协议前缀判断防御，避免文章永久链接已包含完整域名时重复拼接导致双重域名。
+- 系列文章与相关文章增加空状态自愈清理，当分类下无其他文章或系列列表为空时不再残留多余的标题与空白区块。
+
+### 新增
+
+- 文章页与文档页的 Open Graph 元数据补齐 `article:author`、`article:section` 以及 `article:tag` 标签，提升社交平台分享卡片信息完整度。
+- 文章页与文档页的 Schema.org 结构化数据（`BlogPosting` 与 `TechArticle`）补充 `keywords`（标签关键词）与 `articleSection`（主分类）语义字段。
+- 文章与文档页支持文章级 `rackora_index_policy` 索引策略，设置为 `noindex` 时输出对应的 `noindex,follow` 标签。
+- 首页 `WebSite` JSON-LD 结构化数据增加标准 `SearchAction` 声明，助力搜索引擎生成站内搜索框。
+
+### 优化
+
+- 启用 GA4、Microsoft Clarity 或百度统计时，在 `<head>` 中动态注入对应的 `preconnect` 与 `dns-prefetch`，减少第三方分析服务握手延迟。
+- 作者页与关于页的图片补充 `decoding="async"`，避免首屏解码阻塞页面主线程渲染。
+
 ## [0.9.9] - 2026-10-29
 
 ### 修复
@@ -439,6 +459,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.10.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.0
 [0.6.9]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.9
 [0.6.8]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.8
 [0.6.7]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.7

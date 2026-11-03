@@ -25,6 +25,11 @@
           "url": /*[[${siteBase + '/'}]]*/ "https://example.com/",
           "description": /*[[${site.seo.description}]]*/ "",
           "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": /*[[${siteBase + '/search?keyword={search_term_string}'}]]*/ "https://example.com/search?keyword={search_term_string}",
+            "query-input": "required name=search_term_string"
+          },
           "publisher": {
             "@id": /*[[${orgId}]]*/ "https://example.com#organization"
           }
