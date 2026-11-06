@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安装与配置说明
+    url: https://github.com/everett7623/halo-theme-rackora#readme
+    about: 版本要求、主题设置和插件兼容说明见 README。
+  - name: Halo 文档
+    url: https://docs.halo.run/
+    about: 控制台、文章模型和 Docker 部署问题先查 Halo 官方文档。

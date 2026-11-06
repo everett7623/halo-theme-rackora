@@ -1,0 +1,44 @@
+name: 功能建议
+description: 建议新的阅读、发布、SEO 或后台配置能力
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Rackora 优先服务阅读、信息扫描、可访问性、SEO 和性能。纯装饰组件通常不会加入主题。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决的问题
+      description: 现在在写作、阅读或配置时卡在哪里。
+      placeholder: 长文在手机上找不到当前章节。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议的做法
+      description: 希望读者或站长看到什么，以及它应该是默认行为还是主题设置。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 考虑过的其他做法
+  - type: dropdown
+    id: area
+    attributes:
+      label: 相关区域
+      multiple: true
+      options:
+        - 文章 / 文档页
+        - 首页与归档
+        - 分类、标签与作者
+        - SEO / 结构化数据
+        - 主题设置
+        - 无障碍
+        - 性能
+        - 其他
+    validations:
+      required: true

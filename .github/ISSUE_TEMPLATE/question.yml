@@ -1,0 +1,33 @@
+name: 使用咨询
+description: 安装、主题设置、插件配合或升级时的使用问题
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: input
+    id: theme-version
+    attributes:
+      label: 主题版本
+      placeholder: "0.10.1"
+    validations:
+      required: true
+  - type: input
+    id: halo-version
+    attributes:
+      label: Halo 版本
+      placeholder: "2.27.2"
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: 想确认的问题
+      placeholder: 文档模板和默认文章模板如何选择？
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: 已经试过的步骤
+      description: 包括主题设置项、是否启用评论 / 搜索 / 友链插件，以及升级前后的差异。
+    validations:
+      required: true

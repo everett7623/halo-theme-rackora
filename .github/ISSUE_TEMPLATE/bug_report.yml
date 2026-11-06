@@ -1,0 +1,71 @@
+name: 缺陷报告
+description: 页面打不开、报错、样式错乱，或升级 Halo / 主题后出现回退
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先确认使用的是已发布版本，并尽量附上 Halo 日志里的模板异常。文章页 500 通常能在日志中看到 Thymeleaf 表达式错误。
+  - type: input
+    id: theme-version
+    attributes:
+      label: 主题版本
+      description: 主题设置或 `theme.yaml` 中的版本，例如 0.10.1。
+      placeholder: "0.10.1"
+    validations:
+      required: true
+  - type: input
+    id: halo-version
+    attributes:
+      label: Halo 版本
+      description: 控制台「关于」或容器镜像标签中的版本。
+      placeholder: "2.27.2"
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: 安装方式
+      options:
+        - Halo 应用市场
+        - 手动上传 ZIP
+        - Docker / 1Panel
+        - 源码构建
+        - 不确定
+    validations:
+      required: true
+  - type: input
+    id: page-url
+    attributes:
+      label: 出问题的页面
+      description: 可打码域名，但请保留路径，例如 `/archives/hello-world`。
+      placeholder: "https://example.com/archives/post-slug"
+    validations:
+      required: true
+  - type: textarea
+    id: symptoms
+    attributes:
+      label: 实际表现
+      description: 状态码、界面提示，以及是否只在文章页、文档模板或某种设置下出现。
+      placeholder: 打开任意文章返回 500，归档页正常。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望表现
+      placeholder: 文章页应正常打开。
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志或报错
+      description: 浏览器控制台、Halo 日志中的异常栈。请去掉密钥、Cookie 和评论者个人信息。
+      render: text
+  - type: textarea
+    id: extra
+    attributes:
+      label: 补充信息
+      description: 启用的插件、自定义模板（例如文档模板）、以及能否在默认设置下复现。

@@ -3,6 +3,12 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.10.1] - 2026-11-06
+
+### 修复
+
+- 文章页与文档页的 JSON-LD 内联表达式补上 `${}`，并把标签关键词从 `#strings.arrayJoin` 改为 `#strings.listJoin`。Halo 2.27 会把原先缺少 `${}` 的表达式当成模板错误，文章页因此返回 500。
+
 ## [0.10.0] - 2026-11-03
 
 ### 修复
@@ -459,6 +465,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.10.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.1
 [0.10.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.0
 [0.6.9]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.9
 [0.6.8]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.8

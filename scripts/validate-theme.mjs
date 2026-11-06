@@ -377,6 +377,26 @@ for (const [label, source] of [
     /["']articleSection["']\s*:/,
     `${label} JSON-LD must declare articleSection`,
   );
+  assert.match(
+    source,
+    /"keywords": \/\*\[\[\$\{not #lists\.isEmpty\(post\.tags\) \? #strings\.listJoin\(post\.tags\.!\[spec\.displayName\], ', '\) : ''\}\]\]\*\//,
+    `${label} JSON-LD keywords must inline a tag list with \${} and listJoin`,
+  );
+  assert.match(
+    source,
+    /"articleSection": \/\*\[\[\$\{not #lists\.isEmpty\(post\.categories\) \? post\.categories\[0\]\.spec\.displayName : ''\}\]\]\*\//,
+    `${label} JSON-LD articleSection must be an inlined expression`,
+  );
+  assert.doesNotMatch(
+    source,
+    /\/\*\[\[not\b/,
+    `${label} must not inline a bare Thymeleaf expression; Halo 2.27 renders it as HTTP 500`,
+  );
+  assert.doesNotMatch(
+    source,
+    /#strings\.arrayJoin\(post\.tags/,
+    `${label} must join tag names with listJoin because the projection is a List`,
+  );
 }
 assert.match(
   post,
