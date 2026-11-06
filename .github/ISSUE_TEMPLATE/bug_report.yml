@@ -1,7 +1,7 @@
 name: 缺陷报告
 description: 页面打不开、报错、样式错乱，或升级 Halo / 主题后出现回退
 title: "[Bug]: "
-labels: ["bug"]
+labels: ["🐛 缺陷"]
 body:
   - type: markdown
     attributes:

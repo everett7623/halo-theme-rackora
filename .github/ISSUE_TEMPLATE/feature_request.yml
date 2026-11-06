@@ -1,7 +1,7 @@
 name: 功能建议
 description: 建议新的阅读、发布、SEO 或后台配置能力
 title: "[Feature]: "
-labels: ["enhancement"]
+labels: ["✨ 功能"]
 body:
   - type: markdown
     attributes:

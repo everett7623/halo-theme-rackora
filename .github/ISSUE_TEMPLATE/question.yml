@@ -1,7 +1,7 @@
 name: 使用咨询
 description: 安装、主题设置、插件配合或升级时的使用问题
 title: "[Question]: "
-labels: ["question"]
+labels: ["❓ 咨询"]
 body:
   - type: input
     id: theme-version
