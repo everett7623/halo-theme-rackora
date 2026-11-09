@@ -2004,7 +2004,7 @@ img {
   border-top: 1px solid var(--rack-line);
 }
 
-.series-posts:not(:has(li)),
+.series-posts:not(:has(li + li)),
 .related-posts:not(:has(li)) {
   display: none;
 }

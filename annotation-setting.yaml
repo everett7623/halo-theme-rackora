@@ -7,6 +7,16 @@ spec:
     group: content.halo.run
     kind: Post
   formSchema:
+    - $formkit: select
+      name: rackora_index_policy
+      label: 索引策略
+      help: 默认允许搜索引擎索引；草稿性质或无需收录的文章可设为“暂不索引”，页面将输出 noindex,follow。
+      value: inherit
+      options:
+        - label: 允许索引（默认）
+          value: inherit
+        - label: 暂不索引
+          value: noindex
     - $formkit: text
       name: rackora_primary_keyword
       label: 主关键词

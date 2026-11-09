@@ -769,7 +769,13 @@ for (const fieldName of ["ga4_id", "clarity_id", "baidu_analytics_id"]) {
 }
 
 const integrationsForm = settings?.spec?.forms?.find((form) => form.group === "integrations");
-assert.ok(integrationsForm?.formSchema?.find((field) => field.name === "show_links"));
+const showLinksField = integrationsForm?.formSchema?.find((field) => field.name === "show_links");
+assert.ok(showLinksField);
+assert.doesNotMatch(
+  showLinksField?.help ?? "",
+  /首页/,
+  "show_links help must not claim it controls a removed home entry",
+);
 
 const monetizationForm = settings?.spec?.forms?.find((form) => form.group === "monetization");
 assert.equal(monetizationForm?.formSchema?.find((field) => field.name === "enabled")?.value, false);
@@ -788,6 +794,11 @@ assert.deepEqual(
   annotations.map((setting) => setting.spec.targetRef.kind),
   ["Post", "Tag", "Category"],
   "content governance fields must be attached to their Halo models",
+);
+const postAnnotations = annotations.find((setting) => setting.spec.targetRef.kind === "Post");
+assert.ok(
+  postAnnotations?.spec?.formSchema?.some((field) => field.name === "rackora_index_policy"),
+  "Post annotation settings must expose rackora_index_policy so editors can toggle noindex in Console",
 );
 assert.ok(annotationSource.includes("rackora_primary_keyword"));
 assert.ok(annotationSource.includes("rackora_index_policy"));
@@ -922,9 +933,35 @@ assert.doesNotMatch(
   "footer must not repeat site stats",
 );
 assert.match(layout, /item\.children/, "primary navigation must support nested menus");
-assert.match(post, /data-image-lightbox/, "posts must expose lightbox opt-in");
+for (const [label, source] of [
+  ["post", post],
+  ["documentation post", postDocs],
+  ["single page", singlePage],
+  ["about page", aboutPage],
+]) {
+  assert.match(
+    source,
+    /data-image-lightbox=\$\{/,
+    `${label} must bind lightbox to the theme setting`,
+  );
+  assert.doesNotMatch(
+    source,
+    /data-image-lightbox=["']true["']/,
+    `${label} must not hardcode lightbox enabled when the setting can turn it off`,
+  );
+}
 assert.match(postScript, /function initMobileToc\(/, "posts need a mobile table of contents");
 assert.match(postScript, /function initLightbox\(/, "posts need a lightweight image lightbox");
+assert.match(
+  postScript,
+  /if \(items\.length < 2\)/,
+  "series lists with fewer than two posts must be removed instead of showing only the current post",
+);
+assert.match(
+  mainStyles,
+  /\.series-posts:not\(:has\(li \+ li\)\)/,
+  "CSS must hide series containers that do not have at least two items",
+);
 assert.match(themeSource, /customTemplates:/, "theme must declare custom templates");
 assert.match(themeSource, /page_about\.html/, "theme must provide an About page template");
 assert.match(themeSource, /post_docs\.html/, "theme must provide a Documentation post template");

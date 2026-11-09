@@ -447,7 +447,7 @@ function initSeriesList(): void {
 
   const limit = Math.max(1, Number.parseInt(list.dataset.seriesLimit || "6", 10) || 6);
   const items = Array.from(ordered.children) as HTMLElement[];
-  if (!items.length) {
+  if (items.length < 2) {
     list.remove();
     return;
   }

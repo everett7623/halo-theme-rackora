@@ -3,6 +3,16 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.10.2] - 2026-11-09
+
+### 修复
+
+- 文章模型（`Post`）补充注册 `rackora_index_policy`（索引策略）元数据表单字段，使文章与文档页的 `noindex,follow` 策略可在 Halo 后台直接下拉选择。
+- 统一文章页、文档模板、普通独立页和关于页的正文图片灯箱开关：全部跟随后台「文章 → 点击放大正文图片」设置，普通独立页不再遗漏灯箱，文档与关于页也不再在关闭设置后继续弹出灯箱。
+- 文章系列目录在全站同系列公开文章不足 2 篇（仅含当前文章自身）时自动隐藏，避免底部出现单条仅指向当前页的系列列表。
+- 修正「插件 → 显示友情链接入口」的后台说明，明确其控制 `/links` 页面适配与默认页脚导航中的友链入口。
+- 补齐 `CHANGELOG.md` 底部缺失的历史版本标签链接定义。
+
 ## [0.10.1] - 2026-11-06
 
 ### 修复
@@ -465,8 +475,30 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.10.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.2
 [0.10.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.1
 [0.10.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.0
+[0.9.9]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.9
+[0.9.8]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.8
+[0.9.7]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.7
+[0.9.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.6
+[0.9.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.5
+[0.9.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.4
+[0.9.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.3
+[0.9.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.2
+[0.9.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.1
+[0.9.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.9.0
+[0.8.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.8.1
+[0.8.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.8.0
+[0.7.7]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.7
+[0.7.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.6
+[0.7.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.5
+[0.7.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.4
+[0.7.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.3
+[0.7.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.2
+[0.7.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.1
+[0.7.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.7.0
+[0.6.10]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.10
 [0.6.9]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.9
 [0.6.8]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.8
 [0.6.7]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.6.7

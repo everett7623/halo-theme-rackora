@@ -46,6 +46,7 @@
       class="article-content"
       th:utext="${singlePage.content.content}"
       data-article-content
+      th:attr="data-image-lightbox=${theme.config.post?.show_image_lightbox == null or theme.config.post.show_image_lightbox}"
     ></div>
   </article>
 

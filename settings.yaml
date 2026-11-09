@@ -453,7 +453,7 @@ spec:
           name: show_links
           id: show_links
           label: 显示友情链接入口
-          help: 需要 Halo 官方“链接管理”插件；主题适配其 /links 页面并控制首页、页脚入口。
+          help: 需要 Halo 官方“链接管理”插件；主题适配其 /links 页面并控制默认页脚导航中的友链入口。
           value: true
         - $formkit: switch
           name: show_links_in_footer

@@ -108,7 +108,7 @@
         class="article-content"
         th:utext="${post.content.content}"
         data-article-content
-        data-image-lightbox="true"
+        th:attr="data-image-lightbox=${theme.config.post?.show_image_lightbox == null or theme.config.post.show_image_lightbox}"
       ></div>
 
       <footer class="article-footer">
