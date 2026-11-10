@@ -245,7 +245,8 @@ html.content-width-wide {
   --rack-wide: 1440px;
 }
 
-body.nav-open {
+body.nav-open,
+body.toc-open {
   overflow: hidden;
 }
 
@@ -1225,6 +1226,14 @@ img {
   grid-template-columns: minmax(0, 1fr);
 }
 
+.article-layout--docs:not(:has(.article-sidebar__section:not([hidden]))) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.article-layout--docs:not(:has(.article-sidebar__section:not([hidden]))) .article-sidebar {
+  display: none;
+}
+
 .article,
 .comments--page {
   min-width: 0;
@@ -1512,9 +1521,18 @@ img {
   cursor: pointer;
 }
 
-.code-copy:hover {
+.code-copy:hover,
+.code-copy.is-copied {
   color: #fff;
   background: #1d2b25;
+}
+
+.code-copy.is-copied {
+  color: #79dcb9;
+}
+
+.code-copy.is-failed {
+  color: #ff8f86;
 }
 
 .code-copy svg {
@@ -2652,9 +2670,19 @@ a.timeline-entry__category:hover {
 
 .image-lightbox img {
   max-width: min(96vw, 1200px);
-  max-height: 88vh;
+  max-height: 84vh;
   margin: 0 auto;
   object-fit: contain;
+  cursor: zoom-out;
+}
+
+.image-lightbox__caption {
+  max-width: min(90vw, 720px);
+  margin: 10px auto 0;
+  color: #edf0ee;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .image-lightbox__close {

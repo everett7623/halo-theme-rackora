@@ -251,9 +251,10 @@
           <button
             class="icon-button"
             type="button"
-            th:title="${theme.config.basic.ui_language == 'zh-CN' ? '搜索' : 'Search'}"
+            th:title="${theme.config.basic.ui_language == 'zh-CN' ? '搜索 (Ctrl+K)' : 'Search (Ctrl+K)'}"
             th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '搜索' : 'Search'}"
             th:if="${pluginFinder.available('PluginSearchWidget')}"
+            data-search-toggle
             onclick="typeof SearchWidget !== 'undefined' &amp;&amp; SearchWidget.open &amp;&amp; SearchWidget.open()"
           >
             <i data-lucide="search" aria-hidden="true"></i>

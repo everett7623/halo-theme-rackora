@@ -111,11 +111,15 @@ function initTableOfContents(content: HTMLElement): void {
   }
 
   section.hidden = false;
+  initMobileToc(section, navigation);
+  const tocLinks = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>("[data-toc] a, [data-mobile-toc] nav a"),
+  );
+  let activeTargetId = "";
   const setActiveLink = (targetId: string): void => {
-    const links = document.querySelectorAll<HTMLAnchorElement>(
-      "[data-toc] a, [data-mobile-toc] nav a",
-    );
-    for (const link of links) {
+    if (targetId === activeTargetId) return;
+    activeTargetId = targetId;
+    for (const link of tocLinks) {
       const active = link.getAttribute("href") === `#${targetId}`;
       link.classList.toggle("is-active", active);
       if (active) link.setAttribute("aria-current", "location");
@@ -123,16 +127,19 @@ function initTableOfContents(content: HTMLElement): void {
     }
   };
 
+  let configuredHeader = 72;
+  const syncHeaderHeight = (): void => {
+    const parsed = Number.parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--rack-header-height"),
+    );
+    configuredHeader = Number.isFinite(parsed) ? parsed : 72;
+  };
+  syncHeaderHeight();
+
   let updateScheduled = false;
   const updateActiveHeading = (): void => {
     updateScheduled = false;
-    const configuredHeader = Number.parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--rack-header-height"),
-    );
-    const marker = Math.max(
-      (Number.isFinite(configuredHeader) ? configuredHeader : 72) + 24,
-      Math.min(window.innerHeight * 0.48, 520),
-    );
+    const marker = Math.max(configuredHeader + 24, Math.min(window.innerHeight * 0.48, 520));
     let activeHeading = headings[0];
     for (const heading of headings) {
       if (heading.getBoundingClientRect().top > marker) break;
@@ -149,10 +156,12 @@ function initTableOfContents(content: HTMLElement): void {
     window.requestAnimationFrame(updateActiveHeading);
   };
 
-  initMobileToc(section, navigation);
   scheduleActiveHeading();
   window.addEventListener("scroll", scheduleActiveHeading, { passive: true });
-  window.addEventListener("resize", scheduleActiveHeading);
+  window.addEventListener("resize", () => {
+    syncHeaderHeight();
+    scheduleActiveHeading();
+  });
   window.addEventListener("hashchange", scheduleActiveHeading);
 }
 
@@ -177,10 +186,12 @@ function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
     .querySelector("nav")!
     .append(...Array.from(navigation.children).map((node) => node.cloneNode(true)));
 
-  const close = (): void => {
+  const close = (restoreFocus = false): void => {
+    if (panel.hidden) return;
     panel.hidden = true;
     document.body.classList.remove("toc-open");
     toggle.setAttribute("aria-expanded", "false");
+    if (restoreFocus) toggle.focus();
   };
 
   toggle.addEventListener("click", () => {
@@ -189,13 +200,16 @@ function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
     document.body.classList.toggle("toc-open", open);
     toggle.setAttribute("aria-expanded", String(open));
   });
-  panel.querySelector("[data-mobile-toc-close]")?.addEventListener("click", close);
+  panel.querySelector("[data-mobile-toc-close]")?.addEventListener("click", () => close(true));
   panel.addEventListener("click", (event) => {
-    if (event.target === panel) close();
+    if (event.target === panel) close(true);
     if ((event.target as Element).closest("a")) close();
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !panel.hidden) close();
+    if (event.key === "Escape" && !panel.hidden) close(true);
+  });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 960 && !panel.hidden) close();
   });
 
   const sidebar = section.closest<HTMLElement>(".article-sidebar");
@@ -228,7 +242,11 @@ async function copyText(value: string): Promise<void> {
   if (!copied) throw new Error("Copy command failed");
 }
 
+const codeCopyTimers = new WeakMap<HTMLButtonElement, number>();
+
 function initCodeBlocks(content: HTMLElement): void {
+  const defaultCopyLabel = uiText("Copy code", "复制代码");
+  const defaultCopyText = uiText("Copy", "复制");
   for (const pre of content.querySelectorAll<HTMLPreElement>("pre")) {
     if (pre.parentElement?.classList.contains("code-block")) continue;
     const code = pre.querySelector<HTMLElement>("code");
@@ -253,20 +271,34 @@ function initCodeBlocks(content: HTMLElement): void {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "code-copy";
-    button.setAttribute("aria-label", uiText("Copy code", "复制代码"));
-    button.innerHTML = `<i data-lucide="copy" aria-hidden="true"></i><span>${uiText("Copy", "复制")}</span>`;
+    button.setAttribute("aria-label", defaultCopyLabel);
+    button.innerHTML = `<i data-lucide="copy" aria-hidden="true"></i><span>${defaultCopyText}</span>`;
     button.addEventListener("click", async () => {
+      window.clearTimeout(codeCopyTimers.get(button));
       try {
         await copyText(code.textContent || "");
-        button.innerHTML = `<i data-lucide="check" aria-hidden="true"></i><span>${uiText("Copied", "已复制")}</span>`;
-        window.setTimeout(() => {
-          button.innerHTML = `<i data-lucide="copy" aria-hidden="true"></i><span>${uiText("Copy", "复制")}</span>`;
-          document.dispatchEvent(new CustomEvent("rackora:icons"));
-        }, 1600);
+        const copiedText = uiText("Copied", "已复制");
+        button.classList.add("is-copied");
+        button.classList.remove("is-failed");
+        button.setAttribute("aria-label", copiedText);
+        button.innerHTML = `<i data-lucide="check" aria-hidden="true"></i><span>${copiedText}</span>`;
       } catch {
-        button.querySelector("span")!.textContent = uiText("Copy failed", "复制失败");
+        const failedText = uiText("Copy failed", "复制失败");
+        button.classList.add("is-failed");
+        button.classList.remove("is-copied");
+        button.setAttribute("aria-label", failedText);
+        button.innerHTML = `<i data-lucide="x" aria-hidden="true"></i><span>${failedText}</span>`;
       }
       document.dispatchEvent(new CustomEvent("rackora:icons"));
+      codeCopyTimers.set(
+        button,
+        window.setTimeout(() => {
+          button.classList.remove("is-copied", "is-failed");
+          button.setAttribute("aria-label", defaultCopyLabel);
+          button.innerHTML = `<i data-lucide="copy" aria-hidden="true"></i><span>${defaultCopyText}</span>`;
+          document.dispatchEvent(new CustomEvent("rackora:icons"));
+        }, 1600),
+      );
     });
     toolbar.append(button);
 
@@ -474,26 +506,39 @@ function initRelatedPosts(): void {
 }
 
 function initLightbox(content: HTMLElement): void {
+  const images = Array.from(content.querySelectorAll<HTMLImageElement>("img"));
+  for (const img of images) {
+    if (!img.hasAttribute("loading")) img.loading = "lazy";
+    if (!img.hasAttribute("decoding")) img.decoding = "async";
+  }
   if (content.dataset.imageLightbox !== "true") return;
+
+  const zoomableImages = images.filter((img) => !img.closest("a"));
+  if (zoomableImages.length === 0) return;
 
   const dialog = document.createElement("dialog");
   dialog.className = "image-lightbox";
-  dialog.innerHTML = `<button type="button" class="image-lightbox__close" aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button><img alt="" />`;
+  dialog.innerHTML = `<button type="button" class="image-lightbox__close" aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button><img alt="" /><p class="image-lightbox__caption" hidden></p>`;
   const image = dialog.querySelector("img")!;
+  const caption = dialog.querySelector<HTMLElement>(".image-lightbox__caption")!;
   const close = (): void => dialog.close();
   dialog.querySelector("button")?.addEventListener("click", close);
+  image.addEventListener("click", close);
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) close();
   });
   document.body.append(dialog);
   document.dispatchEvent(new CustomEvent("rackora:icons"));
 
-  for (const img of content.querySelectorAll<HTMLImageElement>("img")) {
-    if (img.closest("a")) continue;
+  for (const img of zoomableImages) {
     img.classList.add("is-zoomable");
     img.addEventListener("click", () => {
       image.src = img.currentSrc || img.src;
       image.alt = img.alt || "";
+      const captionText =
+        img.closest("figure")?.querySelector("figcaption")?.textContent?.trim() || img.alt.trim();
+      caption.textContent = captionText;
+      caption.hidden = !captionText;
       dialog.showModal();
     });
   }

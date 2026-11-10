@@ -95,6 +95,15 @@
             th:datetime="${post.spec.publishTime}"
             th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"
           ></time>
+          <time
+            th:if="${post.status.lastModifyTime != null}"
+            th:datetime="${post.status.lastModifyTime}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '更新于 ' + #temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd') : 'Updated ' + #temporals.format(post.spec.publishTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime, 'yyyy-MM-dd')}"
+          ></time>
+          <span
+            th:if="${not #strings.isEmpty(#annotations.get(post, 'rackora_verified_at'))}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '核验于 ' + #annotations.get(post, 'rackora_verified_at') : 'Verified ' + #annotations.get(post, 'rackora_verified_at')}"
+          ></span>
           <span
             data-reading-time
             th:text="${theme.config.basic.ui_language == 'zh-CN' ? '计算阅读时间' : 'Calculating reading time'}"
@@ -102,6 +111,30 @@
           >
         </div>
       </header>
+
+      <th:block
+        th:with="relation = ${#annotations.getOrDefault(post, 'rackora_affiliate_relation', 'none')}"
+      >
+        <aside
+          class="article-disclosure"
+          th:if="${relation == 'affiliate' or relation == 'sponsored_review' or relation == 'self_purchased'}"
+          th:switch="${relation}"
+          th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '内容关系披露' : 'Content relationship disclosure'}"
+        >
+          <p
+            th:case="'affiliate'"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含 Affiliate / Referral 推广链接，本站可能获得佣金，不影响用户价格与编辑判断。' : 'This post contains affiliate or referral links. The site may earn a commission without affecting your price or our editorial judgment.'}"
+          ></p>
+          <p
+            th:case="'sponsored_review'"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文包含商家提供的送测资源；测试方法、结果与限制仍由本站独立记录。' : 'A vendor supplied resources for this review; the methods, results, and limitations remain independently documented.'}"
+          ></p>
+          <p
+            th:case="'self_purchased'"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '本文涉及的产品或服务由本站自购测试。' : 'The product or service covered in this post was independently purchased for testing.'}"
+          ></p>
+        </aside>
+      </th:block>
 
       <div
         id="article-content"
@@ -163,28 +196,30 @@
         </header>
         <nav data-toc></nav>
       </section>
-      <section
-        class="article-sidebar__section"
+      <th:block
         th:if="${not #lists.isEmpty(post.categories)}"
         th:with="docsPosts = ${postFinder.list({page: 1, size: 8, categoryName: post.categories[0].metadata.name, sort: {'spec.publishTime,desc'}})}"
       >
-        <header class="article-sidebar__heading">
-          <h2
-            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '同分类' : 'In this category'}"
-          >
-            In this category
-          </h2>
-        </header>
-        <ol class="article-sidebar__posts">
-          <li th:each="docsPost : ${docsPosts.items}">
-            <a
-              th:href="@{${docsPost.status.permalink}}"
-              th:text="${docsPost.spec.title}"
-              th:classappend="${docsPost.metadata.name == post.metadata.name} ? ' is-active'"
-            ></a>
-          </li>
-        </ol>
-      </section>
+        <section class="article-sidebar__section" th:if="${docsPosts.total > 1}">
+          <header class="article-sidebar__heading">
+            <h2
+              th:text="${theme.config.basic.ui_language == 'zh-CN' ? '同分类' : 'In this category'}"
+            >
+              In this category
+            </h2>
+          </header>
+          <ol class="article-sidebar__posts">
+            <li th:each="docsPost : ${docsPosts.items}">
+              <a
+                th:href="@{${docsPost.status.permalink}}"
+                th:text="${docsPost.spec.title}"
+                th:classappend="${docsPost.metadata.name == post.metadata.name} ? ' is-active'"
+                th:attr="aria-current=${docsPost.metadata.name == post.metadata.name ? 'page' : null}"
+              ></a>
+            </li>
+          </ol>
+        </section>
+      </th:block>
     </aside>
   </div>
 </include>

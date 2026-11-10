@@ -169,8 +169,9 @@ const article = `
         <p class="article-deck">A practical guide to hierarchy, code presentation, content licensing, and useful navigation.</p>
         <div class="article-meta"><span><a class="article-author" href="#">Everett Labs</a></span><time>Published 2026-08-14</time><span data-reading-time>Calculating reading time</span><span>128 views</span></div>
       </header>
-      <div id="article-content" class="article-content" data-article-content>
+      <div id="article-content" class="article-content" data-article-content data-image-lightbox="true">
         <p>A minimal theme should help the reader understand structure without turning every section into a decorative object. Rackora uses a single accent color, restrained surfaces, and <code>semantic HTML</code>.</p>
+        <figure><img src="/assets/images/rackora-mark.svg" alt="Rackora editorial mark" width="64" height="64" /><figcaption>Rackora editorial mark — click to preview lightbox and caption</figcaption></figure>
         <h2 id="content-hierarchy">Content hierarchy</h2>
         <p>Headings now use a quiet accent marker inspired by Fuwari's clarity while keeping Rackora's technical publishing tone.</p>
         <blockquote><p>Good interface hierarchy remains visible even when images are removed.</p></blockquote>

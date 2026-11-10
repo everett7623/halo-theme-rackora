@@ -118,3 +118,24 @@ spec:
       label: 精选文章
       help: 用于分类页的“精选内容”入口，留空即不显示。
       value: ""
+
+---
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: theme-rackora-page-seo-9n4vr
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: SinglePage
+  formSchema:
+    - $formkit: select
+      name: rackora_index_policy
+      label: 索引策略
+      help: 默认允许搜索引擎索引；独立页面若无需收录可设为“暂不索引”，页面将输出 noindex,follow。
+      value: inherit
+      options:
+        - label: 允许索引（默认）
+          value: inherit
+        - label: 暂不索引
+          value: noindex

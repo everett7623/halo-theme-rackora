@@ -3,6 +3,26 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.10.3] - 2026-11-10
+
+### 修复
+
+- 移动端打开目录抽屉（`body.toc-open`）时锁定底层页面滚动，避免滚动穿透；当视口拉宽至桌面端（`> 960px`）时自动收起抽屉遮罩，并在关闭抽屉时将键盘焦点归还给目录触发按钮。
+- 代码块复制按钮补充连续点击定时器清理与失败状态自动恢复，避免快速点击时状态提前重置或复制失败后文案无法复原。
+- 独立页面（`SinglePage`）补齐 `rackora_index_policy` 索引策略表单与 `noindex,follow` 输出，并统一归一化普通独立页与关于页 JSON-LD 中的 `isPartOf.url`。
+- 文档模板（`post_docs.html`）补齐更新时间、核验日期与推广关系披露声明；当同分类仅含当前文档时隐藏冗余同分类列表，并在右侧栏无可见区块时自动折叠为单栏布局。
+
+### 新增
+
+- 正文图片灯箱支持展示 `<figcaption>` 或图片 `alt` 图注，并支持点击放大后的图片直接关闭灯箱。
+- 启用搜索组件（`PluginSearchWidget`）时，支持使用 `Ctrl+K` / `Cmd+K` 快捷键唤起搜索框。
+
+### 优化
+
+- 目录滚动监听（Scroll Spy）缓存顶栏高度与目录链接集合，仅在当前激活章节变更时更新 DOM；返回顶部按钮增加 `requestAnimationFrame` 节流与状态缓存，显著降低滚动期间的样式计算与 DOM 操作开销。
+- 正文图片自动补齐默认 `loading="lazy"` 与 `decoding="async"`，且仅在正文存在可放大图片时才向页面挂载灯箱 `<dialog>` 节点。
+- 文章系列循环仅对匹配当前系列的文章读取 `rackora_series_order` 注解，减少非本系列文章的模板求值开销。
+
 ## [0.10.2] - 2026-11-09
 
 ### 修复
@@ -475,6 +495,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.10.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.3
 [0.10.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.2
 [0.10.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.1
 [0.10.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.0

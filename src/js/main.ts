@@ -215,12 +215,37 @@ function initBackToTop(): void {
   const button = document.querySelector<HTMLButtonElement>("[data-back-to-top]");
   if (!button) return;
 
+  let visible = false;
+  let scheduled = false;
   const update = (): void => {
-    button.classList.toggle("is-visible", window.scrollY > 600);
+    scheduled = false;
+    const nextVisible = window.scrollY > 600;
+    if (nextVisible === visible) return;
+    visible = nextVisible;
+    button.classList.toggle("is-visible", visible);
   };
-  window.addEventListener("scroll", update, { passive: true });
+  const scheduleUpdate = (): void => {
+    if (scheduled) return;
+    scheduled = true;
+    window.requestAnimationFrame(update);
+  };
+  window.addEventListener("scroll", scheduleUpdate, { passive: true });
   button.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   update();
+}
+
+function initSearchShortcut(): void {
+  if (!document.querySelector("[data-search-toggle]")) return;
+  document.addEventListener("keydown", (event) => {
+    if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+    const searchWidget = (window as Window & { SearchWidget?: { open?: () => void } }).SearchWidget;
+    if (typeof searchWidget?.open === "function") {
+      event.preventDefault();
+      searchWidget.open();
+    }
+  });
 }
 
 function initSiteUptime(): void {
@@ -276,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initActiveNavigation();
   initThemeToggle();
   initBackToTop();
+  initSearchShortcut();
   initSiteUptime();
   initPopularTags();
 });

@@ -268,11 +268,11 @@
           <ol>
             <th:block
               th:each="seriesPost : ${seriesPosts}"
-              th:with="itemSeries = ${#annotations.get(seriesPost, 'rackora_series')},itemOrder = ${#annotations.getOrDefault(seriesPost, 'rackora_series_order', '9999')}"
+              th:with="itemSeries = ${#annotations.get(seriesPost, 'rackora_series')}"
             >
               <li
                 th:if="${itemSeries == seriesName}"
-                th:attr="data-series-order=${itemOrder}"
+                th:attr="data-series-order=${#annotations.getOrDefault(seriesPost, 'rackora_series_order', '9999')}"
                 th:classappend="${seriesPost.metadata.name == post.metadata.name} ? ' is-current'"
               >
                 <a

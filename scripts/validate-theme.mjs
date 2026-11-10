@@ -792,13 +792,18 @@ assert.ok(
 
 assert.deepEqual(
   annotations.map((setting) => setting.spec.targetRef.kind),
-  ["Post", "Tag", "Category"],
+  ["Post", "Tag", "Category", "SinglePage"],
   "content governance fields must be attached to their Halo models",
 );
 const postAnnotations = annotations.find((setting) => setting.spec.targetRef.kind === "Post");
 assert.ok(
   postAnnotations?.spec?.formSchema?.some((field) => field.name === "rackora_index_policy"),
   "Post annotation settings must expose rackora_index_policy so editors can toggle noindex in Console",
+);
+const pageAnnotations = annotations.find((setting) => setting.spec.targetRef.kind === "SinglePage");
+assert.ok(
+  pageAnnotations?.spec?.formSchema?.some((field) => field.name === "rackora_index_policy"),
+  "SinglePage annotation settings must expose rackora_index_policy so editors can toggle noindex in Console",
 );
 assert.ok(annotationSource.includes("rackora_primary_keyword"));
 assert.ok(annotationSource.includes("rackora_index_policy"));
@@ -952,6 +957,56 @@ for (const [label, source] of [
 }
 assert.match(postScript, /function initMobileToc\(/, "posts need a mobile table of contents");
 assert.match(postScript, /function initLightbox\(/, "posts need a lightweight image lightbox");
+assert.match(
+  postScript,
+  /image-lightbox__caption/,
+  "lightbox must render figure or alt captions when available",
+);
+assert.match(
+  postScript,
+  /window\.clearTimeout\(codeCopyTimers\.get\(button\)\)/,
+  "code copy feedback must clear pending timers on rapid clicks",
+);
+assert.match(
+  mainScript,
+  /function initSearchShortcut\(/,
+  "search toggle must support the Ctrl+K / Cmd+K shortcut",
+);
+assert.match(
+  mainStyles,
+  /body\.nav-open,\s*body\.toc-open\s*\{[^}]*overflow:\s*hidden/,
+  "mobile TOC drawer must lock background scrolling like the primary nav drawer",
+);
+assert.match(
+  mainStyles,
+  /\.article-layout--docs:not\(:has\(\.article-sidebar__section:not\(\[hidden\]\)\)\)/,
+  "documentation layout must collapse to a single column when its sidebar has no visible sections",
+);
+for (const [label, source] of [
+  ["single page", singlePage],
+  ["about page", aboutPage],
+]) {
+  assert.match(
+    source,
+    /noindex,follow[\s\S]*?rackora_index_policy/,
+    `${label} must honor rackora_index_policy noindex`,
+  );
+  assert.match(
+    source,
+    /"isPartOf":\s*\{[\s\S]*?"url":\s*\/\*\[\[\$\{siteBase \+ '\/'\}\]\]\*\//,
+    `${label} JSON-LD isPartOf.url must use normalized siteBase`,
+  );
+}
+assert.match(
+  postDocs,
+  /rackora_affiliate_relation/,
+  "documentation posts must render configured relationship disclosures",
+);
+assert.match(
+  postDocs,
+  /rackora_verified_at/,
+  "documentation posts must render verification dates when present",
+);
 assert.match(
   postScript,
   /if \(items\.length < 2\)/,
