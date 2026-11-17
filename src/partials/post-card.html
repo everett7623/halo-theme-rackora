@@ -44,11 +44,13 @@
     <p class="post-entry__excerpt" th:text="${post.status.excerpt}"></p>
     <div class="post-entry__meta">
       <span
-        th:text="${theme.config.basic.ui_language == 'zh-CN' ? post.stats.visit + ' 阅读' : post.stats.visit + (post.stats.visit == 1 ? ' view' : ' views')}"
+        th:with="visitCount = ${post.stats?.visit ?: 0}"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? visitCount + ' 阅读' : visitCount + (visitCount == 1 ? ' view' : ' views')}"
         >0 views</span
       >
       <span
-        th:text="${theme.config.basic.ui_language == 'zh-CN' ? post.stats.comment + ' 评论' : post.stats.comment + (post.stats.comment == 1 ? ' comment' : ' comments')}"
+        th:with="commentCount = ${post.stats?.comment ?: 0}"
+        th:text="${theme.config.basic.ui_language == 'zh-CN' ? commentCount + ' 评论' : commentCount + (commentCount == 1 ? ' comment' : ' comments')}"
         >0 comments</span
       >
       <span

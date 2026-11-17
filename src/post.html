@@ -12,7 +12,7 @@
     <meta property="article:published_time" th:content="${post.spec.publishTime}" />
     <meta
       property="article:modified_time"
-      th:content="${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}"
+      th:content="${post.status.lastModifyTime != null and (post.spec.publishTime == null or post.status.lastModifyTime.isAfter(post.spec.publishTime)) ? post.status.lastModifyTime : post.spec.publishTime}"
     />
     <meta property="article:author" th:content="${post.owner.displayName}" />
     <meta
@@ -51,7 +51,7 @@
           "articleSection": /*[[${not #lists.isEmpty(post.categories) ? post.categories[0].spec.displayName : ''}]]*/ "",
           "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
           "datePublished": /*[[${post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
-          "dateModified": /*[[${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+          "dateModified": /*[[${post.status.lastModifyTime != null and (post.spec.publishTime == null or post.status.lastModifyTime.isAfter(post.spec.publishTime)) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
           "author": {
             "@type": "Person",
             "name": /*[[${post.owner.displayName}]]*/ "Author",
@@ -178,7 +178,8 @@
             >Calculating reading time</span
           >
           <span
-            th:text="${theme.config.basic.ui_language == 'zh-CN' ? post.stats.visit + ' 阅读' : post.stats.visit + (post.stats.visit == 1 ? ' view' : ' views')}"
+            th:with="visitCount = ${post.stats?.visit ?: 0}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? visitCount + ' 阅读' : visitCount + (visitCount == 1 ? ' view' : ' views')}"
             >0 views</span
           >
         </div>

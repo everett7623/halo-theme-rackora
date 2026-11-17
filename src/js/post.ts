@@ -260,6 +260,9 @@ function initCodeBlocks(content: HTMLElement): void {
 
     const wrapper = document.createElement("div");
     wrapper.className = "code-block";
+    pre.tabIndex = 0;
+    pre.setAttribute("role", "region");
+    pre.setAttribute("aria-label", uiText(`${language} code block`, `${language} 代码块`));
     pre.before(wrapper);
 
     const toolbar = document.createElement("div");
@@ -544,11 +547,20 @@ function initLightbox(content: HTMLElement): void {
   }
 }
 
+function estimateReadingMinutes(text: string): number {
+  const cjkCharacters = text.match(/[\u3400-\u9fff\uf900-\ufaff]/g)?.length ?? 0;
+  const nonCjkWords = text
+    .replace(/[\u3400-\u9fff\uf900-\ufaff]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  return Math.max(1, Math.ceil(cjkCharacters / 400 + nonCjkWords / 220));
+}
+
 function initReadingMetrics(content: HTMLElement): void {
   const target = document.querySelector<HTMLElement>("[data-reading-time]");
   if (target) {
-    const text = content.textContent?.replace(/\s+/g, "") || "";
-    const minutes = Math.max(1, Math.ceil(text.length / (isChineseUi() ? 450 : 900)));
+    const minutes = estimateReadingMinutes(content.textContent || "");
     target.textContent = isChineseUi() ? `约 ${minutes} 分钟` : `${minutes} min read`;
   }
 

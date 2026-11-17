@@ -97,6 +97,13 @@ function setButtonIcon(button: HTMLButtonElement, name: "menu" | "moon" | "sun" 
   renderIcons();
 }
 
+function syncThemeColorMeta(scheme: "light" | "dark"): void {
+  const color = scheme === "dark" ? "#111312" : "#f4f6f4";
+  for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
+    meta.content = color;
+  }
+}
+
 function applyScheme(scheme: "light" | "dark"): void {
   document.documentElement.dataset.colorScheme = scheme;
   document.documentElement.classList.remove(
@@ -105,6 +112,7 @@ function applyScheme(scheme: "light" | "dark"): void {
     "color-scheme-dark",
   );
   document.documentElement.classList.add(`color-scheme-${scheme}`);
+  syncThemeColorMeta(scheme);
 }
 
 function initNavigation(): void {
@@ -134,6 +142,12 @@ function initNavigation(): void {
 
   navigation.addEventListener("click", (event) => {
     if ((event.target as Element).closest("a")) close();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!navigation.classList.contains("is-open")) return;
+    const target = event.target as Node;
+    if (!navigation.contains(target) && !toggle.contains(target)) close();
   });
 
   document.addEventListener("keydown", (event) => {
@@ -166,8 +180,11 @@ function initActiveNavigation(): void {
     const comparable =
       rawHref !== "" && !rawHref.startsWith("#") && url.origin === window.location.origin;
     const path = normalizePath(url.pathname);
+    const matchesSearch = !url.search || url.search === window.location.search;
     const active =
-      comparable && (path === current || (path !== "/" && current.startsWith(`${path}/`)));
+      comparable &&
+      matchesSearch &&
+      (path === current || (path !== "/" && !url.search && current.startsWith(`${path}/`)));
     link.classList.toggle("is-active", active);
     if (active) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
@@ -193,6 +210,9 @@ function initThemeToggle(): void {
     toggle.setAttribute("aria-label", label);
     toggle.setAttribute("title", label);
     setButtonIcon(toggle, scheme === "dark" ? "sun" : "moon");
+    if (document.documentElement.dataset.colorScheme !== "auto") {
+      syncThemeColorMeta(scheme);
+    }
   };
 
   toggle.addEventListener("click", () => {
@@ -248,17 +268,26 @@ function initSearchShortcut(): void {
   });
 }
 
+function parseCalendarDateUtc(value: string): number | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+  if (!match) return null;
+  const [, year, month, day] = match;
+  return Date.UTC(Number(year), Number(month) - 1, Number(day));
+}
+
 function initSiteUptime(): void {
+  const now = new Date();
+  const todayUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const targets = document.querySelectorAll<HTMLElement>("[data-site-launch]");
   for (const target of targets) {
     const launchValue = target.dataset.siteLaunch;
-    if (!launchValue) {
+    const launchUtc = launchValue ? parseCalendarDateUtc(launchValue) : null;
+    if (launchUtc === null) {
       target.remove();
       continue;
     }
 
-    const launchDate = new Date(`${launchValue}T00:00:00`);
-    const elapsed = Date.now() - launchDate.getTime();
+    const elapsed = todayUtc - launchUtc;
     if (!Number.isFinite(elapsed) || elapsed < 0) {
       target.remove();
       continue;
@@ -281,18 +310,15 @@ function initPopularTags(): void {
   if (!list) return;
 
   const limit = Math.max(1, Number.parseInt(list.dataset.tagLimit || "10", 10) || 10);
-  const items = Array.from(list.children) as HTMLElement[];
-  items
+  const sorted = (Array.from(list.children) as HTMLElement[])
     .sort((left, right) => {
       const countDifference =
         Number.parseInt(right.dataset.tagCount || "0", 10) -
         Number.parseInt(left.dataset.tagCount || "0", 10);
       return countDifference || left.textContent!.localeCompare(right.textContent!);
     })
-    .forEach((item, index) => {
-      if (index < limit) list.append(item);
-      else item.remove();
-    });
+    .slice(0, limit);
+  list.replaceChildren(...sorted);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

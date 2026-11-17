@@ -1008,6 +1008,42 @@ assert.match(
   "documentation posts must render verification dates when present",
 );
 assert.match(
+  mainScript,
+  /function syncThemeColorMeta\(/,
+  "theme-color meta must stay synchronized when switching color schemes",
+);
+assert.match(
+  mainScript,
+  /function parseCalendarDateUtc\(/,
+  "site uptime must parse calendar dates in UTC so cross-timezone visitors never lose day 1",
+);
+assert.match(
+  mainScript,
+  /list\.replaceChildren\(\.\.\.sorted\)/,
+  "popular tags sorting should replace children in one DOM operation",
+);
+assert.match(
+  postScript,
+  /function estimateReadingMinutes\(/,
+  "reading time should estimate mixed CJK and non-CJK content accurately",
+);
+assert.match(postScript, /pre\.tabIndex = 0/, "scrollable code blocks must be keyboard focusable");
+assert.match(
+  mainStyles,
+  /@media print\s*\{[\s\S]*?\.mobile-toc-panel[\s\S]*?\.heading-anchor/,
+  "print styles must hide interactive anchors and overlays",
+);
+assert.match(
+  post,
+  /post\.spec\.publishTime == null or post\.status\.lastModifyTime\.isAfter\(post\.spec\.publishTime\)/,
+  "post modified date check must guard against null publishTime",
+);
+assert.match(
+  postDocs,
+  /post\.spec\.publishTime == null or post\.status\.lastModifyTime\.isAfter\(post\.spec\.publishTime\)/,
+  "documentation post modified date check must guard against null publishTime",
+);
+assert.match(
   postScript,
   /if \(items\.length < 2\)/,
   "series lists with fewer than two posts must be removed instead of showing only the current post",

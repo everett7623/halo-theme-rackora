@@ -3,6 +3,22 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.10.4] - 2026-11-17
+
+### 修复
+
+- 文章页与文档页的 `article:modified_time`、JSON-LD `dateModified` 及正文的更新时间判断补齐 `post.spec.publishTime == null` 判空保护，防止草稿或未设置发布时间时触发空指针异常；同时统一文档页更新时间的 `th:datetime` 与展示文案，并对文章统计数（`visit`、`comment`）增加空值兜底。
+- 建站运行天数（`initSiteUptime`）改用 `Date.UTC` 对齐日历日期计算，避免跨时区访客在建站当天看不到运行天数。
+- 主导航高亮匹配支持比对查询参数（`url.search`），防止多个同路径不同参数菜单项同时高亮；补充在平板/移动端点击导航外区域自动收起菜单。
+- 打印样式补充隐藏 `.heading-anchor`、`.mobile-toc-panel` 与 `.image-lightbox`。
+
+### 优化
+
+- 手动切换或系统切换浅色/深色主题时同步更新 `<meta name="theme-color">`，保持移动端浏览器状态栏与当前页面背景一致。
+- 首页热门标签排序改用 `replaceChildren` 单次更新 DOM，消除循环重排。
+- 预计阅读时间改为统计正文实际 CJK 字符数与非 CJK 词数混合估算，提升中英文混排及技术长文的估算准确度。
+- 代码块 `<pre>` 增加 `tabIndex = 0` 与 `role="region"`，支持键盘焦点横向滚动。
+
 ## [0.10.3] - 2026-11-10
 
 ### 修复
@@ -495,6 +511,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.10.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.4
 [0.10.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.3
 [0.10.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.2
 [0.10.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.1

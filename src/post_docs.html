@@ -12,7 +12,7 @@
     <meta property="article:published_time" th:content="${post.spec.publishTime}" />
     <meta
       property="article:modified_time"
-      th:content="${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}"
+      th:content="${post.status.lastModifyTime != null and (post.spec.publishTime == null or post.status.lastModifyTime.isAfter(post.spec.publishTime)) ? post.status.lastModifyTime : post.spec.publishTime}"
     />
     <meta property="article:author" th:content="${post.owner.displayName}" />
     <meta
@@ -51,7 +51,7 @@
           "articleSection": /*[[${not #lists.isEmpty(post.categories) ? post.categories[0].spec.displayName : ''}]]*/ "",
           "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",
           "datePublished": /*[[${post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
-          "dateModified": /*[[${post.status.lastModifyTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
+          "dateModified": /*[[${post.status.lastModifyTime != null and (post.spec.publishTime == null or post.status.lastModifyTime.isAfter(post.spec.publishTime)) ? post.status.lastModifyTime : post.spec.publishTime}]]*/ "2026-01-01T00:00:00Z",
           "author": {
             "@type": "Person",
             "name": /*[[${post.owner.displayName}]]*/ "Author",
@@ -97,8 +97,9 @@
           ></time>
           <time
             th:if="${post.status.lastModifyTime != null}"
-            th:datetime="${post.status.lastModifyTime}"
-            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '更新于 ' + #temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd') : 'Updated ' + #temporals.format(post.spec.publishTime != null and post.status.lastModifyTime.isAfter(post.spec.publishTime) ? post.status.lastModifyTime : post.spec.publishTime, 'yyyy-MM-dd')}"
+            th:with="modifiedTime = ${(post.spec.publishTime == null or post.status.lastModifyTime.isAfter(post.spec.publishTime)) ? post.status.lastModifyTime : post.spec.publishTime}"
+            th:datetime="${modifiedTime}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '更新于 ' + #temporals.format(modifiedTime, 'yyyy-MM-dd') : 'Updated ' + #temporals.format(modifiedTime, 'yyyy-MM-dd')}"
           ></time>
           <span
             th:if="${not #strings.isEmpty(#annotations.get(post, 'rackora_verified_at'))}"
