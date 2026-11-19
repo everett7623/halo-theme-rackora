@@ -3,6 +3,18 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.10.5] - 2026-11-19
+
+### 修复
+
+- 文章系列目录（`initSeriesList`）支持非数字序号安全回退，并在同系列篇数超过显示上限时以当前文章为中心滑动窗口截断，避免读者正在阅读的章节被裁掉；同时改用 `replaceChildren` 单次更新 DOM。
+- 调整文章页初始化顺序，先统计原始正文阅读时间再注入标题 `#` 锚点与代码块工具栏，避免非正文 UI 文案污染阅读时间估算。
+- 首屏配色初始化内联脚本同步更新 `<meta name="theme-color">`，消除手动固定深浅模式时移动端状态栏的首屏闪烁。
+
+### 优化
+
+- 正文可放大图片补齐 `tabIndex = 0`、`role="button"`、`aria-label` 以及 `Enter` / `Space` 键盘触发支持，提升键盘与读屏用户的图片灯箱无障碍体验。
+
 ## [0.10.4] - 2026-11-17
 
 ### 修复
@@ -511,6 +523,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.10.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.5
 [0.10.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.4
 [0.10.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.3
 [0.10.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.2

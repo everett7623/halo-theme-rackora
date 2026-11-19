@@ -474,6 +474,11 @@ function initShareBar(): void {
   }
 }
 
+function parseSeriesOrder(value: string | undefined): number {
+  const parsed = Number.parseInt(value || "", 10);
+  return Number.isFinite(parsed) ? parsed : 9999;
+}
+
 function initSeriesList(): void {
   const list = document.querySelector<HTMLElement>("[data-series-list]");
   if (!list) return;
@@ -486,17 +491,18 @@ function initSeriesList(): void {
     list.remove();
     return;
   }
-  items
-    .sort((left, right) => {
-      const orderDifference =
-        Number.parseInt(left.dataset.seriesOrder || "9999", 10) -
-        Number.parseInt(right.dataset.seriesOrder || "9999", 10);
-      return orderDifference || 0;
-    })
-    .forEach((item, index) => {
-      if (index < limit) ordered.append(item);
-      else item.remove();
-    });
+  const sorted = items.sort(
+    (left, right) =>
+      parseSeriesOrder(left.dataset.seriesOrder) - parseSeriesOrder(right.dataset.seriesOrder),
+  );
+  let start = 0;
+  if (sorted.length > limit) {
+    const currentIndex = sorted.findIndex((item) => item.classList.contains("is-current"));
+    if (currentIndex >= limit) {
+      start = Math.min(sorted.length - limit, Math.max(0, currentIndex - Math.floor(limit / 2)));
+    }
+  }
+  ordered.replaceChildren(...sorted.slice(start, start + limit));
 }
 
 function initRelatedPosts(): void {
@@ -534,8 +540,7 @@ function initLightbox(content: HTMLElement): void {
   document.dispatchEvent(new CustomEvent("rackora:icons"));
 
   for (const img of zoomableImages) {
-    img.classList.add("is-zoomable");
-    img.addEventListener("click", () => {
+    const open = (): void => {
       image.src = img.currentSrc || img.src;
       image.alt = img.alt || "";
       const captionText =
@@ -543,6 +548,21 @@ function initLightbox(content: HTMLElement): void {
       caption.textContent = captionText;
       caption.hidden = !captionText;
       dialog.showModal();
+    };
+    img.classList.add("is-zoomable");
+    img.tabIndex = 0;
+    img.setAttribute("role", "button");
+    img.setAttribute(
+      "aria-label",
+      img.alt.trim()
+        ? uiText(`View larger image: ${img.alt.trim()}`, `查看大图：${img.alt.trim()}`)
+        : uiText("View larger image", "查看大图"),
+    );
+    img.addEventListener("click", open);
+    img.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      open();
     });
   }
 }
@@ -587,11 +607,11 @@ function initReadingMetrics(content: HTMLElement): void {
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector<HTMLElement>("[data-article-content]");
   if (!content) return;
+  initReadingMetrics(content);
   initTableOfContents(content);
   initCodeBlocks(content);
   initTables(content);
   initAffiliateMarkup(content);
-  initReadingMetrics(content);
   initShareBar();
   initShareLink();
   initSeriesList();

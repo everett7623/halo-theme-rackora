@@ -1045,6 +1045,31 @@ assert.match(
 );
 assert.match(
   postScript,
+  /function parseSeriesOrder\(/,
+  "series order parsing must safely handle non-numeric values without NaN",
+);
+assert.match(
+  postScript,
+  /ordered\.replaceChildren\(\.\.\.sorted\.slice\(start, start \+ limit\)\)/,
+  "series list truncation must keep the current post in view and replace children once",
+);
+assert.match(
+  postScript,
+  /initReadingMetrics\(content\);\s*initTableOfContents\(content\);/,
+  "reading time must be measured before TOC anchors and code toolbars are injected",
+);
+assert.match(
+  postScript,
+  /img\.tabIndex = 0;[\s\S]*?img\.setAttribute\("role", "button"\)/,
+  "zoomable article images must be keyboard accessible",
+);
+assert.match(
+  layout,
+  /const themeColor = savedScheme === "dark" \? "#111312" : "#f4f6f4"/,
+  "inline scheme bootstrap must synchronize theme-color before main.js loads",
+);
+assert.match(
+  postScript,
   /if \(items\.length < 2\)/,
   "series lists with fewer than two posts must be removed instead of showing only the current post",
 );
