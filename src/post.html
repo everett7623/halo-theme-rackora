@@ -33,17 +33,17 @@
       th:if="${#annotations.getOrDefault(post, 'rackora_index_policy', 'inherit') == 'noindex'}"
     />
     <th:block
-      th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},logoRaw = ${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)},logoAbs = ${(#strings.startsWith(logoRaw, 'https://') or #strings.startsWith(logoRaw, 'http://')) ? logoRaw : siteBase + (#strings.startsWith(logoRaw, '/') ? logoRaw : '/' + logoRaw)},imageRaw = ${not #strings.isEmpty(post.spec.cover) ? post.spec.cover : logoRaw},imageAbs = ${(#strings.startsWith(imageRaw, 'https://') or #strings.startsWith(imageRaw, 'http://')) ? imageRaw : siteBase + (#strings.startsWith(imageRaw, '/') ? imageRaw : '/' + imageRaw)},orgId = ${siteBase + '#organization'}"
+      th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},postUrl = ${(#strings.startsWith(post.status.permalink, 'https://') or #strings.startsWith(post.status.permalink, 'http://')) ? post.status.permalink : siteBase + (#strings.startsWith(post.status.permalink, '/') ? post.status.permalink : '/' + post.status.permalink)},authorUrl = ${(#strings.startsWith(post.owner.permalink, 'https://') or #strings.startsWith(post.owner.permalink, 'http://')) ? post.owner.permalink : siteBase + (#strings.startsWith(post.owner.permalink, '/') ? post.owner.permalink : '/' + post.owner.permalink)},logoRaw = ${theme.config.seo.organization_logo ?: (#strings.isEmpty(site.logo) ? #theme.assets('/images/rackora-mark.svg') : site.logo)},logoAbs = ${(#strings.startsWith(logoRaw, 'https://') or #strings.startsWith(logoRaw, 'http://')) ? logoRaw : siteBase + (#strings.startsWith(logoRaw, '/') ? logoRaw : '/' + logoRaw)},imageRaw = ${not #strings.isEmpty(post.spec.cover) ? post.spec.cover : logoRaw},imageAbs = ${(#strings.startsWith(imageRaw, 'https://') or #strings.startsWith(imageRaw, 'http://')) ? imageRaw : siteBase + (#strings.startsWith(imageRaw, '/') ? imageRaw : '/' + imageRaw)},orgId = ${siteBase + '#organization'}"
     >
       <script type="application/ld+json" th:inline="javascript">
         {
           "@context": "https://schema.org",
           "@type": "BlogPosting",
-          "@id": /*[[${siteBase + post.status.permalink}]]*/ "https://example.com/post",
-          "url": /*[[${siteBase + post.status.permalink}]]*/ "https://example.com/post",
+          "@id": /*[[${postUrl}]]*/ "https://example.com/post",
+          "url": /*[[${postUrl}]]*/ "https://example.com/post",
           "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": /*[[${siteBase + post.status.permalink}]]*/ "https://example.com/post"
+            "@id": /*[[${postUrl}]]*/ "https://example.com/post"
           },
           "headline": /*[[${post.spec.title}]]*/ "Post title",
           "description": /*[[${post.status.excerpt ?: ''}]]*/ "",
@@ -55,7 +55,7 @@
           "author": {
             "@type": "Person",
             "name": /*[[${post.owner.displayName}]]*/ "Author",
-            "url": /*[[${siteBase + post.owner.permalink}]]*/ "https://example.com/authors/author"
+            "url": /*[[${authorUrl}]]*/ "https://example.com/authors/author"
           },
           "publisher": {
             "@type": "Organization",
@@ -165,8 +165,9 @@
           <time
             itemprop="dateModified"
             th:if="${post.status.lastModifyTime != null}"
-            th:datetime="${post.status.lastModifyTime}"
-            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '更新于 ' + #temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd') : 'Updated ' + #temporals.format(post.status.lastModifyTime, 'yyyy-MM-dd')}"
+            th:with="modifiedTime = ${(post.spec.publishTime == null or post.status.lastModifyTime.isAfter(post.spec.publishTime)) ? post.status.lastModifyTime : post.spec.publishTime}"
+            th:datetime="${modifiedTime}"
+            th:text="${theme.config.basic.ui_language == 'zh-CN' ? '更新于 ' + #temporals.format(modifiedTime, 'yyyy-MM-dd') : 'Updated ' + #temporals.format(modifiedTime, 'yyyy-MM-dd')}"
           ></time>
           <span
             th:if="${not #strings.isEmpty(#annotations.get(post, 'rackora_verified_at'))}"
@@ -333,11 +334,12 @@
         <aside
           class="article-license"
           th:if="${showPostLicense}"
+          th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},licensePermalink = ${(#strings.startsWith(post.status.permalink, 'https://') or #strings.startsWith(post.status.permalink, 'http://')) ? post.status.permalink : siteBase + (#strings.startsWith(post.status.permalink, '/') ? post.status.permalink : '/' + post.status.permalink)}"
           th:attr="aria-label=${theme.config.basic.ui_language == 'zh-CN' ? '作者与版权声明' : 'Author and copyright notice'}"
         >
           <div class="article-license__lead">
             <strong th:text="${post.spec.title}">Post title</strong>
-            <a th:href="@{${post.status.permalink}}" th:text="${post.status.permalink}"></a>
+            <a th:href="@{${post.status.permalink}}" th:text="${licensePermalink}"></a>
           </div>
           <dl>
             <div>

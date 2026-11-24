@@ -1065,7 +1065,7 @@ assert.match(
 );
 assert.match(
   layout,
-  /const themeColor = savedScheme === "dark" \? "#111312" : "#f4f6f4"/,
+  /const themeColor = scheme === "dark" \? "#111312" : "#f4f6f4"[\s\S]*?syncThemeColor\(savedScheme\)/,
   "inline scheme bootstrap must synchronize theme-color before main.js loads",
 );
 assert.match(
@@ -1783,6 +1783,46 @@ for (const [legacyName, canonicalName] of legacyAssetAliases) {
     `${legacyName} must forward upgraded pages to ${canonicalName}`,
   );
 }
+assert.match(
+  layout,
+  /configuredScheme = document\.documentElement\.dataset\.colorScheme;[\s\S]*?syncThemeColor\(configuredScheme\)/,
+  "first-paint theme script must sync theme-color when a fixed light/dark scheme is configured",
+);
+assert.match(
+  await read("src/partials/seo-head.html"),
+  /#strings\.startsWith\(canonicalPath, 'https:\/\/'\) or #strings\.startsWith\(canonicalPath, 'http:\/\/'\)/,
+  "seo-head canonical URL must guard against already-absolute permalinks",
+);
+assert.match(
+  post,
+  /th:with="modifiedTime = \$\{\(post\.spec\.publishTime == null or post\.status\.lastModifyTime\.isAfter\(post\.spec\.publishTime\)\) \? post\.status\.lastModifyTime : post\.spec\.publishTime\}"/,
+  "post page dateModified must match JSON-LD modifiedTime calculation",
+);
+assert.match(
+  post,
+  /licensePermalink = \$\{\(#strings\.startsWith\(post\.status\.permalink, 'https:\/\/'\) or #strings\.startsWith\(post\.status\.permalink, 'http:\/\/'\)\) \? post\.status\.permalink : siteBase \+/,
+  "post license block must display an absolute permalink URL",
+);
+assert.match(
+  postScript,
+  /panel\.setAttribute\("role", "dialog"\);[\s\S]*?panel\.setAttribute\("aria-modal", "true"\);/,
+  "mobile TOC drawer must expose dialog semantics",
+);
+assert.match(
+  postScript,
+  /data-lightbox-prev[\s\S]*?data-lightbox-next[\s\S]*?ArrowLeft[\s\S]*?ArrowRight/,
+  "multi-image lightbox must support button and arrow-key navigation",
+);
+assert.match(
+  mainStyles,
+  /\.image-lightbox__nav[\s\S]*?\.image-lightbox__counter|image-lightbox__counter[\s\S]*?\.image-lightbox__nav/,
+  "lightbox gallery navigation and counter styles must be present",
+);
+assert.match(
+  mainStyles,
+  /@media print\s*\{[\s\S]*?\.article-content pre\s*\{[\s\S]*?background:\s*#fff !important;/,
+  "print styles must switch code blocks to light background with dark text",
+);
 console.log(
   `Theme validation passed: ${requiredPages.length} routes, config, SEO, and extensions.`,
 );

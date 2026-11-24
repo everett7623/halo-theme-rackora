@@ -181,6 +181,9 @@ function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
   panel.className = "mobile-toc-panel";
   panel.hidden = true;
   panel.dataset.mobileToc = "panel";
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
+  panel.setAttribute("aria-label", uiText("On this page", "本页目录"));
   panel.innerHTML = `<div class="mobile-toc-panel__sheet"><header><strong>${uiText("On this page", "本页目录")}</strong><button type="button" class="icon-button" data-mobile-toc-close aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button></header><nav></nav></div>`;
   panel
     .querySelector("nav")!
@@ -199,6 +202,9 @@ function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
     panel.hidden = !open;
     document.body.classList.toggle("toc-open", open);
     toggle.setAttribute("aria-expanded", String(open));
+    if (open) {
+      panel.querySelector<HTMLElement>("a.is-active, [data-mobile-toc-close]")?.focus();
+    }
   });
   panel.querySelector("[data-mobile-toc-close]")?.addEventListener("click", () => close(true));
   panel.addEventListener("click", (event) => {
@@ -525,18 +531,63 @@ function initLightbox(content: HTMLElement): void {
   const zoomableImages = images.filter((img) => !img.closest("a"));
   if (zoomableImages.length === 0) return;
 
+  const hasGallery = zoomableImages.length > 1;
   const dialog = document.createElement("dialog");
   dialog.className = "image-lightbox";
-  dialog.innerHTML = `<button type="button" class="image-lightbox__close" aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button><img alt="" /><p class="image-lightbox__caption" hidden></p>`;
+  dialog.setAttribute("aria-label", uiText("Image preview", "图片预览"));
+  dialog.innerHTML = [
+    `<button type="button" class="image-lightbox__close" aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button>`,
+    hasGallery
+      ? `<button type="button" class="image-lightbox__nav image-lightbox__nav--prev" data-lightbox-prev aria-label="${uiText("Previous image", "上一张图片")}"><i data-lucide="arrow-left" aria-hidden="true"></i></button>`
+      : "",
+    `<img alt="" />`,
+    hasGallery
+      ? `<button type="button" class="image-lightbox__nav image-lightbox__nav--next" data-lightbox-next aria-label="${uiText("Next image", "下一张图片")}"><i data-lucide="arrow-right" aria-hidden="true"></i></button>`
+      : "",
+    `<p class="image-lightbox__caption" hidden></p>`,
+    hasGallery ? `<p class="image-lightbox__counter" aria-live="polite"></p>` : "",
+  ].join("");
   const image = dialog.querySelector("img")!;
   const caption = dialog.querySelector<HTMLElement>(".image-lightbox__caption")!;
+  const counter = dialog.querySelector<HTMLElement>(".image-lightbox__counter");
+  let currentIndex = -1;
   let lastTrigger: HTMLElement | null = null;
   const close = (): void => dialog.close();
-  dialog.querySelector("button")?.addEventListener("click", close);
+  const showImage = (index: number): void => {
+    currentIndex = (index + zoomableImages.length) % zoomableImages.length;
+    const target = zoomableImages[currentIndex];
+    lastTrigger = target;
+    image.src = target.currentSrc || target.src;
+    image.alt = target.alt || "";
+    const captionText =
+      target.closest("figure")?.querySelector("figcaption")?.textContent?.trim() ||
+      target.alt.trim();
+    caption.textContent = captionText;
+    caption.hidden = !captionText;
+    if (counter) counter.textContent = `${currentIndex + 1} / ${zoomableImages.length}`;
+  };
+  dialog.querySelector(".image-lightbox__close")?.addEventListener("click", close);
+  dialog
+    .querySelector("[data-lightbox-prev]")
+    ?.addEventListener("click", () => showImage(currentIndex - 1));
+  dialog
+    .querySelector("[data-lightbox-next]")
+    ?.addEventListener("click", () => showImage(currentIndex + 1));
   image.addEventListener("click", close);
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) close();
   });
+  if (hasGallery) {
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        showImage(currentIndex - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        showImage(currentIndex + 1);
+      }
+    });
+  }
   dialog.addEventListener("close", () => {
     lastTrigger?.focus();
     lastTrigger = null;
@@ -544,15 +595,9 @@ function initLightbox(content: HTMLElement): void {
   document.body.append(dialog);
   document.dispatchEvent(new CustomEvent("rackora:icons"));
 
-  for (const img of zoomableImages) {
+  zoomableImages.forEach((img, index) => {
     const open = (): void => {
-      lastTrigger = img;
-      image.src = img.currentSrc || img.src;
-      image.alt = img.alt || "";
-      const captionText =
-        img.closest("figure")?.querySelector("figcaption")?.textContent?.trim() || img.alt.trim();
-      caption.textContent = captionText;
-      caption.hidden = !captionText;
+      showImage(index);
       dialog.showModal();
     };
     img.classList.add("is-zoomable");
@@ -570,7 +615,7 @@ function initLightbox(content: HTMLElement): void {
       event.preventDefault();
       open();
     });
-  }
+  });
 }
 
 function estimateReadingMinutes(text: string): number {

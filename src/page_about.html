@@ -15,14 +15,14 @@
       th:if="${#annotations.getOrDefault(singlePage, 'rackora_index_policy', 'inherit') == 'noindex'}"
     />
     <th:block
-      th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url}"
+      th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url},pageUrl = ${(#strings.startsWith(singlePage.status.permalink, 'https://') or #strings.startsWith(singlePage.status.permalink, 'http://')) ? singlePage.status.permalink : siteBase + (#strings.startsWith(singlePage.status.permalink, '/') ? singlePage.status.permalink : '/' + singlePage.status.permalink)}"
     >
       <script type="application/ld+json" th:inline="javascript">
         {
           "@context": "https://schema.org",
           "@type": "AboutPage",
-          "@id": /*[[${siteBase + singlePage.status.permalink}]]*/ "https://example.com/about",
-          "url": /*[[${siteBase + singlePage.status.permalink}]]*/ "https://example.com/about",
+          "@id": /*[[${pageUrl}]]*/ "https://example.com/about",
+          "url": /*[[${pageUrl}]]*/ "https://example.com/about",
           "name": /*[[${singlePage.spec.title}]]*/ "About",
           "description": /*[[${singlePage.status.excerpt ?: site.subtitle ?: ''}]]*/ "",
           "inLanguage": /*[[${theme.config.basic.site_language ?: 'en-US'}]]*/ "en-US",

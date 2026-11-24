@@ -2627,10 +2627,11 @@ a.timeline-entry__category:hover {
   z-index: 85;
   left: max(18px, env(safe-area-inset-left));
   bottom: max(18px, env(safe-area-inset-bottom));
+  min-height: 38px;
   display: none;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
+  padding: 8px 14px;
   color: var(--rack-ink);
   background: var(--rack-surface);
   border: 1px solid var(--rack-line-strong);
@@ -2734,19 +2735,60 @@ a.timeline-entry__category:hover {
   text-align: center;
 }
 
-.image-lightbox__close {
+.image-lightbox__counter {
+  margin: 6px auto 0;
+  color: rgb(237 240 238 / 82%);
+  font-family: var(--rack-font-mono);
+  font-size: 0.74rem;
+  text-align: center;
+}
+
+.image-lightbox__close,
+.image-lightbox__nav {
   position: fixed;
-  top: 16px;
-  right: 16px;
   width: 40px;
   height: 40px;
   display: grid;
   place-items: center;
   color: #fff;
-  background: rgb(0 0 0 / 42%);
-  border: 0;
+  background: rgb(0 0 0 / 48%);
+  border: 1px solid rgb(255 255 255 / 16%);
   border-radius: 999px;
   cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.image-lightbox__close:hover,
+.image-lightbox__nav:hover {
+  background: rgb(0 0 0 / 72%);
+  border-color: rgb(255 255 255 / 36%);
+}
+
+.image-lightbox__close svg,
+.image-lightbox__nav svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+
+.image-lightbox__close {
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+}
+
+.image-lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.image-lightbox__nav--prev {
+  left: max(16px, env(safe-area-inset-left));
+}
+
+.image-lightbox__nav--next {
+  right: max(16px, env(safe-area-inset-right));
 }
 
 @media (max-width: 960px) {
@@ -3137,6 +3179,30 @@ a.timeline-entry__category:hover {
   .series-posts,
   .related-posts {
     break-inside: avoid;
+  }
+
+  .code-block {
+    background: #fff !important;
+    border: 1px solid #c8ceca !important;
+  }
+
+  .code-toolbar {
+    color: #333 !important;
+    background: #f4f6f4 !important;
+    border-bottom: 1px solid #c8ceca !important;
+  }
+
+  .article-content pre {
+    color: #111 !important;
+    background: #fff !important;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .article-content pre code,
+  .article-content pre [class*="hljs-"] {
+    color: #111 !important;
+    background: transparent !important;
   }
 }
 

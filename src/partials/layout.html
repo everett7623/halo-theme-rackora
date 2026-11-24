@@ -82,6 +82,12 @@
     </slot>
     <script>
       (() => {
+        const syncThemeColor = (scheme) => {
+          const themeColor = scheme === "dark" ? "#111312" : "#f4f6f4";
+          for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+            meta.setAttribute("content", themeColor);
+          }
+        };
         try {
           const savedScheme = localStorage.getItem("rackora-color-scheme");
           if (savedScheme === "light" || savedScheme === "dark") {
@@ -92,13 +98,15 @@
               "color-scheme-dark",
             );
             document.documentElement.classList.add(`color-scheme-${savedScheme}`);
-            const themeColor = savedScheme === "dark" ? "#111312" : "#f4f6f4";
-            for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
-              meta.setAttribute("content", themeColor);
-            }
+            syncThemeColor(savedScheme);
+            return;
           }
         } catch (_) {
           // Storage can be unavailable in privacy modes; the server setting remains authoritative.
+        }
+        const configuredScheme = document.documentElement.dataset.colorScheme;
+        if (configuredScheme === "light" || configuredScheme === "dark") {
+          syncThemeColor(configuredScheme);
         }
       })();
     </script>

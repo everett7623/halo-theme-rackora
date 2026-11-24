@@ -106,6 +106,8 @@ function page(title, body, scripts = "", logoMode = "square") {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f6f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111312" media="(prefers-color-scheme: dark)" />
     <title>${title}</title>
     <link rel="stylesheet" href="/assets/${cssName}?v=${version}" />
     <style>[data-preview-header] { position: relative; }</style>
@@ -186,6 +188,7 @@ const article = `
         <table><thead><tr><th>Feature</th><th>Owner</th><th>Result</th></tr></thead><tbody><tr><td>Search</td><td>Halo plugin</td><td>Integrated</td></tr><tr><td>Code highlighting</td><td>Rackora</td><td>Built in</td></tr><tr><td>Backups</td><td>Server/plugin</td><td>External</td></tr></tbody></table>
         <h3>Verification details</h3>
         <p>Every release records its expected behavior, generated package, and a small set of browser checks.</p>
+        <figure><img src="${wideLogoSource}" alt="Rackora wide wordmark preview" width="192" height="64" /><figcaption>Rackora wide wordmark — use arrow keys or buttons to switch images in the lightbox</figcaption></figure>
         <h2>Operational maintenance</h2>
         <p>Routine maintenance keeps dependencies, backups, and publishing workflows predictable.</p>
         <h3>Release checks</h3>

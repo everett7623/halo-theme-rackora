@@ -3,6 +3,23 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.11.0] - 2026-11-24
+
+### 新增
+
+- 正文图片灯箱支持多图切换：当正文包含 2 张及以上可放大图片时，原生 `<dialog>` 灯箱自动提供「上一张 / 下一张」按钮、页码指示（如 `1 / 2`）以及键盘 `←` / `→` 方向键切换；单图文章保持极简不展示切换控件，关闭灯箱后焦点归还至当前查看的原图。
+
+### 修复
+
+- 首屏配色初始化内联脚本补充处理后台固定配置的 `light` / `dark` 模式，无本地缓存时同样立即同步 `<meta name="theme-color">`，消除移动端状态栏首屏闪烁。
+- 统一 `seo-head.html`、`post.html`、`post_docs.html`、`page.html` 与 `page_about.html` 中 `canonical`、JSON-LD `@id`/`url` 与作者地址的协议前缀判断，防止永久链接已含完整域名时重复拼接产生双重域名。
+- 文章页（`post.html`）正文 `dateModified` 对齐文档页的 `modifiedTime` 保护逻辑，避免修改时间早于发布时间时与 JSON-LD / OG 元数据不一致；底部版权声明中的「原文地址」改为展示完整绝对 URL。
+
+### 优化
+
+- 移动端目录抽屉补齐 `role="dialog"`、`aria-modal="true"` 与 `aria-label`，打开抽屉时自动将键盘焦点移入抽屉内；统一移动端目录按钮与返回顶部按钮高度。
+- 打印与导出 PDF 样式（`@media print`）下将代码块切换为浅底深字与细边框并允许自动换行，改善技术文章打印可读性。
+
 ## [0.10.6] - 2026-11-24
 
 ### 修复
@@ -534,6 +551,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.11.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.11.0
 [0.10.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.6
 [0.10.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.5
 [0.10.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.4
