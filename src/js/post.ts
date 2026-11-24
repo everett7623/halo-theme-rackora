@@ -530,17 +530,23 @@ function initLightbox(content: HTMLElement): void {
   dialog.innerHTML = `<button type="button" class="image-lightbox__close" aria-label="${uiText("Close", "关闭")}"><i data-lucide="x" aria-hidden="true"></i></button><img alt="" /><p class="image-lightbox__caption" hidden></p>`;
   const image = dialog.querySelector("img")!;
   const caption = dialog.querySelector<HTMLElement>(".image-lightbox__caption")!;
+  let lastTrigger: HTMLElement | null = null;
   const close = (): void => dialog.close();
   dialog.querySelector("button")?.addEventListener("click", close);
   image.addEventListener("click", close);
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) close();
   });
+  dialog.addEventListener("close", () => {
+    lastTrigger?.focus();
+    lastTrigger = null;
+  });
   document.body.append(dialog);
   document.dispatchEvent(new CustomEvent("rackora:icons"));
 
   for (const img of zoomableImages) {
     const open = (): void => {
+      lastTrigger = img;
       image.src = img.currentSrc || img.src;
       image.alt = img.alt || "";
       const captionText =

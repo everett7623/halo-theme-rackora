@@ -3,6 +3,17 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.10.6] - 2026-11-24
+
+### 修复
+
+- 新增 `--rack-accent-contrast` 对比度令牌（浅色 `#ffffff`、深色 `#0a100e`），修复深色模式下 `.skip-link`、404/错误页 `.button--primary` 与产品比较表购买按钮对比度不足（由 2.83:1 提升至 6.79:1）以及悬停时被全局 `a:hover` 覆盖导致文字同色不可见的问题。
+- 图片灯箱打开时通过 `body:has(dialog.image-lightbox[open])` 锁定背景页面滚动，关闭后自动将键盘焦点归还给触发放大的原图片元素。
+
+### 优化
+
+- 补齐分页按钮（`.pagination__link:hover`）与相邻文章卡片（`.post-navigation a:hover`）的悬停边框、浅强调背景与柔和过渡反馈，使全站交互体验一致。
+
 ## [0.10.5] - 2026-11-19
 
 ### 修复
@@ -523,6 +534,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.10.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.6
 [0.10.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.5
 [0.10.4]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.4
 [0.10.3]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.3

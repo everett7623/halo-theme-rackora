@@ -88,6 +88,7 @@
   --rack-accent: var(--rack-accent-user);
   --rack-accent-hover: color-mix(in srgb, var(--rack-accent-user) 82%, #000);
   --rack-accent-soft: color-mix(in srgb, var(--rack-accent-user) 14%, #fff);
+  --rack-accent-contrast: #ffffff;
   --rack-signal: #c64840;
   --rack-signal-soft: #fbeae8;
   --rack-amber: #9a5d12;
@@ -135,6 +136,7 @@
   --rack-accent: color-mix(in srgb, var(--rack-accent-user) 62%, #9dffd8);
   --rack-accent-hover: color-mix(in srgb, var(--rack-accent) 72%, #fff);
   --rack-accent-soft: color-mix(in srgb, var(--rack-accent) 22%, #111312);
+  --rack-accent-contrast: #0a100e;
   --rack-signal: #ef7e75;
   --rack-signal-soft: #3b2422;
   --rack-amber: #e4a651;
@@ -166,6 +168,7 @@
     --rack-accent: color-mix(in srgb, var(--rack-accent-user) 62%, #9dffd8);
     --rack-accent-hover: color-mix(in srgb, var(--rack-accent) 72%, #fff);
     --rack-accent-soft: color-mix(in srgb, var(--rack-accent) 22%, #111312);
+    --rack-accent-contrast: #0a100e;
     --rack-signal: #ef7e75;
     --rack-signal-soft: #3b2422;
     --rack-amber: #e4a651;
@@ -250,6 +253,10 @@ body.toc-open {
   overflow: hidden;
 }
 
+body:has(dialog.image-lightbox[open]) {
+  overflow: hidden;
+}
+
 button,
 input,
 textarea,
@@ -299,10 +306,15 @@ img {
   top: 12px;
   left: 12px;
   padding: 9px 14px;
-  color: #fff;
+  color: var(--rack-accent-contrast);
   background: var(--rack-accent-hover);
   border-radius: 4px;
   transform: translateY(-160%);
+}
+
+.skip-link:hover,
+.skip-link:focus {
+  color: var(--rack-accent-contrast);
 }
 
 .skip-link:focus {
@@ -1195,6 +1207,16 @@ img {
   font-size: 0.86rem;
   font-weight: 650;
   text-decoration: none;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.pagination__link:hover {
+  color: var(--rack-accent);
+  background: var(--rack-accent-soft);
+  border-color: color-mix(in srgb, var(--rack-accent) 28%, var(--rack-line));
 }
 
 .pagination__link[rel="prev"] {
@@ -1654,7 +1676,7 @@ img {
   justify-content: center;
   min-height: 34px;
   padding: 6px 11px;
-  color: #fff;
+  color: var(--rack-accent-contrast);
   background: var(--rack-accent);
   border-radius: 4px;
   font-size: 0.78rem;
@@ -1663,6 +1685,7 @@ img {
 }
 
 .article-content .product-table td[data-column="购买"] a:hover {
+  color: var(--rack-accent-contrast);
   background: var(--rack-accent-hover);
 }
 
@@ -2177,6 +2200,16 @@ img {
   border: 1px solid var(--rack-line);
   border-radius: var(--rack-radius);
   text-decoration: none;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.post-navigation a:hover {
+  color: var(--rack-accent);
+  background: color-mix(in srgb, var(--rack-surface) 88%, var(--rack-accent-soft));
+  border-color: color-mix(in srgb, var(--rack-accent) 28%, var(--rack-line));
 }
 
 .post-navigation__next {
@@ -2443,12 +2476,28 @@ a.timeline-entry__category:hover {
   font-size: 0.86rem;
   font-weight: 700;
   text-decoration: none;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.button:hover {
+  color: var(--rack-accent);
+  background: var(--rack-accent-soft);
+  border-color: color-mix(in srgb, var(--rack-accent) 28%, var(--rack-line-strong));
 }
 
 .button--primary {
-  color: #fff;
+  color: var(--rack-accent-contrast);
   background: var(--rack-accent);
   border-color: var(--rack-accent);
+}
+
+.button--primary:hover {
+  color: var(--rack-accent-contrast);
+  background: var(--rack-accent-hover);
+  border-color: var(--rack-accent-hover);
 }
 
 .site-footer {

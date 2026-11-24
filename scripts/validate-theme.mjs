@@ -1069,6 +1069,31 @@ assert.match(
   "inline scheme bootstrap must synchronize theme-color before main.js loads",
 );
 assert.match(
+  mainStyles,
+  /--rack-accent-contrast:\s*#ffffff[\s\S]*?:root\[data-color-scheme="dark"\][\s\S]*?--rack-accent-contrast:\s*#0a100e[\s\S]*?@media \(prefers-color-scheme: dark\)[\s\S]*?--rack-accent-contrast:\s*#0a100e/,
+  "accent contrast token must stay light-on-dark in light mode and dark-on-light in dark mode",
+);
+assert.match(
+  mainStyles,
+  /\.button--primary:hover\s*\{[^}]*color:\s*var\(--rack-accent-contrast\)/,
+  "primary button hover must preserve contrast color instead of inheriting green a:hover text",
+);
+assert.match(
+  mainStyles,
+  /\.skip-link:hover,[\s\S]*?color:\s*var\(--rack-accent-contrast\)/,
+  "skip-link hover must preserve contrast color",
+);
+assert.match(
+  mainStyles,
+  /body:has\(dialog\.image-lightbox\[open\]\)\s*\{[^}]*overflow:\s*hidden/,
+  "open image lightbox must lock background page scroll",
+);
+assert.match(
+  postScript,
+  /dialog\.addEventListener\("close",\s*\(\)\s*=>\s*\{\s*lastTrigger\?\.focus\(\)/,
+  "closing image lightbox must restore focus to the trigger image",
+);
+assert.match(
   postScript,
   /if \(items\.length < 2\)/,
   "series lists with fewer than two posts must be removed instead of showing only the current post",
