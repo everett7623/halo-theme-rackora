@@ -257,6 +257,11 @@ body:has(dialog.image-lightbox[open]) {
   overflow: hidden;
 }
 
+body:has(dialog.image-lightbox[open]) .mobile-toc-toggle,
+body:has(dialog.image-lightbox[open]) .back-to-top {
+  visibility: hidden;
+}
+
 button,
 input,
 textarea,
@@ -574,7 +579,7 @@ img {
   padding-top: 16px;
   border-top: 1px solid var(--rack-line);
   color: var(--rack-muted);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.78rem;
 }
 
@@ -870,7 +875,7 @@ img {
 .sidebar-panel small {
   min-width: 24px;
   color: var(--rack-muted);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.68rem;
   text-align: right;
 }
@@ -1010,7 +1015,7 @@ img {
   align-items: center;
   gap: 6px 14px;
   color: var(--rack-muted);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.75rem;
 }
 
@@ -1182,6 +1187,11 @@ img {
   color: var(--rack-ink);
   font-weight: 700;
   text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.featured-entry a:hover {
+  color: var(--rack-accent);
 }
 
 .pagination {
@@ -1232,7 +1242,7 @@ img {
 .pagination__status {
   grid-column: 2;
   color: var(--rack-muted);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.78rem;
 }
 
@@ -1284,6 +1294,12 @@ img {
 .breadcrumbs a {
   color: inherit;
   text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.breadcrumbs a:hover {
+  color: var(--rack-accent);
+  text-decoration: underline;
 }
 
 .breadcrumbs > span {
@@ -1446,14 +1462,14 @@ img {
   font-weight: 560;
 }
 
-.article-content a[rel~="sponsored"]::after {
+.article-content a[rel~="sponsored"][data-sponsored-label]::after {
   content: attr(data-sponsored-label);
   margin-left: 5px;
   padding: 1px 4px;
   color: var(--rack-amber);
   background: var(--rack-amber-soft);
   border-radius: 2px;
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.62rem;
   font-weight: 700;
   vertical-align: 0.12em;
@@ -1500,7 +1516,7 @@ img {
   background: var(--rack-accent-soft);
   border: 0;
   border-radius: 3px;
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.88em;
 }
 
@@ -1523,7 +1539,7 @@ img {
   color: #8fa098;
   background: #0b1210;
   border-bottom: 1px solid #25332d;
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.7rem;
   text-transform: uppercase;
 }
@@ -1661,7 +1677,7 @@ img {
 
 .article-content .product-table td[data-column="价格"] {
   color: var(--rack-signal);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-weight: 760;
   white-space: nowrap;
 }
@@ -2136,7 +2152,7 @@ img {
   overflow: hidden;
   margin-top: 7px;
   color: var(--rack-accent);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.7rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2256,7 +2272,7 @@ img {
   align-self: start;
   margin: 0;
   color: var(--rack-accent);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 1.35rem;
 }
 
@@ -2299,7 +2315,7 @@ img {
 .timeline-month time,
 .timeline-entry__date {
   color: var(--rack-muted);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.72rem;
 }
 
@@ -2379,7 +2395,7 @@ a.timeline-entry__category:hover {
 .taxonomy-grid__count,
 .tag-cloud small {
   color: var(--rack-accent);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 0.75rem;
 }
 
@@ -2450,7 +2466,7 @@ a.timeline-entry__category:hover {
 .error-code {
   margin: 0;
   color: var(--rack-accent);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--rack-font-mono);
   font-size: 7rem;
   font-weight: 800;
   line-height: 1;
@@ -3070,6 +3086,12 @@ a.timeline-entry__category:hover {
 
   .footer-compliance {
     grid-column: 1;
+  }
+
+  .image-lightbox__nav {
+    top: auto;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    transform: none;
   }
 }
 

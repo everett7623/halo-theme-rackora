@@ -199,12 +199,21 @@ function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
 
   toggle.addEventListener("click", () => {
     const open = Boolean(panel.hidden);
+    if (open) {
+      document.dispatchEvent(
+        new CustomEvent("rackora:overlay-open", { detail: { source: "toc" } }),
+      );
+    }
     panel.hidden = !open;
     document.body.classList.toggle("toc-open", open);
     toggle.setAttribute("aria-expanded", String(open));
     if (open) {
       panel.querySelector<HTMLElement>("a.is-active, [data-mobile-toc-close]")?.focus();
     }
+  });
+  document.addEventListener("rackora:overlay-open", (event) => {
+    const detail = (event as CustomEvent<{ source?: string }>).detail;
+    if (detail?.source !== "toc" && !panel.hidden) close();
   });
   panel.querySelector("[data-mobile-toc-close]")?.addEventListener("click", () => close(true));
   panel.addEventListener("click", (event) => {

@@ -159,6 +159,7 @@
           </span>
           <time
             itemprop="datePublished"
+            th:if="${post.spec.publishTime != null}"
             th:datetime="${post.spec.publishTime}"
             th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布于 ' + #temporals.format(post.spec.publishTime, 'yyyy-MM-dd') : 'Published ' + #temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"
           ></time>
@@ -348,7 +349,7 @@
               </dt>
               <dd th:text="${post.owner.displayName}">Author</dd>
             </div>
-            <div>
+            <div th:if="${post.spec.publishTime != null}">
               <dt th:text="${theme.config.basic.ui_language == 'zh-CN' ? '发布于' : 'Published'}">
                 Published
               </dt>

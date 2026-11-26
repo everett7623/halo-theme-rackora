@@ -3,6 +3,20 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.11.1] - 2026-11-26
+
+### 修复
+
+- 修复移动端点击导航按钮图标时，因按钮内 SVG 被替换脱离 DOM 导致外部点击监听误判并瞬间关闭菜单的问题，改用 `event.composedPath()` 判断点击路径；同时实现移动端主导航菜单与目录抽屉互斥，避免双浮层叠加或残留滚动锁定。
+- 为文章页、文档页、文章卡片、归档时间线及版权声明中的发布时间渲染补充 `post.spec.publishTime != null` 判空保护，避免草稿预览或缺失发布时间时展示 `null`。
+- 分页头部 `<link rel="prev">` 与 `<link rel="next">` 统一输出带协议前缀防御的绝对 URL，与 `canonical` 保持一致。
+- 正文合作链接伪元素标签选择器收紧为 `a[rel~="sponsored"][data-sponsored-label]::after`，避免无脚本或首屏初始化前出现空白背景块。
+
+### 优化
+
+- 窄屏（`<= 720px`）下将多图灯箱上一张/下一张按钮移至视口底部左右两侧，并在灯箱打开时自动隐藏页面底部的目录与返回顶部浮动按钮，避免遮挡图片与按钮重叠。
+- 将样式表中 13 处硬编码等宽字体栈统一收敛为 `var(--rack-font-mono)`，并补齐面包屑与分类精选卡片链接的悬停过渡反馈。
+
 ## [0.11.0] - 2026-11-24
 
 ### 新增
@@ -551,6 +565,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.11.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.11.1
 [0.11.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.11.0
 [0.10.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.6
 [0.10.5]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.5

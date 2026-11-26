@@ -130,6 +130,11 @@ function initNavigation(): void {
 
   toggle.addEventListener("click", () => {
     const open = !navigation.classList.contains("is-open");
+    if (open) {
+      document.dispatchEvent(
+        new CustomEvent("rackora:overlay-open", { detail: { source: "nav" } }),
+      );
+    }
     navigation.classList.toggle("is-open", open);
     document.body.classList.toggle("nav-open", open);
     toggle.setAttribute("aria-expanded", String(open));
@@ -140,14 +145,20 @@ function initNavigation(): void {
     setButtonIcon(toggle, open ? "x" : "menu");
   });
 
+  document.addEventListener("rackora:overlay-open", (event) => {
+    const detail = (event as CustomEvent<{ source?: string }>).detail;
+    if (detail?.source !== "nav" && navigation.classList.contains("is-open")) close();
+  });
+
   navigation.addEventListener("click", (event) => {
     if ((event.target as Element).closest("a")) close();
   });
 
   document.addEventListener("click", (event) => {
     if (!navigation.classList.contains("is-open")) return;
-    const target = event.target as Node;
-    if (!navigation.contains(target) && !toggle.contains(target)) close();
+    // setButtonIcon 会替换 toggle 内的 SVG，event.target 脱离 DOM 后 contains() 会误判，改用 composedPath()。
+    const path = event.composedPath();
+    if (!path.includes(navigation) && !path.includes(toggle)) close();
   });
 
   document.addEventListener("keydown", (event) => {

@@ -42,6 +42,7 @@
             <li class="timeline-entry" th:each="post : ${month.posts}">
               <time
                 class="timeline-entry__date"
+                th:if="${post.spec.publishTime != null}"
                 th:datetime="${post.spec.publishTime}"
                 th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"
               ></time>

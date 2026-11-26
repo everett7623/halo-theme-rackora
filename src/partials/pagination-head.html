@@ -1,2 +1,14 @@
-<link rel="prev" th:if="${{{collection}}.hasPrevious()}" th:href="@{${{{collection}}.prevUrl}}" />
-<link rel="next" th:if="${{{collection}}.hasNext()}" th:href="@{${{{collection}}.nextUrl}}" />
+<th:block
+  th:with="siteBase = ${#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url}"
+>
+  <link
+    rel="prev"
+    th:if="${{{collection}}.hasPrevious()}"
+    th:href="${(#strings.startsWith({{collection}}.prevUrl, 'https://') or #strings.startsWith({{collection}}.prevUrl, 'http://')) ? {{collection}}.prevUrl : siteBase + (#strings.startsWith({{collection}}.prevUrl, '/') ? {{collection}}.prevUrl : '/' + {{collection}}.prevUrl)}"
+  />
+  <link
+    rel="next"
+    th:if="${{{collection}}.hasNext()}"
+    th:href="${(#strings.startsWith({{collection}}.nextUrl, 'https://') or #strings.startsWith({{collection}}.nextUrl, 'http://')) ? {{collection}}.nextUrl : siteBase + (#strings.startsWith({{collection}}.nextUrl, '/') ? {{collection}}.nextUrl : '/' + {{collection}}.nextUrl)}"
+  />
+</th:block>

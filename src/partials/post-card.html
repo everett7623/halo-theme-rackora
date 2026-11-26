@@ -34,6 +34,7 @@
         th:text="${post.categories[0].spec.displayName}"
       ></a>
       <time
+        th:if="${post.spec.publishTime != null}"
         th:datetime="${post.spec.publishTime}"
         th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"
       ></time>

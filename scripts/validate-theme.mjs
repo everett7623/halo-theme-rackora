@@ -1823,6 +1823,41 @@ assert.match(
   /@media print\s*\{[\s\S]*?\.article-content pre\s*\{[\s\S]*?background:\s*#fff !important;/,
   "print styles must switch code blocks to light background with dark text",
 );
+assert.match(
+  await read("src/partials/pagination-head.html"),
+  /#strings\.startsWith\(\{\{collection\}\}\.prevUrl, 'https:\/\/'\)[\s\S]*?#strings\.startsWith\(\{\{collection\}\}\.nextUrl, 'https:\/\/'\)/,
+  "pagination head prev/next links must normalize to absolute URLs",
+);
+assert.match(
+  post,
+  /itemprop="datePublished"\s+th:if="\$\{post\.spec\.publishTime != null\}"/,
+  "post publish time must guard against null publishTime",
+);
+assert.match(
+  mainScript,
+  /rackora:overlay-open[\s\S]*?detail\?\.source !== "nav"/,
+  "mobile navigation must stay mutually exclusive with other mobile overlays",
+);
+assert.match(
+  postScript,
+  /rackora:overlay-open[\s\S]*?detail\?\.source !== "toc"/,
+  "mobile TOC drawer must stay mutually exclusive with mobile navigation",
+);
+assert.match(
+  mainStyles,
+  /\.article-content a\[rel~="sponsored"\]\[data-sponsored-label\]::after/,
+  "sponsored link badge must only render when data-sponsored-label is present",
+);
+assert.doesNotMatch(
+  mainStyles,
+  /font-family:\s*ui-monospace,\s*SFMono-Regular,\s*Consolas,\s*monospace;/,
+  "monospace declarations should reuse --rack-font-mono",
+);
+assert.match(
+  mainScript,
+  /event\.composedPath\(\)[\s\S]*?!path\.includes\(navigation\) && !path\.includes\(toggle\)/,
+  "mobile navigation outside-click handler must use composedPath() so swapping the toggle icon does not immediately close the menu",
+);
 console.log(
   `Theme validation passed: ${requiredPages.length} routes, config, SEO, and extensions.`,
 );

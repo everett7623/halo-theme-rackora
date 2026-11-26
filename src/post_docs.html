@@ -92,6 +92,7 @@
         ></p>
         <div class="article-meta">
           <time
+            th:if="${post.spec.publishTime != null}"
             th:datetime="${post.spec.publishTime}"
             th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"
           ></time>
