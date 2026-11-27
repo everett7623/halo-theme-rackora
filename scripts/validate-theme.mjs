@@ -1858,6 +1858,77 @@ assert.match(
   /event\.composedPath\(\)[\s\S]*?!path\.includes\(navigation\) && !path\.includes\(toggle\)/,
   "mobile navigation outside-click handler must use composedPath() so swapping the toggle icon does not immediately close the menu",
 );
+assert.match(
+  postScript,
+  /function headingLabel\([\s\S]*?\.heading-anchor[\s\S]*?function initTableOfContents\([\s\S]*?heading\.hidden \|\| heading\.getAttribute\("aria-hidden"\) === "true"[\s\S]*?if \(!heading\.querySelector\("\.heading-anchor"\)\)/,
+  "TOC initialization must skip empty or hidden headings and exclude existing heading anchors without duplicate injection",
+);
+assert.match(
+  mainStyles,
+  /\.article-content h2:empty,\s*\.article-content h3:empty,\s*\.article-content h4:empty\s*\{\s*display:\s*none;\s*\}/,
+  "empty article headings must be hidden via CSS",
+);
+assert.match(
+  postScript,
+  /function languageName\(code:\s*HTMLElement,\s*pre\?:\s*HTMLElement \| null\)[\s\S]*?code\.classList[\s\S]*?pre\.classList[\s\S]*?language\|lang[\s\S]*?\.toLowerCase\(\)/,
+  "languageName must inspect both code and pre classList with case-insensitive language-/lang- prefixes",
+);
+for (const [alias, target] of [
+  ["tsx", "typescript"],
+  ["jsx", "javascript"],
+  ["txt", "plaintext"],
+  ["plain", "plaintext"],
+  ["htm", "xml"],
+  ["svg", "xml"],
+  ["console", "bash"],
+  ["toml", "ini"],
+]) {
+  assert.match(
+    postScript,
+    new RegExp(`\\b${alias}:\\s*"${target}"`),
+    `languageAliases must map ${alias} to ${target}`,
+  );
+}
+assert.match(
+  postScript,
+  /const headerRow = table\.tHead\?\.rows\[0\] \|\| table\.rows\[0\];/,
+  "initTables must read column headers only from the first header row to avoid tbody row-header misalignment",
+);
+assert.match(
+  postScript,
+  /function isSmallDecorativeImage\([\s\S]*?img\.closest\("figure"\)[\s\S]*?<= 48 && height <= 48/,
+  "initLightbox must ignore small <=48px decorative images outside figure elements",
+);
+assert.match(
+  postScript,
+  /function isZoomableImage\([\s\S]*?getAttribute\("src"\)[\s\S]*?aria-hidden[\s\S]*?data-no-lightbox[\s\S]*?isSmallDecorativeImage\(img\)/,
+  "initLightbox must filter empty-src, hidden, aria-hidden, data-no-lightbox, and small decorative images",
+);
+assert.match(
+  postScript,
+  /if \(!dialog\.open\) dialog\.showModal\(\);/,
+  "initLightbox must guard dialog.showModal() with !dialog.open",
+);
+assert.match(
+  postScript,
+  /function extractReadableText\([\s\S]*?content\.cloneNode\(true\)[\s\S]*?style, script, noscript, template/,
+  "initReadingMetrics must clone article content and strip style/script/noscript/template before estimating reading time",
+);
+assert.match(
+  mainScript,
+  /function normalizePath\([\s\S]*?try\s*\{[\s\S]*?decodeURIComponent\(pathname\)/,
+  "normalizePath must safely decodeURIComponent for encoded Unicode navigation paths",
+);
+assert.match(
+  mainScript,
+  /Number\.parseInt\(right\.dataset\.tagCount \|\| "0", 10\) \|\| 0[\s\S]*?Number\.parseInt\(left\.dataset\.tagCount \|\| "0", 10\) \|\| 0/,
+  "initPopularTags sorting must guard parseInt results with || 0 against NaN",
+);
+assert.match(
+  mainScript,
+  /!\(event\.ctrlKey \|\| event\.metaKey\) \|\|\s*event\.altKey \|\|\s*event\.shiftKey \|\|\s*event\.key\.toLowerCase\(\) !== "k"/,
+  "initSearchShortcut must ignore altKey and shiftKey combinations",
+);
 console.log(
   `Theme validation passed: ${requiredPages.length} routes, config, SEO, and extensions.`,
 );

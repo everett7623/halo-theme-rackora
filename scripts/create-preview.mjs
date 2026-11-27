@@ -172,22 +172,25 @@ const article = `
         <div class="article-meta"><span><a class="article-author" href="#">Everett Labs</a></span><time>Published 2026-08-14</time><span data-reading-time>Calculating reading time</span><span>128 views</span></div>
       </header>
       <div id="article-content" class="article-content" data-article-content data-image-lightbox="true">
+        <style>.preview-reading-noise { /* ${"ignore-style-tokens ".repeat(120)} */ }</style>
         <p>A minimal theme should help the reader understand structure without turning every section into a decorative object. Rackora uses a single accent color, restrained surfaces, and <code>semantic HTML</code>.</p>
         <figure><img src="/assets/images/rackora-mark.svg" alt="Rackora editorial mark" width="64" height="64" /><figcaption>Rackora editorial mark — click to preview lightbox and caption</figcaption></figure>
+        <h2></h2>
+        <h2 hidden>Hidden draft heading</h2>
         <h2 id="content-hierarchy">Content hierarchy</h2>
         <p>Headings now use a quiet accent marker inspired by Fuwari's clarity while keeping Rackora's technical publishing tone.</p>
         <blockquote><p>Good interface hierarchy remains visible even when images are removed.</p></blockquote>
         <h3>Keep the system small</h3>
         <p>The theme relies on Halo for content, comments, search, and feeds, while Rackora emits route-aware canonical and social metadata.</p>
-        <pre><code class="language-yaml">theme:
+        <pre class="lang-YAML"><code>theme:
   uiLanguage: en
   imageMode: none
   popularTags: 10</code></pre>
         <h2>Structured technical content</h2>
         <p>Tables remain readable on small screens and code blocks expose their language and a copy action.</p>
-        <table><thead><tr><th>Feature</th><th>Owner</th><th>Result</th></tr></thead><tbody><tr><td>Search</td><td>Halo plugin</td><td>Integrated</td></tr><tr><td>Code highlighting</td><td>Rackora</td><td>Built in</td></tr><tr><td>Backups</td><td>Server/plugin</td><td>External</td></tr></tbody></table>
+        <table><thead><tr><th>Plan</th><th>CPU</th><th>Price</th><th>Buy</th></tr></thead><tbody><tr><th scope="row">Starter</th><td>2 vCPU</td><td>$5/mo</td><td><a href="#">Order</a></td></tr><tr><th scope="row">Standard</th><td>4 vCPU</td><td>$12/mo</td><td><a href="#">Order</a></td></tr></tbody></table>
         <h3>Verification details</h3>
-        <p>Every release records its expected behavior, generated package, and a small set of browser checks.</p>
+        <p>Every release records its expected behavior, generated package, and a small set of browser checks. <img src="/assets/images/rackora-mark.svg" alt="" width="24" height="24" style="display:inline-block;vertical-align:middle;" /> Inline decorative icons and <img src="/assets/images/rackora-mark.svg" alt="Opt-out image" width="64" height="64" data-no-lightbox hidden /> opt-out images stay out of the lightbox.</p>
         <figure><img src="${wideLogoSource}" alt="Rackora wide wordmark preview" width="192" height="64" /><figcaption>Rackora wide wordmark — use arrow keys or buttons to switch images in the lightbox</figcaption></figure>
         <h2>Operational maintenance</h2>
         <p>Routine maintenance keeps dependencies, backups, and publishing workflows predictable.</p>

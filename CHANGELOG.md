@@ -3,6 +3,19 @@
 Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。每次发布必须同步更新
 `package.json`、`theme.yaml` 和本文件，并使用对应的 `vX.Y.Z` Git 标签发布安装包。
 
+## [0.11.2] - 2026-11-27
+
+### 修复
+
+- 文章目录初始化（`initTableOfContents`）过滤空白或隐藏（`hidden`、`aria-hidden="true"`）的 `h2`/`h3` 标题，提取标题文案时排除 `.heading-anchor` 避免重复注入锚点；样式表同步隐藏空的 `.article-content h2:empty` / `h3:empty` / `h4:empty`。
+- 代码块语言识别（`languageName`）同时检查 `code` 与 `pre` 的类名列表，兼容 `language-` / `lang-` 前缀与大小写差异，并补齐 `tsx`、`jsx`、`txt`、`plain`、`htm`、`svg`、`console`、`toml` 常见语言别名。
+- 正文表格初始化（`initTables`）仅从首行表头（`table.tHead?.rows[0] || table.rows[0]`）提取列名，避免 `tbody` 中的行表头 `<th>` 导致列索引与样式标记错位。
+- 图片灯箱（`initLightbox`）过滤无有效图片源、隐藏（`hidden` / `aria-hidden="true"`）、标注 `data-no-lightbox` 以及非 `<figure>` 内尺寸不超过 `48px` 的装饰性小图标，并在调用 `dialog.showModal()` 前判断 `!dialog.open` 防止重复打开异常。
+- 预计阅读时间统计（`initReadingMetrics`）前先克隆正文并移除 `style`、`script`、`noscript`、`template` 节点，避免嵌入样式或脚本代码拉高读时估算。
+- 主导航高亮路径归一化（`normalizePath`）安全调用 `decodeURIComponent`，修复中文路径编码差异导致的导航高亮失效，同时防御非法百分号编码异常。
+- 首页热门标签排序（`initPopularTags`）对 `parseInt` 解析结果增加 `|| 0` 兜底，防止异常计数产生 `NaN` 干扰排序。
+- 全局搜索快捷键（`initSearchShortcut`）排除 `altKey` 与 `shiftKey` 组合，避免误劫持 `Ctrl+Shift+K` / `Ctrl+Alt+K` 等浏览器或系统快捷键。
+
 ## [0.11.1] - 2026-11-26
 
 ### 修复
@@ -565,6 +578,7 @@ Rackora 使用[语义化版本](https://semver.org/lang/zh-CN/)管理版本。�
 
 - Rackora 首个可安装预览版本，包含基础 Halo 路由、极简布局和低图片模式。
 
+[0.11.2]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.11.2
 [0.11.1]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.11.1
 [0.11.0]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.11.0
 [0.10.6]: https://github.com/everett7623/halo-theme-rackora/releases/tag/v0.10.6

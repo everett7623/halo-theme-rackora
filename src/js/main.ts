@@ -173,7 +173,13 @@ function initNavigation(): void {
 }
 
 function normalizePath(pathname: string): string {
-  const trimmed = pathname.replace(/\/+$/, "");
+  let decoded = pathname;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    // 保留原始路径，避免非法百分号编码抛出 URIError 中断导航高亮。
+  }
+  const trimmed = decoded.replace(/\/+$/, "");
   return trimmed || "/";
 }
 
@@ -268,7 +274,14 @@ function initBackToTop(): void {
 function initSearchShortcut(): void {
   if (!document.querySelector("[data-search-toggle]")) return;
   document.addEventListener("keydown", (event) => {
-    if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
+    if (
+      !(event.ctrlKey || event.metaKey) ||
+      event.altKey ||
+      event.shiftKey ||
+      event.key.toLowerCase() !== "k"
+    ) {
+      return;
+    }
     const target = event.target as HTMLElement | null;
     if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
     const searchWidget = (window as Window & { SearchWidget?: { open?: () => void } }).SearchWidget;
@@ -323,10 +336,10 @@ function initPopularTags(): void {
   const limit = Math.max(1, Number.parseInt(list.dataset.tagLimit || "10", 10) || 10);
   const sorted = (Array.from(list.children) as HTMLElement[])
     .sort((left, right) => {
-      const countDifference =
-        Number.parseInt(right.dataset.tagCount || "0", 10) -
-        Number.parseInt(left.dataset.tagCount || "0", 10);
-      return countDifference || left.textContent!.localeCompare(right.textContent!);
+      const rightCount = Number.parseInt(right.dataset.tagCount || "0", 10) || 0;
+      const leftCount = Number.parseInt(left.dataset.tagCount || "0", 10) || 0;
+      const countDifference = rightCount - leftCount;
+      return countDifference || (left.textContent || "").localeCompare(right.textContent || "");
     })
     .slice(0, limit);
   list.replaceChildren(...sorted);

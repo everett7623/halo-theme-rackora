@@ -21,15 +21,23 @@ const languageAliases: Record<string, string> = {
   shell: "bash",
   sh: "bash",
   zsh: "bash",
+  console: "bash",
   yml: "yaml",
   ts: "typescript",
+  tsx: "typescript",
   js: "javascript",
+  jsx: "javascript",
   html: "xml",
+  htm: "xml",
+  svg: "xml",
   text: "plaintext",
+  txt: "plaintext",
+  plain: "plaintext",
   py: "python",
   golang: "go",
   rs: "rust",
   conf: "nginx",
+  toml: "ini",
 };
 
 hljs.registerLanguage("bash", bash);
@@ -83,25 +91,39 @@ function ensureUniqueId(base: string, usedIds: Set<string>, element: HTMLElement
   return id;
 }
 
+function headingLabel(heading: HTMLElement): string {
+  const clone = heading.cloneNode(true) as HTMLElement;
+  for (const anchor of clone.querySelectorAll(".heading-anchor")) {
+    anchor.remove();
+  }
+  return clone.textContent?.trim() || "";
+}
+
 function initTableOfContents(content: HTMLElement): void {
   const section = document.querySelector<HTMLElement>("[data-toc-container]");
   const navigation = section?.querySelector<HTMLElement>("[data-toc]");
   if (!section || !navigation) return;
 
-  const headings = Array.from(content.querySelectorAll<HTMLElement>("h2, h3"));
+  const headings = Array.from(content.querySelectorAll<HTMLElement>("h2, h3")).filter((heading) => {
+    if (heading.hidden || heading.getAttribute("aria-hidden") === "true") return false;
+    if (heading.closest('[hidden], [aria-hidden="true"]')) return false;
+    return headingLabel(heading).length > 0;
+  });
   if (headings.length < 2) return;
 
   const usedIds = new Set<string>();
   for (const heading of headings) {
-    const label = heading.textContent?.trim() || uiText("Section", "章节");
+    const label = headingLabel(heading);
     heading.id = ensureUniqueId(heading.id || slugify(label), usedIds, heading);
 
-    const anchor = document.createElement("a");
-    anchor.className = "heading-anchor";
-    anchor.href = `#${heading.id}`;
-    anchor.textContent = "#";
-    anchor.setAttribute("aria-label", uiText(`Link to ${label}`, `链接到 ${label}`));
-    heading.prepend(anchor);
+    if (!heading.querySelector(".heading-anchor")) {
+      const anchor = document.createElement("a");
+      anchor.className = "heading-anchor";
+      anchor.href = `#${heading.id}`;
+      anchor.textContent = "#";
+      anchor.setAttribute("aria-label", uiText(`Link to ${label}`, `链接到 ${label}`));
+      heading.prepend(anchor);
+    }
 
     const link = document.createElement("a");
     link.href = `#${heading.id}`;
@@ -234,9 +256,10 @@ function initMobileToc(section: HTMLElement, navigation: HTMLElement): void {
   document.dispatchEvent(new CustomEvent("rackora:icons"));
 }
 
-function languageName(code: HTMLElement): string {
-  const className = Array.from(code.classList).find((item) => item.startsWith("language-"));
-  const raw = className?.replace("language-", "") || "text";
+function languageName(code: HTMLElement, pre?: HTMLElement | null): string {
+  const classes = [...Array.from(code.classList), ...(pre ? Array.from(pre.classList) : [])];
+  const className = classes.find((item) => /^(?:language|lang)-.+/i.test(item));
+  const raw = className ? className.replace(/^(?:language|lang)-/i, "").toLowerCase() : "text";
   return languageAliases[raw] || raw;
 }
 
@@ -267,7 +290,7 @@ function initCodeBlocks(content: HTMLElement): void {
     const code = pre.querySelector<HTMLElement>("code");
     if (!code) continue;
 
-    const language = languageName(code);
+    const language = languageName(code, pre);
     if (hljs.getLanguage(language)) {
       code.classList.add(`language-${language}`);
       hljs.highlightElement(code);
@@ -344,9 +367,10 @@ function initTables(content: HTMLElement): void {
   ];
   for (const table of content.querySelectorAll<HTMLTableElement>("table")) {
     if (table.parentElement?.classList.contains("table-scroll")) continue;
-    const headers = Array.from(
-      table.querySelectorAll<HTMLTableCellElement>("thead th, tr:first-child th"),
-    );
+    const headerRow = table.tHead?.rows[0] || table.rows[0];
+    const headers = headerRow
+      ? Array.from(headerRow.querySelectorAll<HTMLTableCellElement>(":scope > th"))
+      : [];
     const names = headers.map((header) => normalizeHeader(header.textContent || ""));
     const matches = names.filter((name) =>
       productKeywords.some((keyword) => name.includes(keyword)),
@@ -355,6 +379,7 @@ function initTables(content: HTMLElement): void {
 
     for (const row of table.tBodies) {
       for (const tableRow of Array.from(row.rows)) {
+        if (tableRow === headerRow) continue;
         Array.from(tableRow.cells).forEach((cell, index) => {
           const header = names[index];
           if (!header) return;
@@ -529,6 +554,33 @@ function initRelatedPosts(): void {
   }
 }
 
+function isSmallDecorativeImage(img: HTMLImageElement): boolean {
+  if (img.closest("figure")) return false;
+  const attrWidth = Number.parseFloat(img.getAttribute("width") || "");
+  const attrHeight = Number.parseFloat(img.getAttribute("height") || "");
+  const rect = img.getBoundingClientRect();
+  const width =
+    rect.width ||
+    (Number.isFinite(attrWidth) && attrWidth > 0 ? attrWidth : 0) ||
+    (img.complete ? img.naturalWidth : 0);
+  const height =
+    rect.height ||
+    (Number.isFinite(attrHeight) && attrHeight > 0 ? attrHeight : 0) ||
+    (img.complete ? img.naturalHeight : 0);
+  return width > 0 && height > 0 && width <= 48 && height <= 48;
+}
+
+function isZoomableImage(img: HTMLImageElement): boolean {
+  if (img.closest("a")) return false;
+  const hasSource = Boolean(img.getAttribute("src")?.trim() || img.getAttribute("srcset")?.trim());
+  if (!hasSource) return false;
+  if (img.hidden || img.getAttribute("aria-hidden") === "true") return false;
+  if (img.closest('[hidden], [aria-hidden="true"]')) return false;
+  if (img.hasAttribute("data-no-lightbox") || img.closest("[data-no-lightbox]")) return false;
+  if (isSmallDecorativeImage(img)) return false;
+  return true;
+}
+
 function initLightbox(content: HTMLElement): void {
   const images = Array.from(content.querySelectorAll<HTMLImageElement>("img"));
   for (const img of images) {
@@ -537,7 +589,7 @@ function initLightbox(content: HTMLElement): void {
   }
   if (content.dataset.imageLightbox !== "true") return;
 
-  const zoomableImages = images.filter((img) => !img.closest("a"));
+  const zoomableImages = images.filter(isZoomableImage);
   if (zoomableImages.length === 0) return;
 
   const hasGallery = zoomableImages.length > 1;
@@ -607,7 +659,7 @@ function initLightbox(content: HTMLElement): void {
   zoomableImages.forEach((img, index) => {
     const open = (): void => {
       showImage(index);
-      dialog.showModal();
+      if (!dialog.open) dialog.showModal();
     };
     img.classList.add("is-zoomable");
     img.tabIndex = 0;
@@ -637,10 +689,18 @@ function estimateReadingMinutes(text: string): number {
   return Math.max(1, Math.ceil(cjkCharacters / 400 + nonCjkWords / 220));
 }
 
+function extractReadableText(content: HTMLElement): string {
+  const clone = content.cloneNode(true) as HTMLElement;
+  for (const node of clone.querySelectorAll("style, script, noscript, template")) {
+    node.remove();
+  }
+  return clone.textContent || "";
+}
+
 function initReadingMetrics(content: HTMLElement): void {
   const target = document.querySelector<HTMLElement>("[data-reading-time]");
   if (target) {
-    const minutes = estimateReadingMinutes(content.textContent || "");
+    const minutes = estimateReadingMinutes(extractReadableText(content));
     target.textContent = isChineseUi() ? `约 ${minutes} 分钟` : `${minutes} min read`;
   }
 

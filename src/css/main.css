@@ -1424,6 +1424,12 @@ img {
   font-size: 1.08rem;
 }
 
+.article-content h2:empty,
+.article-content h3:empty,
+.article-content h4:empty {
+  display: none;
+}
+
 .heading-anchor {
   position: absolute;
   left: -1.1em;
